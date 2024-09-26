@@ -1,2 +1,14 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # osbng-r
-R package supporting geospatial grid indexing and interaction with Ordnance Survey's British National Grid
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of osbng is to …
+
+## Installation
+
+You can install the development version of osbng from
+[GitHub](https://github.com/) with:
