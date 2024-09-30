@@ -1,0 +1,148 @@
+{
+    "is_valid_bng": [
+        {
+            "bng_ref": "HP",
+            "expected": true
+        },
+        {
+            "bng_ref": "OV",
+            "expected": true
+        },
+        {
+            "bng_ref": "SV",
+            "expected": true
+        },
+        {
+            "bng_ref": "TQ",
+            "expected": true
+        },
+        {
+            "bng_ref": "hp",
+            "expected": false
+        },
+        {
+            "bng_ref": "H",
+            "expected": false
+        },
+        {
+            "bng_ref": "HSW",
+            "expected": false
+        },
+        {
+            "bng_ref": "hsw",
+            "expected": false
+        },
+        {
+            "bng_ref": "11",
+            "expected": false
+        },
+        {
+            "bng_ref": "HPNE",
+            "expected": true
+        },
+        {
+            "bng_ref": "HPSE",
+            "expected": true
+        },
+        {
+            "bng_ref": "HPSW",
+            "expected": true
+        },
+        {
+            "bng_ref": "HPNW",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP NW",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP00",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP99",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP99NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP99ne",
+            "expected": false
+        },
+        {
+            "bng_ref": "HP 99 NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP 99NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "HP99 NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "TQ1122",
+            "expected": true
+        },
+        {
+            "bng_ref": "TQ 11 22",
+            "expected": true
+        },
+        {
+            "bng_ref": "TQ11 22",
+            "expected": true
+        },
+        {
+            "bng_ref": "TQ1122SW",
+            "expected": true
+        },
+        {
+            "bng_ref": "ST112288",
+            "expected": true
+        },
+        {
+            "bng_ref": "ST112288NW",
+            "expected": true
+        },
+        {
+            "bng_ref": "st112288nw",
+            "expected": false
+        },
+        {
+            "bng_ref": "NX11228837",
+            "expected": true
+        },
+        {
+            "bng_ref": "NX11228837NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "NX 1122 8837 NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "NX 11228837 NE",
+            "expected": true
+        },
+        {
+            "bng_ref": "NB1122883743",
+            "expected": true
+        },
+        {
+            "bng_ref": "NB1122883743SE",
+            "expected": false
+        },
+        {
+            "bng_ref": "NB112288374300",
+            "expected": false
+        },
+        {
+            "bng_ref": "NB112288374300NE",
+            "expected": false
+        }
+    ]
+}
