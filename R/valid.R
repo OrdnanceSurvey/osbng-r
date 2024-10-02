@@ -58,5 +58,5 @@ is_valid_bng <- function(bng_ref) UseMethod("is_valid_bng")
 #' @export
 #' @name valid
 is_valid_bng.character <- function(bng_ref) {
-  return(grepl(bng_pattern, bng_ref))
+  grepl(bng_pattern, bng_ref)
 }
