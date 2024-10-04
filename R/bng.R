@@ -62,10 +62,20 @@ is_bng_reference <- function(bng_ref) {
 }
 
 #' @name BNGReference
+#' @title BNG Reference objects
+#' @description Functions to support working with objects of type
+#'   \code{BNGReference}.
 #' @param x object of class \code{BNGReference}.
 #' @param i record selection.
-#' @param i
-#' @param value
+#' @param value a suitable replacement value
+#' @details
+#' The BNG is structured using a hierarchical system of grid squares at various
+#' resolutions. At its highest level, the grid is divided into 100 km by 100 km
+#' squares, each of which is identified by a two-letter code. Successive levels
+#' of resolution further subdivide the grid squares into finer detail, down to
+#' individual 1-meter squares.
+#' 
+#' @seealso [is_valid_bng()], [as_bng_reference()]
 #' @export
 `[.BNGReference` <- function(x, i) {
   new_bng_reference(NextMethod())
@@ -85,24 +95,31 @@ is_bng_reference <- function(bng_ref) {
   if (inherits(value, "BNGReference")) {
     new_bng_reference(NextMethod())
   } else {
-    stop ("Value must be of type `BNGReference`.", call. = FALSE)
+    stop("Value must be of type `BNGReference`.", call. = FALSE)
   }
 }
 
 
 #' @export
-#' @name BNGReference
+#' @rdname BNGReference
 `[[<-.BNGReference` <- function(x, i, value) {
   if (inherits(value, "BNGReference")) {
     new_bng_reference(NextMethod())
   } else {
-    stop ("Value must be of type `BNGReference`.", call. = FALSE)
+    stop("Value must be of type `BNGReference`.", call. = FALSE)
   }
 }
 
 
 #' @export
-#' @name BNGReference
+#' @rdname BNGReference
+print.BNGReference <- function(x, ...) {
+  
+}
+
+
+#' @export
+#' @rdname BNGReference
 c.BNGReference <- function(...) {
   # check resolutions all equal?
   lst <- list(...)
@@ -117,6 +134,7 @@ c.BNGReference <- function(...) {
 
 
 #' @export
+#' @rdname BNGReference
 unique.BNGReference <- function(x, incomparables = FALSE, ...) {
   x[!duplicated(x, incomparables, ...)]
 }
