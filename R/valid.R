@@ -60,3 +60,21 @@ is_valid_bng <- function(bng_ref) UseMethod("is_valid_bng")
 is_valid_bng.character <- function(bng_ref) {
   grepl(bng_pattern, bng_ref)
 }
+
+
+#' Validate input
+#' 
+#' Internal function used to verify inputs.
+#' @param x object to test
+#' @details
+#' Primarily called for the side-effect of stopping execution.
+#' 
+#' @returns \code{TRUE} when the input is a \code{BNGReference} object.
+#' @keywords internal
+validate_bng_ref <- function(x) {
+  if (!is_bng_reference(x)) {
+    stop("Please supply a BNG Reference object.", call. = FALSE)
+  } else{
+    return(TRUE)
+  }
+}
