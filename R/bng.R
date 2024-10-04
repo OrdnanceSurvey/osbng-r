@@ -140,21 +140,19 @@ unique.BNGReference <- function(x, incomparables = FALSE, ...) {
 }
 
 
+#' @export
+#' @rdname BNGReference
+as.data.frame.bng_reference <- function(x, ...) {
+  df <- data.frame(row.names = seq_along(x))
+  df$bng_reference <- x
+  
+  return(df)
+}
+
+
 #' @keywords internal
 #' @noRd
 new_bng_reference <- function(x) {
   x <- gsub(" ", "", x)
   structure(x, class = "BNGReference")
-}
-
-
-#' @keywords internal
-get_bng_resolution <- function(bng_ref) {
-  
-}
-
-
-#' @keywords internal
-get_bng_resolution_string <- function(bng_ref) {
-  
 }
