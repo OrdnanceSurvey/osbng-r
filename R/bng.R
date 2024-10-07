@@ -163,10 +163,84 @@ get_bng_resolution_string <- function(bng_ref) {
 }
 
 
+#' Printing BNG Reference Class
+#' 
+#' Supporting formatting and printing of \code{BNGReference} objects.
+#' @param x an object of type \code{BNGReference}.
+#' @param spaces boolean. Should standard spaces be added or removed for
+#'   "pretty" printing? Default is \code{TRUE} to add spaces.
+#' @param ... additional parameters
+#' @details
+#' Standard spaces are added: 1) after the two-letter prefix, 2) between
+#' eastings and northings, and 3) before a quadrant suffix, when those
+#' components exist in a grid reference.
+#' 
+#' @returns 
+#' * \code{pretty_format_bng} inserts spaces and returns a vector of the references as strings.
+#' * \code{print} outputs the BNG references and invisibly returns the object.
+#' @examples
+#' x <- as_bng_reference("SU1234")
+#' pretty_format_bng(x)
+#' 
+#' pretty_format_bng(x, spaces = TRUE)
+#' 
+#' print(x)
+#' 
+#' print(x, spaces = TRUE)
+#' 
 #' @export
-#' @rdname BNGReference
-print.BNGReference <- function(x, ...) {
+#' @name print.BNGReference
+print.BNGReference <- function(x, spaces = TRUE, ...) {
+  res <- unique(get_bng_resolution_string(x))
   
+  if (all(is.na(res)) == TRUE) {
+    print(unclass(x))
+    return(invisible(x))
+  }
+
+  if (length(res) > 1) {
+    cat(sprintf("<%s[%s] with multiple resolutions>\n", class(x)[1], length(x)))
+  } else {
+    cat(sprintf("<%s[%s] with Resolution=%s>\n", class(x)[1], length(x), res))
+  }
+
+  out <- pretty_format_bng(x, spaces)
+  print(out, quote = FALSE, ...)
+
+  invisible(x)
+  # x <- as.character(x)
+  # NextMethod()
+}
+
+
+#' @export
+#' @rdname print.BNGReference
+pretty_format_bng <- function(x, spaces = TRUE) {
+  validate_bng_ref(x)
+  stopifnot(is.logical(spaces))
+  
+  # split references
+  prefix <- get_prefix(x)
+  en <- get_digits(x)
+  
+  e <- substr(en, 1, nchar(en) / 2)
+  n <- substr(en, (nchar(en) / 2) + 1, nchar(en))
+  
+  suffix <- get_suffix(x)
+  
+  # reconstruct formatted reference
+  if (spaces == TRUE) {
+    out <- apply(cbind(prefix, e, n, suffix), 1, 
+                 function(i) {
+                   paste(i[!is.na(i) & i != ""], collapse = " ")
+                 })
+  } else {
+    out <- gsub(" ", "", as.character(x))
+  }
+  
+  # fill invalid reference strings
+  out[out == ""] <- NA
+  out
 }
 
 
