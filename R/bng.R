@@ -293,9 +293,9 @@ internal_get_resolution <- function(x) {
   bng_resolution <- c(100000, 10000, 1000, 100, 10, 1)
   
   # get eastings/northings
-  en <- gsub(bng_pattern, "\\2", x)
+  en <- get_digits(x)
   # get suffix (if present)
-  suffix <- gsub(bng_pattern, "\\3", x)
+  suffix <- get_suffix(x)
   
   # check digits
   l <- nchar(en) / 2
