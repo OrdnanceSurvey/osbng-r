@@ -156,3 +156,26 @@ new_bng_reference <- function(x) {
   x <- gsub(" ", "", x)
   structure(x, class = "BNGReference")
 }
+
+
+#' @keywords internal
+#' @noRd
+internal_get_resolution <- function(x) {
+  x <- gsub(" ", "", as.character(x))
+  
+  # Look-ups for BNG resolution
+  bng_resolution <- c(100000, 10000, 1000, 100, 10, 1)
+  
+  # get eastings/northings
+  en <- gsub(bng_pattern, "\\2", x)
+  # get suffix (if present)
+  suffix <- gsub(bng_pattern, "\\3", x)
+  
+  # check digits
+  l <- nchar(en) / 2
+  # get resolution
+  res <- bng_resolution[l + 1]
+  
+  res <- ifelse(suffix != "", res / 2, res)
+  
+  res
