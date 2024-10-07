@@ -61,6 +61,58 @@ is_bng_reference <- function(bng_ref) {
   inherits(bng_ref, "BNGReference")
 }
 
+
+#' BNG reference resolution
+#' 
+#' Find the spatial resolution (i.e. grid size) of a British National Grid
+#' square.
+#' @param bng_ref Vector of \code{BNGReference} objects to test.
+#' @details
+#' How the resolution of grid reference is determined.
+#' 
+#' @returns A vector of numeric values for \code{get_bng_resolution()} in metres
+#'   or character strings expressing the resolution of the grid references.
+#' @examples
+#' get_bng_resolution("TQ1234")
+#' 
+#' get_bng_resolution_string("TQ1234NE")
+#' 
+#' @export
+get_bng_resolution <- function(bng_ref) {
+  validate_bng_ref(bng_ref)
+  res <- internal_get_resolution(bng_ref)
+  
+  res
+}
+
+
+#' @export
+#' @rdname get_bng_resolution
+get_bng_resolution_string <- function(bng_ref) {
+  validate_bng_ref(x)
+  # get the numeric resolution
+  res <- get_bng_resolution(bng_ref)
+  
+  # Look-ups for BNG resolution
+  bng_resolution_tbl <- c(100000, 50000, 
+                          10000, 5000, 
+                          1000, 500, 
+                          100, 50, 
+                          10, 5, 
+                          1)
+  
+  bng_resolution_lbl <- c("100km", "50km", "10km", "5km", "1km", 
+                          "100m", "50m", "10m", "5m", "1m")
+  
+  # form look-ups
+  lu <- match(res, bng_resolution_tbl)
+  # get string format
+  res_str <- bng_resolution_lbl[lu]
+  
+  res_str
+}
+
+
 #' @name BNGReference
 #' @title BNG Reference objects
 #' @description Functions to support working with objects of type
