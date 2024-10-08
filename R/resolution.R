@@ -30,15 +30,8 @@ get_bng_resolution_string <- function(bng_ref) {
   res <- get_bng_resolution(bng_ref)
   
   # Look-ups for BNG resolution
-  bng_resolution_tbl <- c(100000, 50000, 
-                          10000, 5000, 
-                          1000, 500, 
-                          100, 50, 
-                          10, 5, 
-                          1)
-  
-  bng_resolution_lbl <- c("100km", "50km", "10km", "5km", "1km", 
-                          "100m", "50m", "10m", "5m", "1m")
+  bng_resolution_tbl <- list_bng_resolution("all")
+  bng_resolution_lbl <- list_bng_resolution("all", lbl = TRUE)
   
   # form look-ups
   lu <- match(res, bng_resolution_tbl)
@@ -55,7 +48,7 @@ internal_get_resolution <- function(x) {
   x <- gsub(" ", "", as.character(x))
   
   # Look-ups for BNG resolution
-  bng_resolution <- c(100000, 10000, 1000, 100, 10, 1)
+  bng_resolution <- list_bng_resolution("whole")
   
   # get eastings/northings
   en <- get_digits(x)
@@ -85,6 +78,8 @@ internal_get_resolution <- function(x) {
 #' @noRd
 list_bng_resolution <- function(which = c("all", "whole", "quad"), 
                                 lbl = FALSE) {
+  which <- match.arg(which)
+  
   bng_resolution <- c(100000, 50000, 
                       10000, 5000, 
                       1000, 500, 
@@ -110,6 +105,8 @@ list_bng_resolution <- function(which = c("all", "whole", "quad"),
   
   if (lbl == TRUE) {
     out <- bng_resolution_lbl[idx]
+  } else {
+    out <- bng_resolution[idx]
   }
   
   out
