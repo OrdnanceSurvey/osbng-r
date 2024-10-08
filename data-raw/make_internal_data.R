@@ -29,7 +29,12 @@ bng_prefixes <- c("SV", "SW", "SX", "SY", "SZ", "TV", "TW", "SQ", "SR", "SS",
                   "HT", "HU", "JQ", "JR", "HL", "HM", "HN", "HO", "HP", "JL", 
                   "JM")
 
+# Set of valid BNG suffixes for quadrant positions
+bng_suffixes <- c("SW", "SE", "NW", "NE")
+
+
 # Store .rda file for the package.
 usethis::use_data(bng_pattern,
                   bng_prefixes,
+                  bng_suffixes,
                   internal = TRUE, overwrite = TRUE)
