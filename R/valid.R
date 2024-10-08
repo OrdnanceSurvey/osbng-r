@@ -64,7 +64,7 @@ is_valid_bng.character <- function(bng_ref) {
 
 #' Validate input
 #' 
-#' Internal function used to verify inputs.
+#' Internal helper function used to verify inputs.
 #' @param x object to test
 #' @details
 #' Primarily called for the side-effect of stopping execution.
@@ -74,7 +74,29 @@ is_valid_bng.character <- function(bng_ref) {
 validate_bng_ref <- function(x) {
   if (!is_bng_reference(x)) {
     stop("Please supply a BNG Reference object.", call. = FALSE)
-  } else{
-    return(TRUE)
-  }
+  } 
+  
+  invisible(x)
+}
+
+
+#' Validate positions
+#' 
+#' Internal helper function used to verify eastings.
+#' @param easting object to test
+#' @returns logical vector testing easting position
+#' @keywords internal
+validate_easting <- function(easting) {
+  easting >= 0 & easting <= 700000 & !is.na(easting)
+}
+
+
+#' Validate positions
+#' 
+#' Internal helper function used to verify northings.
+#' @param northing object to test
+#' @returns logical vector testing northing position
+#' @keywords internal
+validate_northing <- function(northing) {
+  northing >= 0 & northing <= 1300000 & !is.na(northing)
 }
