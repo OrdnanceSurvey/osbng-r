@@ -62,6 +62,25 @@ is_valid_bng.character <- function(bng_ref) {
 }
 
 
+#' Validate BNG resolutions
+#' 
+#' Helper function used to verify resolutions.
+#' @param resolution numeric or character vector of resolutions to test
+#' @returns logical vector testing resolution
+#' @export
+is_valid_bng_resolution <- function(resolution) {
+  UseMethod("is_valid_bng_resolution")
+}
+
+is_valid_bng_resolution <- function(resolution) {
+  resolution %in% list_bng_resolution("all", lbl = FALSE)
+}
+
+is_valid_bng_resolution <- function(resolution) {
+  resolution %in% list_bng_resolution("all", lbl = TRUE)
+}
+
+
 #' Validate input
 #' 
 #' Internal helper function used to verify inputs.
@@ -72,7 +91,7 @@ is_valid_bng.character <- function(bng_ref) {
 #' @returns \code{TRUE} when the input is a \code{BNGReference} object.
 #' @keywords internal
 validate_bng_ref <- function(x) {
-  if (!is_bng_reference(x)) {
+  if (!is_bng_reference(x) | missing(x)) {
     stop("Please supply a BNG Reference object.", call. = FALSE)
   } 
   
@@ -100,3 +119,4 @@ validate_easting <- function(easting) {
 validate_northing <- function(northing) {
   northing >= 0 & northing <= 1300000 & !is.na(northing)
 }
+
