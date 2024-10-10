@@ -5,13 +5,50 @@
 
 # bng_to_grid_geom <- function() {}
 
-bng_to_xy <- function(bng_ref, position, ...) {
+
+#' Convert BNG References
+#' 
+#' Create British National Grid references from coordinates or convert grid
+#' reference objects to coordinates.
+#' @param bng_ref vector of type \code{BNGReference} objects
+#' @param position character indicating which point location of the BNG grid
+#'   square is returned. Default is the lower-left corner.
+#' @param ... additional parameters, not currently used
+#' @details
+#' Coordinates must be in British National Grid projection (EPSG:27700) using
+#' eastings and northings in meters. These functions do not support coordinate
+#' transformations.
+#' 
+#' @returns 
+#' * \code{xy_to_bng}: vector of \code{BNGReference} objects
+#' * \code{bng_to_xy}: two-column matrix of eastings and northings
+#' 
+#' @examples
+#' # example code
+#' 
+#' @export
+#' @rdname bng_to_xy
+#' @aliases xy_to_bng
+bng_to_xy <- function(bng_ref, position = c("lower-left", 
+                                            "upper-left", 
+                                            "upper-right", 
+                                            "lower-right", 
+                                            "centre"), 
+                      ...) {
   validate_bng_ref(bng_ref)
   
-  position <- match.arg(position, c("lower-left", "upper-left", "upper-right", "lower-right", "centre"))
+  position <- match.arg(position)
+  
 }
 
+#' @param easting numeric vector of coordinates
+#' @param northing numeric vector of coordinates
+#' @examples
+#' # example code
+#'  
 #' @export
+#' @rdname bng_to_xy
+#' @aliases xy_to_bng
 xy_to_bng <- function(...) UseMethod("xy_to_bng")
 
 #' @export
