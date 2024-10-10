@@ -53,11 +53,20 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
   coords
 }
 
+
+# geom_to_bng <- function () {}
+
+# geom_to_bng_intersection <- function() {}
+
+
 #' @param easting numeric vector of coordinates
 #' @param northing numeric vector of coordinates
+#' @resolution target BNG grid resolution. Can be specified as a numeric or
+#'   character vector
+#' 
 #' @examples
 #' # example code
-#'  
+#'   
 #' @export
 #' @rdname bng_to_xy
 #' @aliases xy_to_bng
@@ -133,9 +142,42 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   new_bng_reference(grid_refs)
 }
 
-# geom_to_bng <- function () {}
+#' @param x two column matrix of eastings and northings
+#' @examples
+#' # example code
+#' 
+#' @export
+xy_to_bng.matrix <- function(x, resolution, ...) {
+  
+  # convert to numeric vector approach
+  e <- x[, 1]
+  n <- x[, 2]
+  
+  xy_to_bng(e, n, resolution)
+}
 
-# geom_to_bng_intersection <- function() {}
+#' @param df data.frame with columns of coordinates to convert
+#' @param cols column names or indices within \code{df} holding coordinates
+#' @examples
+#' # example code
+#' 
+#' @export
+xy_to_bng.data.frame <- function(df, 
+                                 cols = c("eastings", "northings"), 
+                                 resolution, 
+                                 ...) {
+  # check inputs
+  if (length(cols) != 2) {
+    stop("Please provide two column names.", call. = FALSE)
+  }
+  
+  if (any(is.character(cols)) & any(!cols %in% names(df))) {
+    stop("Columns not found in data frame.", call. = FALSE)
+  }
+  
+  # convert to numeric vector approach
+  xy_to_bng(x[, cols[1]], x[, cols[2]], resolution, ...)
+}
 
 
 #' Convert eastings and northings to BNG grid reference
