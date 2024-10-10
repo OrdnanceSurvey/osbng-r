@@ -35,10 +35,22 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
                                             "lower-right", 
                                             "centre"), 
                       ...) {
+  # check inputs
   validate_bng_ref(bng_ref)
-  
   position <- match.arg(position)
   
+  # prepare return
+  coords <- matrix(NA, nrow = length(bng_ref), ncol = 2)
+  
+  # drop invalid inputs
+  valid_idx <- !is.na(bng_ref)
+  bng_ref <- bng_ref[valid_idx]
+  
+  # conversion
+  res <- bng_to_coords(bng_ref, position)
+  coords[valid_idx, ] <- res
+  
+  coords
 }
 
 #' @param easting numeric vector of coordinates
