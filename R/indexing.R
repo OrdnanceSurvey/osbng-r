@@ -11,7 +11,78 @@ bng_to_xy <- function(bng_ref, position, ...) {
   position <- match.arg(position, c("lower-left", "upper-left", "upper-right", "lower-right", "centre"))
 }
 
-xy_to_bng <- function() {}
+#' @export
+xy_to_bng <- function(...) UseMethod("xy_to_bng")
+
+#' @export
+xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
+  # check inputs
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  if (length(easting) != length(northing)) {
+    stop("Lengths of supplied eastings and northings must match.",
+         call. = FALSE)
+  }
+  
+  chk_easting <- validate_easting(easting)
+  chk_northing <- validate_northing(northing)
+  
+  if (any(chk_easting == FALSE) |
+      any(chk_northing == FALSE)) {
+    warning("Invalid coordinates detected.", call. = FALSE)
+  }
+  
+  # allow vectors of resolutions
+  args <- expand_args(easting, northing, resolution)
+  
+  easting <- args[[1]]
+  northing <- args[[2]]
+  resolution <- args[[3]]
+  
+  # convert resolution to numeric values
+  if (is.character(resolution)) {
+    resolution <- list_bng_resolution("all")[match(resolution, 
+                                                   list_bng_resolution("all", 
+                                                                       lbl = TRUE))]
+  }
+  
+  # check resolution
+  chk_resolution <- is_valid_bng_resolution(resolution)
+  
+  if (all(chk_resolution == FALSE)) {
+    stop("No valid resolutions detected.", call. = FALSE)
+  } else if (any(chk_resolution == FALSE)) {
+    warning("Invalid resolution detected. NA returned.", call. = FALSE)
+  }
+  
+  if (length(unique(resolution)) > 1) {
+    warning("Varying resolutions detected.", call. = FALSE)
+  }
+  
+  # set-up storage for results
+  grid_refs <- rep(NA, length(resolution))
+  
+  # drop invalid inputs
+  valid_idx <- chk_easting & chk_northing & chk_resolution
+  
+  easting <- easting[valid_idx]
+  northing <- northing[valid_idx]
+  resolution <- resolution[valid_idx]
+  
+  if (length(easting) == 0) {
+    stop("No valid inputs found.", call. = FALSE)
+  }
+  
+  # create from coordinates
+  res <- bng_from_coords(easting, northing, resolution)
+  
+  # expand results
+  grid_refs[valid_idx] <- res
+  
+  new_bng_reference(grid_refs)
+}
 
 # geom_to_bng <- function () {}
 
