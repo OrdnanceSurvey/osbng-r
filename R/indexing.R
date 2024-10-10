@@ -18,6 +18,61 @@ xy_to_bng <- function() {}
 # geom_to_bng_intersection <- function() {}
 
 
+#' Convert eastings and northings to BNG grid reference
+#' 
+#' Internal helper function to create BNG reference strings.
+#' @param easting numeric vector of coordinates
+#' @param northing numeric vector of coordinates
+#' @param resolution numeric vector of resolutions in meters
+#' @returns character vector of British National Grid references.
+#' @keywords internal
+bng_from_coords <- function(easting, northing, resolution) {
+  # look-up scale equivalents of resolution
+  idx <- findInterval(resolution + (resolution + .1), 
+                      sort(list_bng_resolution("whole")))
+  
+  scale <- sort(list_bng_resolution("whole"))[idx]  # i.e. 500m -> 1000
+  digits <- nchar(resolution) - 1
+  
+  # set-up padding
+  digits <- paste0("%0", 5 - digits, "d")
+  
+  # is suffix required for the resolution?
+  quads <- resolution %in% list_bng_resolution("quad")
+  
+  # part 1: convert grid index prefixes
+  pe <- trunc(easting / 100000)
+  pn <- trunc(northing / 100000)
+  
+  # look up the letters
+  prefix <- bng_prefixes[pe + pn * 7 + 1]
+  
+  # part 2: convert remaining coordinates
+  x <- trunc(easting %% 100000 / scale)
+  y <- trunc(northing %% 100000 / scale)
+  
+  # pad string with leading zeroes
+  x <- sprintf(digits, x)
+  y <- sprintf(digits, y)
+  
+  # part 3: find suffixes
+  sx <- trunc(easting %% 100000 %% scale / resolution)
+  sy <- trunc(northing %% 100000 %% scale / resolution)
+  
+  # look up suffix
+  suffix <- bng_suffixes[sx + sy * 2 + 1]
+  suffix[!quads] <- ""
+  
+  # construct final format
+  grid_ref <- apply(cbind(prefix, x, y, suffix), 1, 
+                    function(i) {
+                      paste(i[!is.na(i) & i != ""], collapse = " ")
+                    })
+  
+  grid_ref
+}
+
+
 #' Convert BNG reference to eastings and northings
 #' 
 #' Internal helper function to create coordinate positions.
