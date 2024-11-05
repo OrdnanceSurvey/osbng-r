@@ -72,11 +72,13 @@ is_valid_bng_resolution <- function(resolution) {
   UseMethod("is_valid_bng_resolution")
 }
 
-is_valid_bng_resolution <- function(resolution) {
+#' @export
+is_valid_bng_resolution.numeric <- function(resolution) {
   resolution %in% list_bng_resolution("all", lbl = FALSE)
 }
 
-is_valid_bng_resolution <- function(resolution) {
+#' @export
+is_valid_bng_resolution.character <- function(resolution) {
   resolution %in% list_bng_resolution("all", lbl = TRUE)
 }
 
@@ -119,4 +121,3 @@ validate_easting <- function(easting) {
 validate_northing <- function(northing) {
   northing >= 0 & northing <= 1300000 & !is.na(northing)
 }
-
