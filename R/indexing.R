@@ -1,9 +1,143 @@
 
-# bbox_to_bng <- function()
-  
-# bng_to_bbox <- function()
+#' Convert bounding boxes
+#' 
+#' Create British National Grid reference from bounding boxes or convert grid
+#' reference objects into bounding boxes.
+#' @param xmin,ymin,xmax,ymax numeric vector of bounding box coordinates
+#' @param ... additional parameters, not currently used
+#' @details
+#' Bounding boxes are expressed as four coordinates (min x, min y, max x, max
+#' y). Coordinates must be in British National Grid projection (EPSG:27700).
+#' These functions do not support coordinate transformations.
+#' 
+#' @returns \code{bng_to_bbox}: numeric vector of bounding coordinates. If
+#'   multiple references are supplied to \code{bng_ref} then a matrix of
+#'   coordinates is returned. \code{bbox_to_bng}: vector of type
+#'   \code{BNGReference} objects.
+#'   
+#' @examples
+#' # example code
+#' 
+#' @export
+#' @rdname bng_to_bbox
+#' @aliases bbox_to_bng 
+bbox_to_bng <- function(...) UseMethod("bbox_to_bng")
 
-# bng_to_grid_geom <- function() {}
+#' @export
+bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
+  # check inputs
+  if (missing(xmin) | missing(ymin) | missing(xmax) | missing(ymax)) {
+    stop("Please provide bounds.", call. = FALSE)
+  }
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  chk_resolution <- bng_is_valid_resolution(resolution)
+  
+  if (all(chk_resolution == FALSE)) {
+    stop("No valid resolutions provided.",
+         call. = FALSE)
+  }
+  
+  if (any(chk_resolution == FALSE)) {
+    warning("Invalid resolutions detected. NAs returned.", call. = FALSE)
+  }
+  
+  # convert resolution to numeric values
+  if (is.character(resolution)) {
+    resolution <- list_bng_resolution("all")[match(resolution, 
+                                                   list_bng_resolution("all", 
+                                                                       lbl = TRUE))]
+  }
+  
+  # expand values to allow vector of resolutions
+  args <- expand_args(xmin, ymin, xmax, ymax, resolution)
+  xmin <- args[[1]]
+  ymin <- args[[2]]
+  xmax <- args[[3]]
+  ymax <- args[[4]]
+  
+  # compute grid of coordinates
+  offxmn <- seq(xmin, xmax - 1, by = resolution)
+  offymn <- seq(ymin, ymax - 1, by = resolution)
+  coords_min <- expand.grid(offxmn, offymn)
+  
+  refs <- rep(NA, nrow(coords_min))
+  
+  refs[chk_resolution] <- xy_to_bng(coords_min, c(1,2), resolution)
+  new_bng_reference(refs)
+}
+
+#' @export
+bbox_to_bng.matrix <- function(x, resolution, ...) {
+  # convert to numeric vector approach
+  xmin <- x[, 1]
+  ymin <- x[, 2]
+  xmax <- x[, 3]
+  ymax <- x[, 4]
+  
+  bbox_to_bng(xmin, ymin, xmax, ymax, resolution, ...)
+}
+
+
+#' @param bng_ref vector of type \code{BNGReference} objects
+#' @examples
+#' # example code
+#' 
+#' @export
+#' @rdname bng_to_bbox
+#' @aliases bbox_to_bng
+bng_to_bbox <- function(bng_ref, ...) {
+  validate_bng_ref(bng_ref)
+  
+  ll <- bng_to_xy(bng_ref, position = "lower-left")
+  ur <- bng_to_xy(bng_ref, position = "upper-right")
+  
+  bb <- cbind(ll, ur)
+  bb
+}
+
+
+#' @param format character indicating the type of geometry object to return
+#' @examples
+#' # example code
+#' 
+#' @import geos
+#' @export
+#' @rdname bng_to_bbox
+#' @aliases bng_to_grid_geom
+bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
+  validate_bng_ref(bng_ref)
+  
+  # check inputs
+  format <- match.arg(format)
+  resolution <- internal_get_resolution(bng_ref)
+  
+  chk_resolution <- is_valid_bng_resolution(resolution)
+  # chk_reference <- is_valid_bng(bng_ref)
+  
+  # set up return value
+  # out <- vector(NA, length = length(bng_ref))
+  
+  # exclude invalid inputs
+  bng_ref <- bng_ref[chk_resolution]
+  resolution <- resolution[chk_resolution]  #  & chk_reference
+  
+  # process geometry
+  coords <- bng_to_xy(bng_ref)
+  
+  geom <- geos::geos_create_rectangle(coords[, 1],
+                                      coords[, 2],
+                                      coords[, 1] + resolution,
+                                      coords[, 2] + resolution)
+  
+  # out[chk_resolution] <- geom
+  # out
+  geom
+}
+
 
 
 #' Convert BNG References
@@ -61,7 +195,7 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
 
 #' @param easting numeric vector of coordinates
 #' @param northing numeric vector of coordinates
-#' @resolution target BNG grid resolution. Can be specified as a numeric or
+#' @param resolution target BNG grid resolution. Can be specified as a numeric or
 #'   character vector
 #' 
 #' @examples
@@ -73,6 +207,8 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
 xy_to_bng <- function(...) UseMethod("xy_to_bng")
 
 #' @export
+#' @rdname bng_to_xy
+#' @aliases xy_to_bng
 xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   # check inputs
   if (missing(resolution)) {
@@ -147,6 +283,8 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
 #' # example code
 #' 
 #' @export
+#' @rdname bng_to_xy
+#' @aliases xy_to_bng
 xy_to_bng.matrix <- function(x, resolution, ...) {
   
   # convert to numeric vector approach
@@ -162,6 +300,8 @@ xy_to_bng.matrix <- function(x, resolution, ...) {
 #' # example code
 #' 
 #' @export
+#' @rdname bng_to_xy
+#' @aliases xy_to_bng
 xy_to_bng.data.frame <- function(df, 
                                  cols = c("eastings", "northings"), 
                                  resolution, 
