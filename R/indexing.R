@@ -188,7 +188,50 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
 }
 
 
-# geom_to_bng <- function () {}
+
+#' Spatial index for geometries
+#' 
+#' Generate the set of BNG cells that cover a geometry and optionally return an
+#' intersection of the geometry with the grid.
+#' @param geom geometry object of type \code{geos-geometry} or \code{sf}
+#' @param resolution spatial resolution of the BNG cell expressed in string or
+#'   interger values
+#' @details
+#' Additional details...
+#' 
+#' @import geos
+#' @export
+geom_to_bng <- function(geom, resolution, ...) UseMethod("geom_to_bng")
+
+#' @export
+geom_to_bng.geos_geometry <- function(geom, resolution, ...) {
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  # check resolution
+  chk_resolution <- is_valid_bng_resolution(resolution)
+  
+  if (all(chk_resolution == FALSE)) {
+    stop("No valid resolutions detected.", call. = FALSE)
+  } else if (any(chk_resolution == FALSE)) {
+    warning("Invalid resolution detected. NA returned.", call. = FALSE)
+  }
+  
+  if (length(unique(resolution)) > 1) {
+    warning("Varying resolutions detected.", call. = FALSE)
+  }
+  
+  # if geoms are all points, then return bng by coords
+  if (all(geos::geos_type(geom) == "point")) {
+    return(xy_to_bng(cbind(geos::geos_x(geom),
+                           geos::geos_y(geom)),
+                     resolution = resolution))
+  } 
+  
+  geom_bng_intersects(geom, resolution)
+}
 
 # geom_to_bng_intersection <- function() {}
 
@@ -459,4 +502,37 @@ bng_to_coords <- function(ref, position) {
         )
   
   matrix(c(e, n), ncol = 2)
+}
+
+
+#' Generate a list of BNG indices for a geometry
+#' @keywords internal
+geom_bng_intersects <- function(geom, resolution) {
+  # TODO: expand resolution to match multiple geoms
+  
+  # get BNG refers under the bounding box
+  allrefs <- lapply(seq_along(geom), function(i) {
+    res <- resolution[i]
+    
+    if (geos::geos_type(geom[i]) == "point") {
+      refs <- xy_to_bng(cbind(geos::geos_x(geom),
+                              geos::geos_y(geom)),
+                        resolution = res)
+      return(refs)
+      
+    } else {
+      bbox <- geos::geos_extent(geom[i])
+      
+      refs <- do.call(bbox_to_bng, c(bbox, res))
+      ints <- geos::geos_intersects(geom[i], bng_to_geom(refs))
+      
+      return(refs[ints])
+    }
+  })
+  
+  if (length(allrefs) == 1L) {
+    allrefs <- allrefs[[1]]
+  }
+  
+  allrefs
 }
