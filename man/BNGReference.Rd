@@ -6,9 +6,9 @@
 \alias{[[.BNGReference}
 \alias{[<-.BNGReference}
 \alias{[[<-.BNGReference}
-\alias{print.BNGReference}
 \alias{c.BNGReference}
 \alias{unique.BNGReference}
+\alias{as.data.frame.BNGReference}
 \title{BNG Reference objects}
 \usage{
 \method{[}{BNGReference}(x, i)
@@ -19,11 +19,11 @@
 
 \method{[[}{BNGReference}(x, i) <- value
 
-\method{print}{BNGReference}(x, ...)
-
 \method{c}{BNGReference}(...)
 
 \method{unique}{BNGReference}(x, incomparables = FALSE, ...)
+
+\method{as.data.frame}{BNGReference}(x, ...)
 }
 \arguments{
 \item{x}{object of class \code{BNGReference}.}
