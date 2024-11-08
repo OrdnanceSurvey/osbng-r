@@ -46,11 +46,7 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   }
   
   # convert resolution to numeric values
-  if (is.character(resolution)) {
-    resolution <- list_bng_resolution("all")[match(resolution, 
-                                                   list_bng_resolution("all", 
-                                                                       lbl = TRUE))]
-  }
+  resolution <- internal_resolution_to_numeric(resolution)
   
   # expand values to allow vector of resolutions
   args <- expand_args(xmin, ymin, xmax, ymax, resolution)
@@ -212,6 +208,13 @@ geom_to_bng.geos_geometry <- function(geom, resolution, ...) {
   
   # check resolution
   chk_resolution <- is_valid_bng_resolution(resolution)
+  # convert to numeric representation
+  resolution <- internal_resolution_to_numeric(resolution)
+  
+  args <- expand_args(geom, resolution)  # TODO: check if geom has multiple geometries
+  
+  geom <- args[[1]]
+  resolution <- args[[2]]
   
   if (all(chk_resolution == FALSE)) {
     stop("No valid resolutions detected.", call. = FALSE)
@@ -279,11 +282,7 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   resolution <- args[[3]]
   
   # convert resolution to numeric values
-  if (is.character(resolution)) {
-    resolution <- list_bng_resolution("all")[match(resolution, 
-                                                   list_bng_resolution("all", 
-                                                                       lbl = TRUE))]
-  }
+  resolution <- internal_resolution_to_numeric(resolution)
   
   # check resolution
   chk_resolution <- is_valid_bng_resolution(resolution)
@@ -508,8 +507,6 @@ bng_to_coords <- function(ref, position) {
 #' Generate a list of BNG indices for a geometry
 #' @keywords internal
 geom_bng_intersects <- function(geom, resolution) {
-  # TODO: expand resolution to match multiple geoms
-  
   # get BNG refers under the bounding box
   allrefs <- lapply(seq_along(geom), function(i) {
     res <- resolution[i]

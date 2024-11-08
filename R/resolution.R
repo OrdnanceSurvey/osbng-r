@@ -1,3 +1,4 @@
+
 #' BNG reference resolution
 #' 
 #' Find the spatial resolution (i.e. grid size) of a British National Grid
@@ -25,7 +26,7 @@ get_bng_resolution <- function(bng_ref) {
 #' @export
 #' @rdname get_bng_resolution
 get_bng_resolution_string <- function(bng_ref) {
-  validate_bng_ref(x)
+  validate_bng_ref(bng_ref)
   # get the numeric resolution
   res <- get_bng_resolution(bng_ref)
   
@@ -63,6 +64,26 @@ internal_get_resolution <- function(x) {
   res <- ifelse(suffix != "", res / 2, res)
   
   res
+}
+
+
+#' Convert a string representation of a resolution to numeric
+#' @keywords internal
+#' @noRd
+internal_resolution_to_numeric <- function(x) {
+  if (all(is.character(x))) {
+    all_res <- list_bng_resolution("all")
+    all_lbl <- list_bng_resolution("all", lbl = TRUE)
+    
+    res <- all_res[match(x, all_lbl)]
+    return(res)
+    
+  } else if(all(is.numeric(x))) {
+    # numeric already
+    return(x)
+  } else {
+    stop("Resolution values must be all strings or integers.", call. = FALSE)
+  }
 }
 
 
