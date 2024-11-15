@@ -184,61 +184,6 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
 }
 
 
-
-#' Spatial index for geometries
-#' 
-#' Generate the set of BNG cells that cover a geometry and optionally return an
-#' intersection of the geometry with the grid.
-#' @param geom geometry object of type \code{geos-geometry} or \code{sf}
-#' @param resolution spatial resolution of the BNG cell expressed in string or
-#'   interger values
-#' @details
-#' Additional details...
-#' 
-#' @import geos
-#' @export
-geom_to_bng <- function(geom, resolution, ...) UseMethod("geom_to_bng")
-
-#' @export
-geom_to_bng.geos_geometry <- function(geom, resolution, ...) {
-  
-  if (missing(resolution)) {
-    stop("Please provide a target grid reference resolution.", call. = FALSE)
-  }
-  
-  # check resolution
-  chk_resolution <- is_valid_bng_resolution(resolution)
-  # convert to numeric representation
-  resolution <- internal_resolution_to_numeric(resolution)
-  
-  args <- expand_args(geom, resolution)  # TODO: check if geom has multiple geometries
-  
-  geom <- args[[1]]
-  resolution <- args[[2]]
-  
-  if (all(chk_resolution == FALSE)) {
-    stop("No valid resolutions detected.", call. = FALSE)
-  } else if (any(chk_resolution == FALSE)) {
-    warning("Invalid resolution detected. NA returned.", call. = FALSE)
-  }
-  
-  if (length(unique(resolution)) > 1) {
-    warning("Varying resolutions detected.", call. = FALSE)
-  }
-  
-  # if geoms are all points, then return bng by coords
-  if (all(geos::geos_type(geom) == "point")) {
-    return(xy_to_bng(cbind(geos::geos_x(geom),
-                           geos::geos_y(geom)),
-                     resolution = resolution))
-  } 
-  
-  geom_bng_intersects(geom, resolution)
-}
-
-# geom_to_bng_intersection <- function() {}
-
-
 #' @param easting numeric vector of coordinates
 #' @param northing numeric vector of coordinates
 #' @param resolution target BNG grid resolution. Can be specified as a numeric or
@@ -358,7 +303,118 @@ xy_to_bng.data.frame <- function(df,
   }
   
   # convert to numeric vector approach
-  xy_to_bng(x[, cols[1]], x[, cols[2]], resolution, ...)
+  xy_to_bng(df[, cols[1]], df[, cols[2]], resolution, ...)
+}
+
+
+#' Spatial index for geometries
+#' 
+#' Generate the set of BNG cells that cover a geometry and optionally return an
+#' intersection of the geometry with the grid.
+#' @param geom geometry object of type \code{geos-geometry} or \code{sf}
+#' @param resolution spatial resolution of the BNG cell expressed in string or
+#'   integer values
+#' @details
+#' Additional details...
+#' 
+#' @import geos
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng <- function(geom, resolution, ...) UseMethod("geom_to_bng")
+
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng.geos_geometry <- function(geom, resolution, ...) {
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  # match length of inputs
+  args <- expand_args(geom, resolution)
+  geom <- args[[1]]
+  resolution <- args[[2]]
+  
+  # check resolution
+  chk_resolution <- is_valid_bng_resolution(resolution)
+  
+  if (all(chk_resolution == FALSE)) {
+    stop("No valid resolutions detected.", call. = FALSE)
+  } else if (any(chk_resolution == FALSE)) {
+    warning("Invalid resolution detected. NAs returned.", call. = FALSE)
+  }
+  
+  # convert to numeric representation
+  resolution <- internal_resolution_to_numeric(resolution)
+  
+  # if geoms are all points, then return bng by coords
+  if (all(geos::geos_type(geom) == "point")) {
+    return(xy_to_bng(cbind(geos::geos_x(geom),
+                           geos::geos_y(geom)),
+                     resolution = resolution))
+  } 
+  
+  geom_bng_intersects(geom, resolution)
+}
+
+
+#' @import geos
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng_intersection <- function(geom, resolution, ...) {
+  UseMethod("geom_to_bng_intersection")
+} 
+
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  # match length of inputs
+  args <- expand_args(geom, resolution)
+  geom <- args[[1]]
+  resolution <- args[[2]]
+  
+  # check resolution
+  chk_resolution <- is_valid_bng_resolution(resolution)
+  
+  if (all(chk_resolution == FALSE)) {
+    stop("No valid resolutions detected.", call. = FALSE)
+  } else if (any(chk_resolution == FALSE)) {
+    warning("Invalid resolution detected. NAs returned.", call. = FALSE)
+  }
+  
+  # convert to numeric representation
+  resolution <- internal_resolution_to_numeric(resolution)
+  
+  # main processing loop
+  results <- lapply(seq_along(geom), function(i) {
+    refs <- geom_to_bng(geom[i], resolution[i])
+    contains <- geos::geos_contains(geom[i], bng_to_geom(refs))
+    geometry <- geos::geos_intersection(geom[i], bng_to_geom(refs))
+  })
+  
+  results
+}
+
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng_intersection.sf <- function(geom, resolution, ...) {
+  chk_sf_installed()
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  
 }
 
 
