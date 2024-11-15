@@ -24,9 +24,22 @@ get_suffix <- function(x) {
 
 #' @keywords internal
 #' @noRd
-expand_args <- function(...){
+expand_args <- function(...) {
   # Based on: https://stackoverflow.com/a/9335687
   dots <- list(...)
   max_length <- max(lengths(dots))
   lapply(dots, rep, length.out = max_length)
+}
+
+
+#' check sf is installed
+#' @keywords internal
+#' @noRd
+chk_sf_installed <- function() {
+  if (!requireNamespace("sf", quietly = TRUE)) {
+    stop(
+      "Package \"sf\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
 }
