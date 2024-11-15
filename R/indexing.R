@@ -432,7 +432,7 @@ bng_from_coords <- function(easting, northing, resolution) {
                       sort(list_bng_resolution("whole")))
   
   scale <- sort(list_bng_resolution("whole"))[idx]  # i.e. 500m -> 1000
-  digits <- nchar(resolution) - 1
+  digits <- nchar(scale) - 1
   
   # set-up padding
   digits <- paste0("%0", 5 - digits, "d")
@@ -485,7 +485,7 @@ bng_from_coords <- function(easting, northing, resolution) {
 #' @returns matrix with two columns of easting and northings, respectively.
 #' @keywords internal
 bng_to_coords <- function(ref, position) {
-  ref <- gsub(" ", "", ref)
+  ref <- gsub(" ", "", as.character(ref))
   
   # extract prefix letters
   prefix <- get_prefix(ref)
@@ -576,8 +576,9 @@ geom_bng_intersects <- function(geom, resolution) {
     } else {
       bbox <- geos::geos_extent(geom[i])
       
-      refs <- do.call(bbox_to_bng, c(bbox, res))
-      ints <- geos::geos_intersects(geom[i], bng_to_geom(refs))
+      # refs <- do.call(bbox_to_bng, c(bbox, res))
+      refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
+      ints <- geos::geos_intersects(geom[i], bng_to_grid_geom(refs))
       
       return(refs[ints])
     }
