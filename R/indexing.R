@@ -34,7 +34,7 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
-  chk_resolution <- bng_is_valid_resolution(resolution)
+  chk_resolution <- is_valid_bng_resolution(resolution)
   
   if (all(chk_resolution == FALSE)) {
     stop("No valid resolutions provided.",
@@ -54,6 +54,7 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   ymin <- args[[2]]
   xmax <- args[[3]]
   ymax <- args[[4]]
+  resolution <- args[[5]]
   
   # compute grid of coordinates
   offxmn <- seq(xmin, xmax - 1, by = resolution)
@@ -359,6 +360,18 @@ geom_to_bng.geos_geometry <- function(geom, resolution, ...) {
   geom_bng_intersects(geom, resolution)
 }
 
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng.sf <- function(geom, resolution, ...) {
+  
+  chk_sf_installed()
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+}
+
 
 #' @import geos
 #' @export
@@ -397,8 +410,12 @@ geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
   # main processing loop
   results <- lapply(seq_along(geom), function(i) {
     refs <- geom_to_bng(geom[i], resolution[i])
-    contains <- geos::geos_contains(geom[i], bng_to_geom(refs))
-    geometry <- geos::geos_intersection(geom[i], bng_to_geom(refs))
+    contains <- geos::geos_contains(geom[i], bng_to_grid_geom(refs))
+    geometry <- geos::geos_intersection(geom[i], bng_to_grid_geom(refs))
+    
+    return(list("BNGReference" = refs, 
+                "is_core" = contains, 
+                "geom" = geometry))
   })
   
   results
@@ -408,6 +425,7 @@ geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
 #' @rdname geom_to_bng
 #' @aliases geom_to_bng_intersection
 geom_to_bng_intersection.sf <- function(geom, resolution, ...) {
+  
   chk_sf_installed()
   
   if (missing(resolution)) {
@@ -427,11 +445,7 @@ geom_to_bng_intersection.sf <- function(geom, resolution, ...) {
 #' @returns character vector of British National Grid references.
 #' @keywords internal
 bng_from_coords <- function(easting, northing, resolution) {
-  # look-up scale equivalents of resolution
-  idx <- findInterval(resolution + (resolution + .1), 
-                      sort(list_bng_resolution("whole")))
-  
-  scale <- sort(list_bng_resolution("whole"))[idx]  # i.e. 500m -> 1000
+  scale <- internal_get_scale(resolution)
   digits <- nchar(scale) - 1
   
   # set-up padding
@@ -561,6 +575,13 @@ bng_to_coords <- function(ref, position) {
 
 
 #' Generate a list of BNG indices for a geometry
+#' 
+#' Using the bounding box, return the set of BNG tiles that intersect with the
+#' geometry.
+#' @param geom object of type \code{geos-geometry}.
+#' @param resolution numeric value of the BNG grid resolution to use.
+#' @returns list of where each element of the list corresponds to the input
+#'   geometry and contains a vector of BNG reference objects.
 #' @keywords internal
 geom_bng_intersects <- function(geom, resolution) {
   # get BNG refers under the bounding box

@@ -87,6 +87,20 @@ internal_resolution_to_numeric <- function(x) {
 }
 
 
+#' Convert resolution to the general scale (i.e. 500m --> 1000)
+#' @keywords internal
+#' @noRd
+internal_get_scale <- function(res) {
+  # look-up scale equivalents of resolution
+  idx <- findInterval(res + (res + .1), 
+                      sort(list_bng_resolution("whole")))
+  
+  scale <- sort(list_bng_resolution("whole"))[idx]  # i.e. 500m -> 1000
+  
+  scale
+}
+
+
 #' List valid BNG resolutions
 #' 
 #' Internal helper function to provide vector of resolutions or labels.
