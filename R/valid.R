@@ -108,7 +108,7 @@ validate_bng_ref <- function(x) {
 #' @returns logical vector testing easting position
 #' @keywords internal
 validate_easting <- function(easting) {
-  easting >= 0 & easting <= 700000 & !is.na(easting)
+  easting >= 0 & easting < 700000 & !is.na(easting)
 }
 
 
@@ -119,5 +119,5 @@ validate_easting <- function(easting) {
 #' @returns logical vector testing northing position
 #' @keywords internal
 validate_northing <- function(northing) {
-  northing >= 0 & northing <= 1300000 & !is.na(northing)
+  northing >= 0 & northing < 1300000 & !is.na(northing)
 }
