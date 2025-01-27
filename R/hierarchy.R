@@ -87,34 +87,19 @@ get_children <- function(ref, resolution) {
       stop("Mismatch found between number of valid references and resolutions.", 
            call. = FALSE)
     }
-    child_res <- expand_args(ref, child_res)
   }
+  child_res <- expand_args(ref, child_res)
   
   if(any(is.na(child_res))) {
     stop("Invalid resolution detected.", call. = FALSE)
   }
   
   # find list of children for each reference
-  child_list <- lapply(seq_along(refs), FUN = function(i){
-    coord <- bng_to_xy(refs[i])
-    res <- child_res[i]
-    br <- bng_res[i]
-    
-    # prevent a non-child resolution
-    if (res > br) {  
-      res <- br
-    }
-    
-    e <- coord[1, 1]
-    n <- coord[1, 2]
-    
-    # all the child coordinates
-    offx <- seq(e, e + br - 1, by = res)
-    offy <- seq(n, n + br - 1, by = res)
-    
-    # new coords
-    coords <- expand.grid(offx, offy)
-    refs <- xy_to_bng(coords, c(1,2), res)
+  child_list <- lapply(seq_along(ref), FUN = function(i){
+    # get shape of BNG as bbox
+    bb = bng_to_bbox(ref[i])
+    # get refs within the box
+    refs = bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])
     
     return(refs)
   })
