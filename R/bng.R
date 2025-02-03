@@ -116,8 +116,8 @@ is_bng_reference <- function(bng_ref) {
 #' 
 #' Supporting formatting and printing of \code{BNGReference} objects.
 #' @param x an object of type \code{BNGReference}.
-#' @param spaces boolean. Should standard spaces be added or removed for
-#'   "pretty" printing? Default is \code{TRUE} to add spaces.
+#' @param compact boolean. Should standard spaces be added or removed for
+#'   "pretty" printing? Default is \code{FALSE} to add spaces.
 #' @param ... additional parameters
 #' @details
 #' Standard spaces are added: 1) after the two-letter prefix, 2) between
@@ -125,21 +125,17 @@ is_bng_reference <- function(bng_ref) {
 #' components exist in a grid reference.
 #' 
 #' @returns 
-#' * \code{pretty_format_bng} inserts spaces and returns a vector of the references as strings.
+#' * \code{format} provides a standard formatting of BNG reference objects
 #' * \code{print} outputs the BNG references and invisibly returns the object.
 #' @examples
 #' x <- as_bng_reference("SU1234")
-#' pretty_format_bng(x)
-#' 
-#' pretty_format_bng(x, spaces = TRUE)
-#' 
 #' print(x)
 #' 
-#' print(x, spaces = TRUE)
+#' print(x, compact = TRUE)
 #' 
 #' @export
 #' @name print.BNGReference
-print.BNGReference <- function(x, spaces = TRUE, ...) {
+print.BNGReference <- function(x, ...) {
   res <- unique(get_bng_resolution_string(x))
   
   if (all(is.na(res)) == TRUE) {
@@ -153,7 +149,7 @@ print.BNGReference <- function(x, spaces = TRUE, ...) {
     cat(sprintf("<%s[%s] with Resolution=%s>\n", class(x)[1], length(x), res))
   }
 
-  out <- pretty_format_bng(x, spaces)
+  out <- format(x, ...)
   print(out, quote = FALSE, ...)
 
   invisible(x)
@@ -162,33 +158,39 @@ print.BNGReference <- function(x, spaces = TRUE, ...) {
 
 #' @export
 #' @rdname print.BNGReference
-pretty_format_bng <- function(x, spaces = TRUE) {
+format.BNGReference <- function(x, compact = FALSE, ...) {
   validate_bng_ref(x)
-  stopifnot(is.logical(spaces))
-  
-  # split references
-  prefix <- get_prefix(x)
-  en <- get_digits(x)
-  
-  e <- substr(en, 1, nchar(en) / 2)
-  n <- substr(en, (nchar(en) / 2) + 1, nchar(en))
-  
-  suffix <- get_suffix(x)
+  stopifnot(is.logical(compact))
   
   # reconstruct formatted reference
-  if (spaces == TRUE) {
-    out <- apply(cbind(prefix, e, n, suffix), 1, 
-                 function(i) {
-                   paste(i[!is.na(i) & i != ""], collapse = " ")
-                 })
+  if (compact == FALSE) {
+    # split references
+    prefix <- get_prefix(x)
+    en <- get_digits(x)
+    
+    e <- substr(en, 1, nchar(en) / 2)
+    n <- substr(en, (nchar(en) / 2) + 1, nchar(en))
+    
+    suffix <- get_suffix(x)
+    
+    formatted <- apply(cbind(prefix, e, n, suffix), 1, 
+                       function(i) {
+                         paste(i[!is.na(i) & i != ""], collapse = " ")
+                       })
   } else {
-    out <- gsub(" ", "", as.character(x))
+    formatted <- gsub(" ", "", as.character(x))
   }
   
   # fill invalid reference strings
-  out[out == ""] <- NA
-  out
+  formatted[formatted == ""] <- NA
+  sprintf("<%s>", formatted)
 }
+
+
+#' #' @export
+#' as.character.BNGReference <- function(x, ...) {
+#'   format(x, ...)
+#' }
 
 
 #' @export
@@ -226,6 +228,6 @@ as.data.frame.BNGReference <- function(x, ...) {
 #' @keywords internal
 #' @noRd
 new_bng_reference <- function(x) {
-  # x <- gsub(" ", "", x)
+  x <- gsub(" ", "", x)
   structure(x, class = "BNGReference")
 }
