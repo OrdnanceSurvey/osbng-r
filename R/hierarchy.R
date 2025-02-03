@@ -37,6 +37,10 @@ bng_to_children <- function(bng_ref, resolution, ...) {
   # fill in results
   child_list[valid_idx] <- child_results
   
+  if (length(child_list) == 1L) {
+    child_list <- child_list[[1]]
+  }
+  
   child_list
 }
 
@@ -88,7 +92,9 @@ get_children <- function(ref, resolution) {
            call. = FALSE)
     }
   }
-  child_res <- expand_args(ref, child_res)
+  args <- expand_args(ref, child_res)
+  ref <- as_bng_reference(args[[1]])
+  child_res <- args[[2]]
   
   if(any(is.na(child_res))) {
     stop("Invalid resolution detected.", call. = FALSE)
