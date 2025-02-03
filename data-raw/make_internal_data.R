@@ -4,7 +4,7 @@
 # constrained to GB-specific bounding area
 # spaces allowed, all are optional
 # limited to >= 1m resolution
-bng_pattern <- paste0("(H[LMNOPQRSTUVWXYZ]|",
+bng_pattern <- paste0("^(H[LMNOPQRSTUVWXYZ]|",
                       "N[ABCDEFGHJKLMNOPQRSTUVWXYZ]|",
                       "O[ABFGLMQRVW]|",
                       "S[ABCDEFGHJKLMNOPQRSTUVWXYZ]|",
