@@ -2,24 +2,24 @@
 % Please edit documentation in R/bng.R
 \name{print.BNGReference}
 \alias{print.BNGReference}
-\alias{pretty_format_bng}
+\alias{format.BNGReference}
 \title{Printing BNG Reference Class}
 \usage{
-\method{print}{BNGReference}(x, spaces = TRUE, ...)
+\method{print}{BNGReference}(x, ...)
 
-pretty_format_bng(x, spaces = TRUE)
+\method{format}{BNGReference}(x, compact = FALSE, ...)
 }
 \arguments{
 \item{x}{an object of type \code{BNGReference}.}
 
-\item{spaces}{boolean. Should standard spaces be added or removed for
-"pretty" printing? Default is \code{TRUE} to add spaces.}
-
 \item{...}{additional parameters}
+
+\item{compact}{boolean. Should standard spaces be added or removed for
+"pretty" printing? Default is \code{FALSE} to add spaces.}
 }
 \value{
 \itemize{
-\item \code{pretty_format_bng} inserts spaces and returns a vector of the references as strings.
+\item \code{format} provides a standard formatting of BNG reference objects
 \item \code{print} outputs the BNG references and invisibly returns the object.
 }
 }
@@ -33,12 +33,8 @@ components exist in a grid reference.
 }
 \examples{
 x <- as_bng_reference("SU1234")
-pretty_format_bng(x)
-
-pretty_format_bng(x, spaces = TRUE)
-
 print(x)
 
-print(x, spaces = TRUE)
+print(x, compact = TRUE)
 
 }

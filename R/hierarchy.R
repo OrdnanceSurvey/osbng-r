@@ -8,7 +8,7 @@
 #'   parent/child references. If omitted, the next "whole" resolution relative
 #'   to the input BNG reference is assumed.
 #' @param ... additional parameters. Not currently used
-#' @details 
+#' @details More details
 #' @returns child references will be a list of \code{BNGReference} objects with
 #'   each item in the list being the set of children for the input grid
 #'   reference. Parent references will be a vector of \code{BNGReference}
@@ -41,7 +41,7 @@ bng_to_children <- function(bng_ref, resolution, ...) {
 }
 
 
-#' @rdname bng_to_child
+#' @rdname bng_to_children
 #' @aliases bng_to_parent
 #' @export
 bng_to_parent <- function(bng_ref, resolution, ...) {
@@ -98,7 +98,7 @@ get_children <- function(ref, resolution) {
   child_list <- lapply(seq_along(ref), FUN = function(i){
     # get shape of BNG as bbox
     bb = bng_to_bbox(ref[i])
-    # get refs within the box
+    # get child refs within the box
     refs = bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])
     
     return(refs)
