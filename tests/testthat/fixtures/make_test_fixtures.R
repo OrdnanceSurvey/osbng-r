@@ -21,3 +21,10 @@ df <- data.frame(
             simplifyVector = TRUE))
 names(df) <- c("bng_ref", "expected")
 saveRDS(df, "./tests/testthat/fixtures/get_bng_resolution_string_test_cases.rds")
+
+# bng_to_parent
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/parent_test_cases.json", 
+            simplifyVector = TRUE))
+names(df) <- c("bng_ref", "resolution", "expected")
+saveRDS(df, "./tests/testthat/fixtures/bng_to_parent_test_cases.rds")

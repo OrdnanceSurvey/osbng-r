@@ -1,0 +1,149 @@
+{
+  "bng_to_parent": [
+        {
+            "bng_ref_string": "SU46",
+            "resolution": "50km",
+            "expected": "SU NW"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": 50000,
+            "expected": "SU NW"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": "NULL",
+            "expected": "SU NW"
+        },
+        {
+            "bng_ref_string": "SU46NW",
+            "resolution": "10km",
+            "expected": "SU 4 6"
+        },
+        {
+            "bng_ref_string": "SU46NW",
+            "resolution": 10000,
+            "expected": "SU 4 6"
+        },
+        {
+            "bng_ref_string": "SU46NW",
+            "resolution": "NULL",
+            "expected": "SU 4 6"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "1km",
+            "expected": "NZ 69 06"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": 1000,
+            "expected": "NZ 69 06"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "5km",
+            "expected": "NZ 6 0 NE"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": 5000,
+            "expected": "NZ 6 0 NE"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "10km",
+            "expected": "NZ 6 0"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": 10000,
+            "expected": "NZ 6 0"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": 50000,
+            "expected": "NZ SE"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "50km",
+            "expected": "NZ SE"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "100km",
+            "expected": "NZ"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": 100000,
+            "expected": "NZ"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "NULL",
+            "expected": "NZ 69 06 NW"
+        },
+        {
+            "bng_ref_string": "NZ69120673",
+            "resolution": "NULL",
+            "expected": "NZ 691 067 SW"
+        },
+        {
+            "bng_ref_string": "SU",
+            "resolution": "NULL",
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU",
+            "resolution": "500km",
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU",
+            "resolution": 500000,
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": 10000,
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": "10km",
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": 5000,
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": "5km",
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": 10,
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "NZ691067",
+            "resolution": "10m",
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": "1000m",
+            "expected": "expect_error"
+        },
+        {
+            "bng_ref_string": "SU46",
+            "resolution": "500om",
+            "expected": "expect_error"
+        }
+    ]
+}

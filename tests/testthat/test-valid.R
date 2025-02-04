@@ -27,7 +27,7 @@ test_that("resolutions are returned as integers", {
 })
 
 
-test_that("resolution are returned as strings", {
+test_that("resolutions are returned as strings", {
   df <- readRDS(test_cases("get_bng_resolution_string"))
   for (i in 1:nrow(df)) {
     r <- df[i, ]
