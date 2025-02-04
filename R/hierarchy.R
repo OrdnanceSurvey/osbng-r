@@ -66,7 +66,7 @@ bng_to_parent <- function(bng_ref, resolution, ...) {
   # fill in results
   parent_list[valid_idx] <- parent_results
   
-  parent_list
+  as_bng_reference(parent_list)
 }
 
 
@@ -76,10 +76,10 @@ get_children <- function(ref, resolution) {
   
   # check on resolution
   if (missing(resolution)) {
-    # assume target is "1 less" of whole resolutions
+    # assume target is "1 less" resolution
     scale <- internal_get_scale(bng_res)
     
-    list_res <- list_bng_resolution("whole")
+    list_res <- list_bng_resolution("all")
     child_idx <- match(scale, list_res) + 1
     child_idx[child_idx > length(list_res)] <- length(list_res)
     
@@ -100,6 +100,11 @@ get_children <- function(ref, resolution) {
     stop("Invalid resolution detected.", call. = FALSE)
   }
   
+  if (any(child_res > bng_res)) {
+    stop("Child resolution must be smaller than the BNG reference resolution.", 
+         call. = FALSE)
+  }
+  
   # find list of children for each reference
   child_list <- lapply(seq_along(ref), FUN = function(i){
     # get shape of BNG as bbox
@@ -116,15 +121,13 @@ get_children <- function(ref, resolution) {
 
 # Helper function to find containing "parent" references
 get_parent <- function(ref, resolution) {
-  bng_res <- internal_get_resolution(resolution)
+  bng_res <- internal_get_resolution(ref)
   
   # check on resolution
   if (missing(resolution)) {
-    # assume target is "1 larger" of whole resolutions
-    scale <- internal_get_scale(bng_res)
-    
-    list_res <- list_bng_resolution("whole")
-    parent_idx <- match(scale, list_res) - 1
+    # assume target is "1 larger" resolution
+    list_res <- list_bng_resolution("all")
+    parent_idx <- match(bng_res, list_res) - 1
     parent_idx[parent_idx < 1] <- 1
     
     parent_res <- list_res[parent_idx]
@@ -135,15 +138,23 @@ get_parent <- function(ref, resolution) {
       stop("Mismatch found between number of valid references and resolutions.", 
            call. = FALSE)
     }
-    parent_res <- expand_args(ref, parent_res)
   }
   
-  if (any(is.na(child_res))) {
+  args <- expand_args(ref, parent_res)
+  ref <- as_bng_reference(args[[1]])
+  parent_res <- args[[2]]
+  
+  if (any(is.na(parent_res))) {
     stop("Invalid resolution detected.", call. = FALSE)
   }
   
+  if (any(bng_res > parent_res)) {
+    stop("Parent resolution must be larger than the BNG reference resolution.", 
+         call. = FALSE)
+  }
+  
   # find the parent for each reference
-  coords <- bng_to_xy(refs)
+  coords <- bng_to_xy(ref)
   parents <- xy_to_bng(coords, parent_res)
   
   return(parents)
