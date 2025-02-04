@@ -477,6 +477,10 @@ bng_from_coords <- function(easting, northing, resolution) {
   suffix <- bng_suffixes[sx + sy * 2 + 1]
   suffix[!quads] <- ""
   
+  # exclude 50km digits
+  x[resolution >= 50000] <- NA
+  y[resolution >= 50000] <- NA
+  
   # construct final format
   grid_ref <- apply(cbind(prefix, x, y, suffix), 1, 
                     function(i) {
