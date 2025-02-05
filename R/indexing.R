@@ -13,7 +13,8 @@
 #' @returns \code{bng_to_bbox}: numeric vector of bounding coordinates. If
 #'   multiple references are supplied to \code{bng_ref} then a matrix of
 #'   coordinates is returned. \code{bbox_to_bng}: vector of type
-#'   \code{BNGReference} objects.
+#'   \code{BNGReference} objects. \code{bng_to_grid_geom} converts the bounding
+#'   box coordinates into a Polygon using \code{geos}.
 #'   
 #' @examples
 #' # example code
@@ -215,7 +216,9 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   chk_easting <- validate_easting(easting)
   chk_northing <- validate_northing(northing)
   
-  if (any(chk_easting == FALSE) |
+  if (all(chk_easting == FALSE) & all(chk_northing == FALSE)) {
+    stop("No valid coordinates provided.", call. = FALSE)
+  } else if (any(chk_easting == FALSE) |
       any(chk_northing == FALSE)) {
     warning("Invalid coordinates detected.", call. = FALSE)
   }

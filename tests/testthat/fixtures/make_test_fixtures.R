@@ -35,3 +35,10 @@ df <- data.frame(
             simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
 names(df) <- c("bng_ref", "resolution", "expected")
 saveRDS(df, "./tests/testthat/fixtures/bng_to_children_test_cases.rds")
+
+# xy_to_bng
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/xy_to_bng_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("easting", "northing", "resolution", "expected")
+saveRDS(df, "./tests/testthat/fixtures/xy_to_bng_test_cases.rds")

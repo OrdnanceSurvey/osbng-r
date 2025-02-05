@@ -1,0 +1,430 @@
+{
+  "xy_to_bng": [
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "100km",
+            "expected": "SV"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "50km",
+            "expected": "SV SW"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "10km",
+            "expected": "SV 0 0"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "5km",
+            "expected": "SV 0 0 SW"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "1km",
+            "expected": "SV 00 00"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "500m",
+            "expected": "SV 00 00 SW"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "100m",
+            "expected": "SV 000 000"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "50m",
+            "expected": "SV 000 000 SW"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "10m",
+            "expected": "SV 0000 0000"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "5m",
+            "expected": "SV 0000 0000 SW"
+        },
+        {
+            "easting": 0,
+            "northing": 0,
+            "resolution": "1m",
+            "expected": "SV 00000 00000"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 100000,
+            "expected": "JM"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 50000,
+            "expected": "JM NE"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 10000,
+            "expected": "JM 9 9"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 5000,
+            "expected": "JM 9 9 NE"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 1000,
+            "expected": "JM 99 99"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 500,
+            "expected": "JM 99 99 NE"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 100,
+            "expected": "JM 999 999"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 50,
+            "expected": "JM 999 999 NE"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 10,
+            "expected": "JM 9999 9999"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 5,
+            "expected": "JM 9999 9999 NE"
+        },
+        {
+            "easting": 699999.99,
+            "northing": 1299999.99,
+            "resolution": 1,
+            "expected": "JM 99999 99999"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": "100km",
+            "expected": "NY"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": "50km",
+            "expected": "NY NE"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": "10km",
+            "expected": "NY 5 5"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 5000,
+            "expected": "NY 5 5 SW"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 1000,
+            "expected": "NY 50 50"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 500,
+            "expected": "NY 50 50 SW"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 100,
+            "expected": "NY 500 500"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 50,
+            "expected": "NY 500 500 SW"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 10,
+            "expected": "NY 5000 5000"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 5,
+            "expected": "NY 5000 5000 SW"
+        },
+        {
+            "easting": 350000,
+            "northing": 550000,
+            "resolution": 1,
+            "expected": "NY 50000 50000"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": "100km",
+            "expected": "SJ"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": "50km",
+            "expected": "SJ NW"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": "10km",
+            "expected": "SJ 0 5"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 5000,
+            "expected": "SJ 0 5 SW"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 1000,
+            "expected": "SJ 00 50"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 500,
+            "expected": "SJ 00 50 SW"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 100,
+            "expected": "SJ 000 500"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 50,
+            "expected": "SJ 000 500 SW"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 10,
+            "expected": "SJ 0000 5000"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 5,
+            "expected": "SJ 0000 5000 SW"
+        },
+        {
+            "easting": 300000,
+            "northing": 350000,
+            "resolution": 1,
+            "expected": "SJ 00000 50000"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": "100km",
+            "expected": "ST"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": "50km",
+            "expected": "ST NE"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": "10km",
+            "expected": "ST 5 7"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 5000,
+            "expected": "ST 5 7 SE"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 1000,
+            "expected": "ST 56 71"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 500,
+            "expected": "ST 56 71 SE"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 100,
+            "expected": "ST 569 714"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 50,
+            "expected": "ST 569 714 SE"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 10,
+            "expected": "ST 5697 7142"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 5,
+            "expected": "ST 5697 7142 SE"
+        },
+        {
+            "easting": 356976.015,
+            "northing": 171421.587,
+            "resolution": 1,
+            "expected": "ST 56976 71421"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": "100km",
+            "expected": "NH"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": "50km",
+            "expected": "NH NW"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": "10km",
+            "expected": "NH 0 6"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 5000,
+            "expected": "NH 0 6 NW"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 1000,
+            "expected": "NH 00 68"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 500,
+            "expected": "NH 00 68 NW"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 100,
+            "expected": "NH 004 688"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 50,
+            "expected": "NH 004 688 NE"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 10,
+            "expected": "NH 0049 6887"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 5,
+            "expected": "NH 0049 6887 SE"
+        },
+        {
+            "easting": 200499.01,
+            "northing": 868870.50,
+            "resolution": 1,
+            "expected": "NH 00499 68870"
+        },
+        {
+            "easting": 0,
+            "northing": -1,
+            "resolution": 1000,
+            "expected": "expect_error"
+        },
+        {
+            "easting": -1,
+            "northing": 0,
+            "resolution": 1000,
+            "expected": "expect_error"
+        },
+        {
+            "easting": 700000,
+            "northing": 1300000,
+            "resolution": 1000,
+            "expected": "expect_error"
+        },
+        {
+            "easting": 1,
+            "northing": 1,
+            "resolution": 0.5,
+            "expected": "expect_error"
+        },
+        {
+            "easting": 1,
+            "northing": 1,
+            "resolution": "5000m",
+            "expected": "expect_error"
+        }
+    ]
+}
