@@ -70,17 +70,21 @@ bng_to_parent <- function(bng_ref, resolution, ...) {
 }
 
 
-# helper function to split target grid cell to children
+#' Helper function to split target grid cell to children
+#' @param ref vector of objects of type \code{BNGReference}
+#' @param resolution target resolution as a string or numeric vector
+#' @return list containing multiple \code{BNGRerence} objects which are nested
+#'   within the target reference at the given resolution
+#' @keywords internal
+#' @noRd
 get_children <- function(ref, resolution) {
   bng_res <- internal_get_resolution(ref)
   
   # check on resolution
   if (missing(resolution)) {
     # assume target is "1 less" resolution
-    scale <- internal_get_scale(bng_res)
-    
     list_res <- list_bng_resolution("all")
-    child_idx <- match(scale, list_res) + 1
+    child_idx <- match(bng_res, list_res) + 1
     child_idx[child_idx > length(list_res)] <- length(list_res)
     
     child_res <- list_res[child_idx]
@@ -119,7 +123,13 @@ get_children <- function(ref, resolution) {
 }
 
 
-# Helper function to find containing "parent" references
+#' Helper function to find containing "parent" references
+#' @param ref vector of objects of type \code{BNGReference}
+#' @param resolution target resolution as a string or numeric vector
+#' @return list containing multiple \code{BNGRerence} objects which are nested
+#'   within the target reference at the given resolution
+#' @keywords internal
+#' @noRd
 get_parent <- function(ref, resolution) {
   bng_res <- internal_get_resolution(ref)
   
