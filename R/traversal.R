@@ -141,14 +141,59 @@ bng_neighbours <- function(bng_ref, ...) {
   # replace valid
   neigh_list[valid_idx] <- neighbours
   
+  if (length(neigh_list) == 1L) {
+    neigh_list <- neigh_list[[1]]
+  }
+  
   neigh_list
 }
 
 
 #' @aliases bng_neighbours
 #' @export
-bng_is_neighbour <- function(bng_ref1, bng_ref2) {
+bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
+  validate_bng_ref(bng_ref1)
+  validate_bng_ref(bng_ref2)
   
+  if (length(bng_ref1) != length(bng_ref2)) {
+    args <- expand_args(bng_ref1, bng_ref2)
+    bng_ref1 <- as_bng_reference(args[[1]])
+    bng_ref2 <- as_bng_reference(args[[2]])
+  }
+  
+  # set up return
+  neigh_list <- rep(NA, length(bng_ref1))
+  valid_idx <- !is.na(bng_ref1) & !is.na(bng_ref2)
+  
+  if (all(valid_idx == FALSE)) {
+    stop("Please provide a valid BNG reference.", call. = FALSE)
+  }
+  
+  # only process valid refs
+  bng_ref1 <- bng_ref1[valid_idx]
+  bng_ref2 <- bng_ref2[valid_idx]
+  
+  res1 <- get_bng_resolution(bng_ref1)
+  res2 <- get_bng_resolution(bng_ref2)
+  
+  if (any(res1 != res2, na.rm = TRUE)) {
+    stop("Resolutions must match to test neighbours.", call. = FALSE)
+  }
+  
+  neighs <- sapply(seq_along(bng_ref1), function(i) {
+    if (bng_ref2[i] == bng_ref1[i]) {
+      return (TRUE)
+    } else {
+      b2 <- as.character(bng_ref2[i])
+      n <- as.character(bng_neighbours(bng_ref1[i]))
+      
+      return (match(b2, n) > 0)
+    }
+  })
+  
+  neigh_list[valid_idx] <- neighs
+  
+  neigh_list
 }
 
 
