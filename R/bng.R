@@ -45,7 +45,7 @@ as_bng_reference.character <- function(bng_ref, ...) {
   }
   
   # check for equal resolution
-  res <- internal_get_resolution(bng_ref)
+  res <- internal_get_resolution(bng_ref[chk_reference])
   
   if (length(unique(res)) > 1) {
     warning("Varying resolutions detected.",
