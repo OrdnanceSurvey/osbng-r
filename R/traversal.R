@@ -6,6 +6,7 @@
 #' @param bng_ref an object of type \code{BNGReference}
 #' @param k numeric value measuring the number of grid squares traversed between
 #'   the ring and input BNG reference
+#' @param ... additional parameters. Not currently used
 #' @details
 #' Additional details...
 #' @returns an unordered collection of objects of type \code{BNGReference}.
@@ -16,7 +17,7 @@
 #' @rdname bng_kring
 #' @aliases bng_kdisc
 #' @export
-bng_kring <- function(bng_ref, k) {
+bng_kring <- function(bng_ref, k, ...) {
   validate_bng_ref(bng_ref)
   
   # set up return
@@ -49,6 +50,10 @@ bng_kring <- function(bng_ref, k) {
   # replace valid
   ring_list[valid_idx] <- rings
   
+  if (length(ring_list) == 1L) {
+    ring_list <- ring_list[[1]]
+  }
+  
   ring_list
 }
 
@@ -56,7 +61,7 @@ bng_kring <- function(bng_ref, k) {
 #' @rdname bng_kring
 #' @aliases bng_kdisc
 #' @export
-bng_kdisc <- function(bng_ref, k) {
+bng_kdisc <- function(bng_ref, k, ...) {
   validate_bng_ref(bng_ref)
   
   # set up return
@@ -88,6 +93,10 @@ bng_kdisc <- function(bng_ref, k) {
   # replace valid
   disc_list[valid_idx] <- discs
   
+  if (length(disc_list) == 1L) {
+    disc_list <- disc_list[[1]]
+  }
+  
   disc_list
 }
 
@@ -98,6 +107,7 @@ bng_kdisc <- function(bng_ref, k) {
 #' @param bng_ref,bng_ref1 target object of type \code{BNGReference}
 #' @param bng_ref2 \code{BNGReference} object for comparison when assessing
 #'   neighbour relationships
+#' @param ... additional parameters. Not currenlty used
 #' @details Grid reference cells are "neighbours" when they share a contiguous
 #' edge (i.e. corners do not define neighbours). In the event that a target
 #' reference is along the edge or corner of the valid BNG area, then 3 or 2
@@ -109,12 +119,16 @@ bng_kdisc <- function(bng_ref, k) {
 #' 
 #' @name bng_neighbours
 #' @export
-bng_neighbours <- function(bng_ref) {
+bng_neighbours <- function(bng_ref, ...) {
   validate_bng_ref(bng_ref)
   
   # set up return
   neigh_list <- vector("list", length = length(bng_ref))
   valid_idx <- !is.na(bng_ref)
+  
+  if (all(valid_idx == FALSE)) {
+    stop("Please provide a valid BNG reference.", call. = FALSE)
+  }
 
   neighbours <- lapply(seq_along(bng_ref), function(idx) {
     ref <- bng_ref[idx]
