@@ -104,9 +104,7 @@ bng_kdisc <- function(bng_ref, k, ...) {
 #' Identify neighbours
 #' 
 #' Find BNG references which share a grid cell edge with a target BNG reference.
-#' @param bng_ref,bng_ref1 target object of type \code{BNGReference}
-#' @param bng_ref2 \code{BNGReference} object for comparison when assessing
-#'   neighbour relationships
+#' @param bng_ref target object of type \code{BNGReference}
 #' @param ... additional parameters. Not currenlty used
 #' @details Grid reference cells are "neighbours" when they share a contiguous
 #' edge (i.e. corners do not define neighbours). In the event that a target
@@ -114,8 +112,9 @@ bng_kdisc <- function(bng_ref, k, ...) {
 #' references, respectively, will be returned \code{bng_is_neighbour} only
 #' compares references of equal resolution.
 #' @returns A set of up to four \code{BNGReference} objects that border the
-#'   target reference for \code{bng_neighbours}, while \code{bng_neighbours}
-#'   returns a boolean.
+#'   target reference.
+#' @examples
+#' # example code
 #' 
 #' @name bng_neighbours
 #' @export
@@ -149,8 +148,12 @@ bng_neighbours <- function(bng_ref, ...) {
 }
 
 
+#' @param bng_ref1,bng_ref2 \code{BNGReference} object for comparison when
+#'   assessing neighbour relationships.
+#' @returns a boolean identifying if the grid references share a border
 #' @aliases bng_neighbours
 #' @export
+#' @rdname bng_neighbours
 bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
   validate_bng_ref(bng_ref1)
   validate_bng_ref(bng_ref2)
@@ -194,6 +197,36 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
   neigh_list[valid_idx] <- neighs
   
   neigh_list
+}
+
+
+#' Distance calculations
+#' 
+#' Compute Euclidean distances between BNG references and distance-based
+#' neighbours lists.
+#' @param bng_ref object of class \code{BNGReference}.
+#' @param d distance expressed in metres.
+#' @param ... additional parameters. Not currently used.
+#' @returns an unordered vector of \code{BNGReference} objects around a given
+#'   grid square within an absolute distance \code{d}.
+#' @examples
+#' # example code
+#' @export
+#' @name bng_distance
+bng_dwithin <- function(bng_ref, d, ...) {
+  
+}
+
+
+#' @param bng_ref1,bng_ref2 object of \code{BNGReference}
+#' @param by_element logical. If \code{TRUE}, return a vector with distance
+#'   between each BNG reference. An error is raised if the \code{BNGReference}
+#'   objects are not the same length. If \code{FALSE}, return a dense matrix
+#'   with all pairwise distances.
+#' @rdname bng_distance
+#' @export
+bng_distance <- function(bng_ref1, bng_ref2, by_element = FALSE) {
+  
 }
 
 
