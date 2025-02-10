@@ -209,7 +209,6 @@ get_disc_neighbours <- function(ref,
   # calculate relative neighbours
   i <- c(-k:k)
   g <- expand.grid("x" = i, "y" = i)
-  g <- g[!(g$x == 0 & g$y == 0), ]
   
   # subset to a ring
   if (type == "ring") {
@@ -217,6 +216,7 @@ get_disc_neighbours <- function(ref,
   }
   
   if (type == "rook") {
+    g <- g[!(g$x == 0 & g$y == 0), ]
     g <- g[g$x == 0 | g$y == 0, ]
   }
   
