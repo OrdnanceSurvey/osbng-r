@@ -205,16 +205,53 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
 #' Compute Euclidean distances between BNG references and distance-based
 #' neighbours lists.
 #' @param bng_ref object of class \code{BNGReference}.
-#' @param d distance expressed in metres.
+#' @param d numeric. Distance expressed in metres.
 #' @param ... additional parameters. Not currently used.
 #' @returns an unordered vector of \code{BNGReference} objects around a given
 #'   grid square within an absolute distance \code{d}.
 #' @examples
 #' # example code
+#' 
 #' @export
 #' @name bng_distance
 bng_dwithin <- function(bng_ref, d, ...) {
+  validate_bng_ref(bng_ref)
   
+  # set up return
+  dlist <- vector("list", length = length(bng_ref))
+  valid_idx <- !is.na(bng_ref)
+  
+  if (missing(d)) {
+    stop("Please provide the distance parameter.", call. = FALSE)
+  }
+  
+  if (is.numeric(d) == FALSE | length(d) > 1L) {
+    stop("Invalid distance paramter.", call. = FALSE)
+  }
+  
+  if (d <= 0) {
+    stop("The distance parameter must be greater than 0 and less than .", 
+         call. = FALSE)
+  }
+  
+  dneighs <- lapply(which(valid_idx, arr.ind = TRUE), function(idx) {
+    ref <- bng_ref[idx]
+    resolution <- internal_get_resolution(ref)
+    # convert distance to resolution-specific 'k'
+    k <- floor(d / resolution)
+    
+    neighs <- get_disc_neighbours(ref, resolution, k, type = "disc")
+    return(neighs)
+  })
+  
+  # replace valid
+  dlist[valid_idx] <- dneighs
+  
+  if (length(dlist) == 1L) {
+    dlist <- dlist[[1]]
+  }
+  
+  dlist
 }
 
 
@@ -223,6 +260,9 @@ bng_dwithin <- function(bng_ref, d, ...) {
 #'   between each BNG reference. An error is raised if the \code{BNGReference}
 #'   objects are not the same length. If \code{FALSE}, return a dense matrix
 #'   with all pairwise distances.
+#' @examples
+#' # example code
+#' 
 #' @rdname bng_distance
 #' @export
 bng_distance <- function(bng_ref1, bng_ref2, by_element = FALSE) {
