@@ -226,7 +226,46 @@ bng_dwithin <- function(bng_ref, d, ...) {
 #' @rdname bng_distance
 #' @export
 bng_distance <- function(bng_ref1, bng_ref2, by_element = FALSE) {
+  validate_bng_ref(bng_ref1)
   
+  # follow pattern from sf::st_distance
+  missing_ref2 <- FALSE
+  
+  if (missing(bng_ref2)) {
+    bng_ref2 <- bng_ref1
+    missing_ref2 <- TRUE
+  }
+  
+  validate_bng_ref(bng_ref2)
+  
+  # get locations
+  ref1 <- bng_to_xy(bng_ref1, position = "centre")
+  ref1 <- geos::geos_make_point(ref1[, 1], ref1[, 2])
+  ref2 <- bng_to_xy(bng_ref2, position = "centre")
+  ref2 <- geos::geos_make_point(ref2[, 1], ref2[, 2])
+  
+  if (by_element) {
+    if (!missing_ref2 & (length(ref1) != length(ref2)))
+      stop("BNG references must have the same length", call. = FALSE)
+  }
+  
+  # distance calculations
+  if (by_element) {
+    ref1x <- geos::geos_x(ref1)
+    ref1y <- geos::geos_y(ref1)
+    ref2x <- geos::geos_x(ref2)
+    ref2y <- geos::geos_y(ref2)
+    
+    d <- sqrt((ref1x - ref2x)^2 + (ref1y - ref2y)^2)
+  } else {
+    if (missing_ref2) {
+      d <- as.matrix(stats::dist(cbind(geos::geos_x(ref1), geos::geos_y(ref1))))
+    } else {
+      d <- outer(ref1, ref2, FUN = geos::geos_distance)
+    }
+  }
+  
+  d
 }
 
 
@@ -241,6 +280,7 @@ get_disc_neighbours <- function(ref,
   
   # calculate relative neighbours
   i <- c(-k:k)
+  # establish a disc (including centre reference)
   g <- expand.grid("x" = i, "y" = i)
   
   # subset to a ring
@@ -248,7 +288,7 @@ get_disc_neighbours <- function(ref,
     g <- g[g$x %in% c(-k, k) | g$y %in% c(-k, k), ]
   }
   
-  if (type == "rook") {
+  if (type == "rook") { # used for neighbours
     g <- g[!(g$x == 0 & g$y == 0), ]
     g <- g[g$x == 0 | g$y == 0, ]
   }
