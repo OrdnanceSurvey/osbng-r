@@ -38,7 +38,7 @@ bng_kring <- function(bng_ref, k, ...) {
   
   stopifnot(k >= 1)
   
-  rings <- lapply(seq_along(bng_ref), function(i) {
+  rings <- lapply(which(valid_idx, arr.ind = TRUE), function(i) {
     ref <- bng_ref[i]
     resolution <- internal_get_resolution(ref)
     
@@ -82,7 +82,7 @@ bng_kdisc <- function(bng_ref, k, ...) {
   
   stopifnot(k >= 1)
   
-  discs <- lapply(seq_along(bng_ref), function(idx) {
+  discs <- lapply(which(valid_idx, arr.ind = TRUE), function(idx) {
     ref <- bng_ref[idx]
     resolution <- internal_get_resolution(ref)
     
@@ -129,7 +129,7 @@ bng_neighbours <- function(bng_ref, ...) {
     stop("Please provide a valid BNG reference.", call. = FALSE)
   }
 
-  neighbours <- lapply(seq_along(bng_ref), function(idx) {
+  neighbours <- lapply(which(valid_idx, arr.ind = TRUE), function(idx) {
     ref <- bng_ref[idx]
     resolution <- internal_get_resolution(ref)
     
