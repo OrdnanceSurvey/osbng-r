@@ -5,7 +5,7 @@ test_that("eastings and northings convert", {
   # conversion test cases
   df <- readRDS(test_cases("xy_to_bng"))
   
-  for (i in 1:nrow(df)) {
+  for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     if (r$expected == "expect_error") {
       expect_error(xy_to_bng(r$easting, r$northing, 

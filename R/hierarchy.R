@@ -92,7 +92,7 @@ get_children <- function(ref, resolution) {
     # user provided resolution
     child_res <- internal_resolution_to_numeric(resolution)
     if (length(child_res) > 1 & length(child_res) != length(ref)) {
-      stop("Mismatch found between number of valid references and resolutions.", 
+      stop("Mismatch found between number of valid references and resolutions.",
            call. = FALSE)
     }
   }
@@ -100,7 +100,7 @@ get_children <- function(ref, resolution) {
   ref <- as_bng_reference(args[[1]])
   child_res <- args[[2]]
   
-  if(any(is.na(child_res))) {
+  if (any(is.na(child_res))) {
     stop("Invalid resolution detected.", call. = FALSE)
   }
   
@@ -110,11 +110,11 @@ get_children <- function(ref, resolution) {
   }
   
   # find list of children for each reference
-  child_list <- lapply(seq_along(ref), FUN = function(i){
+  child_list <- lapply(seq_along(ref), FUN = function(i) {
     # get shape of BNG as bbox
-    bb = bng_to_bbox(ref[i])
+    bb <- bng_to_bbox(ref[i])
     # get child refs within the box
-    refs = bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])
+    refs <- bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])
     
     return(refs)
   })
@@ -145,7 +145,7 @@ get_parent <- function(ref, resolution) {
     # user provided resolution
     parent_res <- internal_resolution_to_numeric(resolution)
     if (length(parent_res) > 1 & length(parent_res) != length(ref)) {
-      stop("Mismatch found between number of valid references and resolutions.", 
+      stop("Mismatch found between number of valid references and resolutions.",
            call. = FALSE)
     }
   }

@@ -10,7 +10,7 @@
 #' @returns A vector of numeric values for \code{get_bng_resolution()} in metres
 #'   or character strings expressing the resolution of the grid references.
 #' @examples
-#' get_bng_resolution("TQ1234")
+#' get_bng_resolution(as_bng_reference("TQ1234"))
 #' 
 #' get_bng_resolution_string("TQ1234NE")
 #' 
@@ -78,7 +78,7 @@ internal_resolution_to_numeric <- function(x) {
     res <- all_res[match(x, all_lbl)]
     return(res)
     
-  } else if(all(is.numeric(x))) {
+  } else if (all(is.numeric(x))) {
     # numeric already
     return(x)
   } else {
@@ -126,7 +126,7 @@ list_bng_resolution <- function(which = c("all", "whole", "quad"),
                           "100m", "50m", "10m", "5m", "1m")
   
   if (which == "all") {
-    idx <- 1:length(bng_resolution)
+    idx <- seq_along(bng_resolution)
     
   } else {
     if (which == "whole") {

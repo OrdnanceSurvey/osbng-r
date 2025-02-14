@@ -185,12 +185,12 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
   
   neighs <- sapply(seq_along(bng_ref1), function(i) {
     if (bng_ref2[i] == bng_ref1[i]) {
-      return (TRUE)
+      return(TRUE)
     } else {
       b2 <- as.character(bng_ref2[i])
       n <- as.character(bng_neighbours(bng_ref1[i]))
       
-      return (match(b2, n) > 0)
+      return(match(b2, n) > 0)
     }
   })
   
@@ -316,7 +316,7 @@ get_disc_neighbours <- function(ref,
                                 resolution, 
                                 k, 
                                 type = c("disc", "ring", "rook")) {
-  type = match.arg(type)
+  type <- match.arg(type)
   
   # calculate relative neighbours
   i <- c(-k:k)
@@ -334,7 +334,7 @@ get_disc_neighbours <- function(ref,
   }
   
   # get starting point
-  coords <- bng_to_xy(ref, 'centre')
+  coords <- bng_to_xy(ref, "centre")
   easting <- coords[1]
   northing <- coords[2]
   
@@ -354,4 +354,3 @@ get_disc_neighbours <- function(ref,
   
   refs
 }
-

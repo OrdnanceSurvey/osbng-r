@@ -1,7 +1,7 @@
 test_that("bng parents are returned", {
   df <- readRDS(test_cases("bng_to_parent"))
   
-  for (i in 1:nrow(df)) {
+  for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     if (r$expected == "expect_error") {
       expect_error(bng_to_parent(r$bng_ref, r$resolution))
@@ -22,7 +22,7 @@ test_that("bng parents are returned", {
 test_that("bng children are returned", {
   df <- readRDS(test_cases("bng_to_children"))
   
-  for (i in 1:nrow(df)) {
+  for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     if (r$expected == "expect_error") {
       expect_error(bng_to_children(r$bng_ref, r$resolution))
@@ -38,4 +38,3 @@ test_that("bng children are returned", {
     }
   }
 })
-

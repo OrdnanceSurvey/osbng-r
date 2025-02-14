@@ -67,7 +67,7 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   
   refs <- rep(NA, nrow(coords_min))
   
-  refs[chk_resolution] <- xy_to_bng(coords_min, c(1,2), resolution)
+  refs[chk_resolution] <- xy_to_bng(coords_min, c(1, 2), resolution)
   new_bng_reference(refs)
 }
 
@@ -117,10 +117,6 @@ bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
   resolution <- internal_get_resolution(bng_ref)
   
   chk_resolution <- is_valid_bng_resolution(resolution)
-  # chk_reference <- is_valid_bng(bng_ref)
-  
-  # set up return value
-  # out <- vector(NA, length = length(bng_ref))
   
   # exclude invalid inputs
   bng_ref <- bng_ref[chk_resolution]
@@ -134,11 +130,8 @@ bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
                                       coords[, 1] + resolution,
                                       coords[, 2] + resolution)
   
-  # out[chk_resolution] <- geom
-  # out
   geom
 }
-
 
 
 #' Convert BNG References
@@ -191,8 +184,8 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
 
 #' @param easting numeric vector of coordinates
 #' @param northing numeric vector of coordinates
-#' @param resolution target BNG grid resolution. Can be specified as a numeric or
-#'   character vector
+#' @param resolution target BNG grid resolution. Can be specified as a numeric
+#'   or character vector
 #' 
 #' @examples
 #' # example code
@@ -556,8 +549,8 @@ bng_to_coords <- function(ref, position) {
   
   if (any(suffix > 0)) {
     # update resolution for suffix
-    res[which(suffix > 0, arr.ind = T)] <- 
-      res[which(suffix > 0, arr.ind = T)] / 2
+    res[which(suffix > 0, arr.ind = TRUE)] <- 
+      res[which(suffix > 0, arr.ind = TRUE)] / 2
     
     # look-up suffix adjustments
     sx <- trunc(suffix %% 2)
@@ -622,7 +615,6 @@ geom_bng_intersects <- function(geom, resolution) {
     } else {
       bbox <- geos::geos_extent(g)
       
-      # refs <- do.call(bbox_to_bng, c(bbox, res))
       refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
       ints <- geos::geos_intersects(g, bng_to_grid_geom(refs))
       
