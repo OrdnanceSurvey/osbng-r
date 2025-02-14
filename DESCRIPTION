@@ -1,15 +1,23 @@
 Package: osbng
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Title: Access the British National Grid (BNG) Index System
+Version: 0.1.0
+Authors@R: c(
+    person("Chris", "Jochem", email = "chris.jochem@os.uk", role = c("cre", "aut")),
+    person("Ordnance Survey Ltd", role = c("cph", "fnd")))
+Description: A programmatic interface to Ordnance Survey's British National Grid
+    (BNG) index system, supporting efficient grid-based indexing and spatial 
+    analysis. The BNG enables applications such as statistical aggregation, data
+    visualisation, and data interoperability using BNG grid references. Designed
+    for developers working with geospatial data in the context of Great Britain,
+    'osbng' offers tools to simplify working with the BNG, facilitating both 
+    technical integration into geospatial workflows and practical exploration of
+    the index system's structure.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests: 
+    sf,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

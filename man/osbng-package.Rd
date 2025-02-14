@@ -4,12 +4,24 @@
 \name{osbng-package}
 \alias{osbng}
 \alias{osbng-package}
-\title{osbng: What the Package Does (One Line, Title Case)}
+\title{\code{osbng}: Access the British National Grid (BNG) index system}
 \description{
-What the package does (one paragraph).
+\code{osbng} provides a programmatic interface to Ordnance Survey's British
+National Grid (BNG) index system, supporting efficient grid-based indexing
+and spatial analysis. This enables applications such as statistical
+aggregation, data visualisation, and data interoperability using BNG grid
+references. Designed for developers working with geospatial data in the
+context of Great Britain, the library offers tools to simplify working with
+the BNG, facilitating both technical integration into geospatial workflows
+and practical exploration of the index system's structure.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Chris Jochem \email{chris.jochem@os.uk}
+
+Other contributors:
+\itemize{
+  \item Ordnance Survey Ltd [copyright holder, funder]
+}
 
 }
 \keyword{internal}
