@@ -25,7 +25,8 @@ bng_to_grid_geom(bng_ref, format = c("geos", "wkt", "sf"), ...)
 \code{bng_to_bbox}: numeric vector of bounding coordinates. If
 multiple references are supplied to \code{bng_ref} then a matrix of
 coordinates is returned. \code{bbox_to_bng}: vector of type
-\code{BNGReference} objects.
+\code{BNGReference} objects. \code{bng_to_grid_geom} converts the bounding
+box coordinates into a Polygon using \code{geos}.
 }
 \description{
 Create British National Grid reference from bounding boxes or convert grid

@@ -3,17 +3,19 @@
 \name{bng_kring}
 \alias{bng_kring}
 \alias{bng_kdisc}
-\title{Traverse BNG references}
+\title{Spatial neighbourhoods}
 \usage{
-bng_kring(bng_ref, k)
+bng_kring(bng_ref, k, ...)
 
-bng_kdisc(bng_ref, k)
+bng_kdisc(bng_ref, k, ...)
 }
 \arguments{
 \item{bng_ref}{an object of type \code{BNGReference}}
 
 \item{k}{numeric value measuring the number of grid squares traversed between
 the ring and input BNG reference}
+
+\item{...}{additional parameters. Not currently used}
 }
 \value{
 an unordered collection of objects of type \code{BNGReference}.
