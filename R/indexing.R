@@ -57,9 +57,12 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   ymax <- args[[4]]
   resolution <- args[[5]]
   
+  xbound <- (ceiling(xmax / resolution) * resolution)
+  ybound <- (ceiling(ymax / resolution) * resolution)
+  
   # compute grid of coordinates
-  offxmn <- seq(xmin, xmax - 1, by = resolution)
-  offymn <- seq(ymin, ymax - 1, by = resolution)
+  offxmn <- seq(xmin, xbound - 1, by = resolution)
+  offymn <- seq(ymin, ybound - 1, by = resolution)
   coords_min <- expand.grid(offxmn, offymn)
   
   refs <- rep(NA, nrow(coords_min))
@@ -412,9 +415,16 @@ geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
   
   # main processing loop
   results <- lapply(seq_along(geom), function(i) {
-    refs <- geom_to_bng(geom[i], resolution[i])
-    contains <- geos::geos_contains(geom[i], bng_to_grid_geom(refs))
-    geometry <- geos::geos_intersection(geom[i], bng_to_grid_geom(refs))
+    res <- resolution[i]
+    g <- geos::geos_unnest(geom[i], max_depth = 99)
+    
+    if (geos::geos_type_id(g) >= 4) {
+      stop("Cannot unnest collection further.", call. = FALSE)
+    }
+    
+    refs <- geom_to_bng(g, res)
+    contains <- geos::geos_contains(g, bng_to_grid_geom(refs))
+    geometry <- geos::geos_intersection(g, bng_to_grid_geom(refs))
     
     return(list("BNGReference" = refs, 
                 "is_core" = contains, 
@@ -447,6 +457,7 @@ geom_to_bng_intersection.sf <- function(geom, resolution, ...) {
 #' @param resolution numeric vector of resolutions in meters
 #' @returns character vector of British National Grid references.
 #' @keywords internal
+#' @noRd
 bng_from_coords <- function(easting, northing, resolution) {
   scale <- internal_get_scale(resolution)
   digits <- nchar(scale) - 1
@@ -505,6 +516,7 @@ bng_from_coords <- function(easting, northing, resolution) {
 #' 
 #' @returns matrix with two columns of easting and northings, respectively.
 #' @keywords internal
+#' @noRd
 bng_to_coords <- function(ref, position) {
   ref <- gsub(" ", "", as.character(ref))
   
@@ -590,23 +602,29 @@ bng_to_coords <- function(ref, position) {
 #' @returns list of where each element of the list corresponds to the input
 #'   geometry and contains a vector of BNG reference objects.
 #' @keywords internal
+#' @noRd
 geom_bng_intersects <- function(geom, resolution) {
   # get BNG refers under the bounding box
   allrefs <- lapply(seq_along(geom), function(i) {
     res <- resolution[i]
+    g <- geos::geos_unnest(geom[i], max_depth = 99)
     
-    if (geos::geos_type(geom[i]) == "point") {
-      refs <- xy_to_bng(cbind(geos::geos_x(geom),
-                              geos::geos_y(geom)),
+    if (geos::geos_type_id(g) >= 4) {
+      stop("Cannot unnest collection further.", call. = FALSE)
+    }
+    
+    if (all(geos::geos_type(g) == "point")) {
+      refs <- xy_to_bng(cbind(geos::geos_x(g),
+                              geos::geos_y(g)),
                         resolution = res)
       return(refs)
       
     } else {
-      bbox <- geos::geos_extent(geom[i])
+      bbox <- geos::geos_extent(g)
       
       # refs <- do.call(bbox_to_bng, c(bbox, res))
       refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
-      ints <- geos::geos_intersects(geom[i], bng_to_grid_geom(refs))
+      ints <- geos::geos_intersects(g, bng_to_grid_geom(refs))
       
       return(refs[ints])
     }
