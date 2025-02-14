@@ -1,5 +1,5 @@
 Package: osbng
-Title: Access the British National Grid (BNG) Index System
+Title: Access the British National Grid Index System
 Version: 0.1.0
 Authors@R: c(
     person("Chris", "Jochem", email = "chris.jochem@os.uk", role = c("cre", "aut")),

@@ -1,0 +1,9 @@
+bibentry(
+  bibtype       = "Manual",
+  title         = "{osbng}: Access the British National Grid Index System",
+  author        = person("Ordnance Survey"),
+  organization  = "Ordnance Survey Ltd",
+  year          = 2025,
+  note          = "R package version 0.2.0",
+  url           = "https://github.com/OrdnanceSurvey/osbng-r"
+)
