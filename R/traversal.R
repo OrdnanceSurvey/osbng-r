@@ -105,7 +105,7 @@ bng_kdisc <- function(bng_ref, k, ...) {
 #' 
 #' Find BNG references which share a grid cell edge with a target BNG reference.
 #' @param bng_ref target object of type \code{BNGReference}
-#' @param ... additional parameters. Not currenlty used
+#' @param ... additional parameters. Not currently used
 #' @details Grid reference cells are "neighbours" when they share a contiguous
 #' edge (i.e. corners do not define neighbours). In the event that a target
 #' reference is along the edge or corner of the valid BNG area, then 3 or 2
@@ -185,12 +185,12 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
   
   neighs <- sapply(seq_along(bng_ref1), function(i) {
     if (bng_ref2[i] == bng_ref1[i]) {
-      return(TRUE)
+      return(FALSE)
     } else {
       b2 <- as.character(bng_ref2[i])
       n <- as.character(bng_neighbours(bng_ref1[i]))
       
-      return(match(b2, n) > 0)
+      return(match(b2, n, nomatch = 0) > 0)
     }
   })
   
