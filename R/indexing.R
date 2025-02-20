@@ -545,12 +545,12 @@ bng_to_coords <- function(ref, position) {
   # extract suffixes (if present)
   suffix <- get_suffix(ref)
   suffix <- match(suffix, bng_suffixes) - 1
-  suffix[is.na(suffix)] <- 0
+  suffix[is.na(suffix)] <- -1
   
-  if (any(suffix > 0)) {
+  if (any(suffix >= 0)) {
     # update resolution for suffix
-    res[which(suffix > 0, arr.ind = TRUE)] <- 
-      res[which(suffix > 0, arr.ind = TRUE)] / 2
+    res[which(suffix >= 0, arr.ind = TRUE)] <- 
+      res[which(suffix >= 0, arr.ind = TRUE)] / 2
     
     # look-up suffix adjustments
     sx <- trunc(suffix %% 2)
