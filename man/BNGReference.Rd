@@ -26,11 +26,14 @@
 \method{as.data.frame}{BNGReference}(x, ...)
 }
 \arguments{
-\item{x}{object of class \code{BNGReference}.}
+\item{x}{Object of class \code{BNGReference}.}
 
-\item{i}{record selection.}
+\item{i}{Record selection.}
 
-\item{value}{a suitable replacement value}
+\item{value}{A suitable replacement value of type \code{BNGReference}.}
+}
+\value{
+A vector of type \code{BNGReference}.
 }
 \description{
 Functions to support working with objects of type
@@ -42,6 +45,15 @@ resolutions. At its highest level, the grid is divided into 100 km by 100 km
 squares, each of which is identified by a two-letter code. Successive levels
 of resolution further subdivide the grid squares into finer detail, down to
 individual 1-meter squares.
+}
+\examples{
+x <- as_bng_reference(c("TQ1234", "SU5678"))
+
+x[1]
+
+x[2] <- as_bng_reference("SU56")
+x
+
 }
 \seealso{
 \code{\link[=is_valid_bng]{is_valid_bng()}}, \code{\link[=as_bng_reference]{as_bng_reference()}}

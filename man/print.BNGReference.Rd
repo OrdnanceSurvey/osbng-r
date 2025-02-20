@@ -3,18 +3,18 @@
 \name{print.BNGReference}
 \alias{print.BNGReference}
 \alias{format.BNGReference}
-\title{Printing BNG Reference Class}
+\title{Printing BNG References}
 \usage{
 \method{print}{BNGReference}(x, ...)
 
 \method{format}{BNGReference}(x, compact = FALSE, ...)
 }
 \arguments{
-\item{x}{an object of type \code{BNGReference}.}
+\item{x}{An object of type \code{BNGReference}.}
 
-\item{...}{additional parameters}
+\item{...}{Additional parameters.}
 
-\item{compact}{boolean. Should standard spaces be added or removed for
+\item{compact}{Logical. Should standard spaces be added or removed for
 "pretty" printing? Default is \code{FALSE} to add spaces.}
 }
 \value{

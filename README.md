@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# OSBNG
+# osbng: British National Grid References in R
 
 An R library for Ordnance Survey’s British National Grid (BNG) index
 system. This library provides tools for working with the BNG, a

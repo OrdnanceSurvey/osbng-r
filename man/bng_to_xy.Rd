@@ -34,8 +34,8 @@ square is returned. Default is the lower-left corner.}
 
 \item{northing}{numeric vector of coordinates}
 
-\item{resolution}{target BNG grid resolution. Can be specified as a numeric or
-character vector}
+\item{resolution}{target BNG grid resolution. Can be specified as a numeric
+or character vector}
 
 \item{x}{two column matrix of eastings and northings}
 

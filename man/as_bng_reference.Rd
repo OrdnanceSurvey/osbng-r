@@ -16,16 +16,22 @@ as_bng_reference(bng_ref, ...)
 is_bng_reference(bng_ref)
 }
 \arguments{
-\item{bng_ref}{A character vector of grid references to be created or tests.}
+\item{bng_ref}{A character vector of grid references to be created or tested.}
+
+\item{...}{Additional parameters. Not currently used.}
 }
 \value{
 An object of type \code{BNGReference}.
 }
 \description{
-Convert or test user input (strings) to a British National Grid reference
-object.
+Convert or test user input (strings) to a custom object for handling British
+National Grid (BNG) references.
 }
 \details{
+Converts a BNG reference string into a \code{BNGReference} object, ensuring
+type consistency across the package. All functions accepting or returning BNG
+references enforce the use of this class.
+
 The BNG is structured using a hierarchical system of grid squares at various
 resolutions. At its highest level, the grid is divided into 100 km by 100 km
 squares, each of which is identified by a two-letter code. Successive levels

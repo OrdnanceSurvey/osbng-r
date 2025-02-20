@@ -1,4 +1,5 @@
 # osbng 0.1.0
 
-* Establish MIT license
-* Initial package set-up
+* Initial release of `osbng` establishing custom `BNGRference`-type objects with support for conversion, indexing, and traversal.
+* Establish MIT license.
+* Website and vignettes set up.

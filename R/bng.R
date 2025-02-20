@@ -1,10 +1,15 @@
 
 #' Create BNG reference objects
 #' 
-#' Convert or test user input (strings) to a British National Grid reference
-#' object.
-#' @param bng_ref A character vector of grid references to be created or tests.
+#' Convert or test user input (strings) to a custom object for handling British
+#' National Grid (BNG) references.
+#' @param bng_ref A character vector of grid references to be created or tested.
+#' @param ... Additional parameters. Not currently used.
 #' @details
+#' Converts a BNG reference string into a \code{BNGReference} object, ensuring
+#' type consistency across the package. All functions accepting or returning BNG
+#' references enforce the use of this class.
+#' 
 #' The BNG is structured using a hierarchical system of grid squares at various
 #' resolutions. At its highest level, the grid is divided into 100 km by 100 km
 #' squares, each of which is identified by a two-letter code. Successive levels
@@ -66,15 +71,25 @@ is_bng_reference <- function(bng_ref) {
 #' @title BNG Reference objects
 #' @description Functions to support working with objects of type
 #'   \code{BNGReference}.
-#' @param x object of class \code{BNGReference}.
-#' @param i record selection.
-#' @param value a suitable replacement value
+#' @param x Object of class \code{BNGReference}.
+#' @param i Record selection.
+#' @param value A suitable replacement value of type \code{BNGReference}.
 #' @details
 #' The BNG is structured using a hierarchical system of grid squares at various
 #' resolutions. At its highest level, the grid is divided into 100 km by 100 km
 #' squares, each of which is identified by a two-letter code. Successive levels
 #' of resolution further subdivide the grid squares into finer detail, down to
 #' individual 1-meter squares.
+#' 
+#' @returns A vector of type \code{BNGReference}.
+#' 
+#' @examples
+#' x <- as_bng_reference(c("TQ1234", "SU5678"))
+#' 
+#' x[1]
+#' 
+#' x[2] <- as_bng_reference("SU56")
+#' x
 #' 
 #' @seealso [is_valid_bng()], [as_bng_reference()]
 #' @export
@@ -112,13 +127,13 @@ is_bng_reference <- function(bng_ref) {
 }
 
 
-#' Printing BNG Reference Class
+#' Printing BNG References
 #' 
 #' Supporting formatting and printing of \code{BNGReference} objects.
-#' @param x an object of type \code{BNGReference}.
-#' @param compact boolean. Should standard spaces be added or removed for
+#' @param x An object of type \code{BNGReference}.
+#' @param compact Logical. Should standard spaces be added or removed for
 #'   "pretty" printing? Default is \code{FALSE} to add spaces.
-#' @param ... additional parameters
+#' @param ... Additional parameters.
 #' @details
 #' Standard spaces are added: 1) after the two-letter prefix, 2) between
 #' eastings and northings, and 3) before a quadrant suffix, when those
@@ -127,6 +142,7 @@ is_bng_reference <- function(bng_ref) {
 #' @returns 
 #' * \code{format} provides a standard formatting of BNG reference objects
 #' * \code{print} outputs the BNG references and invisibly returns the object.
+#' 
 #' @examples
 #' x <- as_bng_reference("SU1234")
 #' print(x)
@@ -185,12 +201,6 @@ format.BNGReference <- function(x, compact = FALSE, ...) {
   formatted[formatted == ""] <- NA
   sprintf("<%s>", formatted)
 }
-
-
-#' #' @export
-#' as.character.BNGReference <- function(x, ...) {
-#'   format(x, ...)
-#' }
 
 
 #' @export

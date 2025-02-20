@@ -12,7 +12,7 @@ bng_is_neighbour(bng_ref1, bng_ref2, ...)
 \arguments{
 \item{bng_ref}{target object of type \code{BNGReference}}
 
-\item{...}{additional parameters. Not currenlty used}
+\item{...}{additional parameters. Not currently used}
 
 \item{bng_ref1, bng_ref2}{\code{BNGReference} object for comparison when
 assessing neighbour relationships.}
