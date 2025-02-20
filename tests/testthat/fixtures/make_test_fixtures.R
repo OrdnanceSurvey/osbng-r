@@ -42,3 +42,17 @@ df <- data.frame(
             simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
 names(df) <- c("easting", "northing", "resolution", "expected")
 saveRDS(df, "./tests/testthat/fixtures/xy_to_bng_test_cases.rds")
+
+# bng_is_neighbour
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/bng_is_neighbour_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("bng_ref1", "bng_ref2", "expected")
+saveRDS(df, "./tests/testthat/fixtures/bng_is_neighbour_test_cases.rds")
+
+# bng_distance
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/bng_distance_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("bng_ref1", "bng_ref2", "expected")
+saveRDS(df, "./tests/testthat/fixtures/bng_distance_test_cases.rds")
