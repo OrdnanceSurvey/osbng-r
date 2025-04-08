@@ -64,6 +64,12 @@ is_valid_bng.character <- function(bng_ref) {
   grepl(bng_pattern, bng_ref)
 }
 
+#' @export
+#' @name valid
+is_valid_bng.BNGReference <- function(bng_ref) {
+  !is.na(bng_ref)
+}
+
 
 #' Validate BNG resolutions
 #' 
