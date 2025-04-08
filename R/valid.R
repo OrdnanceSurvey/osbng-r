@@ -43,14 +43,17 @@
 #' detail, allowing for variable accuracy depending on the geospatial
 #' application, from small-scale mapping to precise survey measurements.
 #' 
-#' @returns A logical vector indicating for each reference of \code{bng_ref}
+#' @returns Logical vector indicating for each reference of \code{bng_ref}
 #'   whether it is valid.
 #'   
 #' @examples
-#' is_valid("TQ1234")  # TRUE
+#' is_valid_bng("TQ1234")  # TRUE
 #' 
-#' is_valid("TQ123")  # FALSE
+#' is_valid_bng("TQ123")  # FALSE
 #' 
+#' is_valid_bng("TQ 12 34")  # TRUE
+#' 
+#' @seealso [as_bng_reference()]
 #' @export
 #' @name valid
 is_valid_bng <- function(bng_ref) UseMethod("is_valid_bng")
@@ -65,9 +68,18 @@ is_valid_bng.character <- function(bng_ref) {
 #' Validate BNG resolutions
 #' 
 #' Helper function used to verify resolutions.
-#' @param resolution numeric or character vector of resolutions to test
-#' @returns logical vector testing resolution
+#' @param resolution Numeric or character vector of resolutions to test.
+#' @returns Logical vector testing resolution.
+#' 
+#' @examples
+#' is_valid_bng_resolution(1000)
+#' 
+#' is_valid_bng_resolution("1km")
+#' 
+#' is_valid_bng_resolution(0.5)
+#' 
 #' @export
+#' @rdname valid
 is_valid_bng_resolution <- function(resolution) {
   UseMethod("is_valid_bng_resolution")
 }
@@ -86,14 +98,15 @@ is_valid_bng_resolution.character <- function(resolution) {
 #' Validate input
 #' 
 #' Internal helper function used to verify inputs.
-#' @param x object to test
+#' @param x Object to test
 #' @details
 #' Primarily called for the side-effect of stopping execution.
 #' 
 #' @returns \code{TRUE} when the input is a \code{BNGReference} object.
 #' @keywords internal
+#' @noRd
 validate_bng_ref <- function(x) {
-  if (!is_bng_reference(x) | missing(x)) {
+  if (!is_bng_reference(x) || missing(x)) {
     stop("Please supply a BNG Reference object.", call. = FALSE)
   } 
   
@@ -104,9 +117,10 @@ validate_bng_ref <- function(x) {
 #' Validate positions
 #' 
 #' Internal helper function used to verify eastings.
-#' @param easting object to test
-#' @returns logical vector testing easting position
+#' @param easting Object to test
+#' @returns Logical vector testing easting position
 #' @keywords internal
+#' @noRd
 validate_easting <- function(easting) {
   easting >= 0 & easting < 700000 & !is.na(easting)
 }
@@ -115,9 +129,10 @@ validate_easting <- function(easting) {
 #' Validate positions
 #' 
 #' Internal helper function used to verify northings.
-#' @param northing object to test
-#' @returns logical vector testing northing position
+#' @param northing Object to test
+#' @returns Logical vector testing northing position
 #' @keywords internal
+#' @noRd
 validate_northing <- function(northing) {
   northing >= 0 & northing < 1300000 & !is.na(northing)
 }

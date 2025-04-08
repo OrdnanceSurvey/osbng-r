@@ -4,22 +4,31 @@
 \alias{valid}
 \alias{is_valid_bng}
 \alias{is_valid_bng.character}
+\alias{is_valid_bng_resolution}
 \title{Check validity of a BNG Reference}
 \usage{
 is_valid_bng(bng_ref)
 
 \method{is_valid_bng}{character}(bng_ref)
+
+is_valid_bng_resolution(resolution)
 }
 \arguments{
 \item{bng_ref}{Input vector of the BNG reference string(s) to validate.}
+
+\item{resolution}{Numeric or character vector of resolutions to test.}
 }
 \value{
-A logical vector indicating for each reference of \code{bng_ref}
+Logical vector indicating for each reference of \code{bng_ref}
 whether it is valid.
+
+Logical vector testing resolution.
 }
 \description{
 Validates a British National Grid reference string using a regular expression
 pattern.
+
+Helper function used to verify resolutions.
 }
 \details{
 The BNG is structured using a hierarchical system of grid squares at various
@@ -62,8 +71,19 @@ detail, allowing for variable accuracy depending on the geospatial
 application, from small-scale mapping to precise survey measurements.
 }
 \examples{
-is_valid("TQ1234")  # TRUE
+is_valid_bng("TQ1234")  # TRUE
 
-is_valid("TQ123")  # FALSE
+is_valid_bng("TQ123")  # FALSE
 
+is_valid_bng("TQ 12 34")  # TRUE
+
+is_valid_bng_resolution(1000)
+
+is_valid_bng_resolution("1km")
+
+is_valid_bng_resolution(0.5)
+
+}
+\seealso{
+\code{\link[=as_bng_reference]{as_bng_reference()}}
 }
