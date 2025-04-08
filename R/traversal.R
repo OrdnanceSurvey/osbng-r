@@ -7,12 +7,26 @@
 #' @param k numeric value measuring the number of grid squares traversed between
 #'   the ring and input BNG reference
 #' @param ... additional parameters. Not currently used
-#' @details
-#' Additional details...
-#' @returns an unordered collection of objects of type \code{BNGReference}.
+#' @details K-rings are hollow rings of grid cells at a grid distance \code{k}
+#' while k-discs are filled areas around a given grid square up to a grid
+#' distance k. \code{bng_kdisc} includes the given BNG Reference (i.e. the
+#' central grid square).
+#' 
+#' In the event that \code{bng_ref} is along the edge or corner of the valid
+#' BNG area, then any return BNG references of the ring/disc outside the valid
+#' BNG range will not be returned.
+#' 
+#' @returns an unordered collection of objects of type \code{BNGReference}
+#'   within the neighbourhood around the given grid reference.
 #' 
 #' @examples
-#' # example code
+#' bng_kring(as_bng_reference("SU1234"), 1)
+#' 
+#' bng_kring(as_bng_reference("SU1234"), 3)
+#' 
+#' bng_kdisc(as_bng_reference("SU1234"), 1)
+#' 
+#' bng_kdisc(as_bng_reference("SU1234"), 3)
 #' 
 #' @rdname bng_kring
 #' @aliases bng_kdisc
@@ -114,7 +128,7 @@ bng_kdisc <- function(bng_ref, k, ...) {
 #' @returns A set of up to four \code{BNGReference} objects that border the
 #'   target reference.
 #' @examples
-#' # example code
+#' bng_neighbours(as_bng_reference("SU1234"))
 #' 
 #' @name bng_neighbours
 #' @export
@@ -148,9 +162,21 @@ bng_neighbours <- function(bng_ref, ...) {
 }
 
 
-#' @param bng_ref1,bng_ref2 \code{BNGReference} object for comparison when
+#' @param bng_ref1,bng_ref2 \code{BNGReference} objects for comparison when
 #'   assessing neighbour relationships.
 #' @returns a boolean identifying if the grid references share a border
+#' 
+#' @details
+#' If \code{bng_ref1} exactly matches \code{bng_ref2} then
+#' \code{bng_is_neighbour} returns \code{FALSE}.
+#' 
+#' @examples
+#' bng_is_neighbour(as_bng_reference("SE1921"), as_bng_reference("SE1821"))
+#' 
+#' bng_is_neighbour(as_bng_reference("SE1922"), as_bng_reference("SE1821"))
+#' 
+#' bng_is_neighbour(as_bng_reference("SU1234"), as_bng_reference("SU1234"))
+#' 
 #' @aliases bng_neighbours
 #' @export
 #' @rdname bng_neighbours
@@ -208,9 +234,17 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
 #' @param d numeric. Distance expressed in metres.
 #' @param ... additional parameters. Not currently used.
 #' @returns an unordered vector of \code{BNGReference} objects around a given
-#'   grid square within an absolute distance \code{d}.
+#'   grid square within an absolute distance \code{d}. 
+#'
+#' @details
+#' \code{bng_dwithin} returns all grids squares for which any part of the
+#' boundary is within the distance \code{d} of any part of \code{bng_ref}'s
+#' boundary.
+#' 
 #' @examples
-#' # example code
+#' bng_dwithin(as_bng_reference("SU1234"), 1000)
+#' 
+#' bng_dwithin(as_bng_reference("SU1234"), 1001)
 #' 
 #' @export
 #' @name bng_distance
@@ -238,11 +272,13 @@ bng_dwithin <- function(bng_ref, d, ...) {
     ref <- bng_ref[idx]
     resolution <- internal_get_resolution(ref)
     # convert distance to resolution-specific 'k'
-    # k <- floor(d / resolution)
     k <- ceiling(d / resolution)
-    
+    # get potential neighbours
     neighs <- get_disc_neighbours(ref, resolution, k, type = "disc")
-    return(neighs)
+    # test any part of square within distance
+    valid_dist <- bng_distance(ref, neighs, edge_to_edge = T) <= d
+    
+    return(neighs[valid_dist])
   })
   
   # replace valid
@@ -271,7 +307,19 @@ bng_dwithin <- function(bng_ref, d, ...) {
 #'   involving invalid references are \code{NA}.
 #'   
 #' @examples
-#' # example code
+#' bng_distance(as_bng_reference("SE1433"), as_bng_reference("SE1631"))
+#' 
+#' bng_distance(as_bng_reference("SE1433"), as_bng_reference("SENW"))
+#' 
+#' bng_distance(as_bng_reference("SE1433"), as_bng_reference(c("SE1533", "SE1631", "SE")))
+#' 
+#' bng_distance(as_bng_reference(c("SE1533", "SE1631", "SE")))
+#' 
+#' bng_distance(as_bng_reference(c("SE1433", "SE1244")), as_bng_reference(c("SE1533", "SE1631", "SE")))
+#' 
+#' bng_distance(as_bng_reference(c("SE1433", "SE1244")), as_bng_reference(c("SE1533", "SE1631")), by_element = TRUE)
+#' 
+#' bng_distance(as_bng_reference("SE1433"), as_bng_reference(c("SE1533", "SE1631", "SE")), edge_to_edge = TRUE)
 #' 
 #' @rdname bng_distance
 #' @export
