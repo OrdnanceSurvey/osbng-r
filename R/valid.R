@@ -21,23 +21,35 @@
 #' as follows:
 #' 
 #'   1. 100 km: Identified by a two-letter code (e.g. 'TQ').
-#'   2. 50 km: Subdivides the 100 km grid into four quadrants. The grid reference adds an ordinal direction suffix (NE, NW, SE, SW) to indicate the quadrant within the 100 km square (e.g. 'TQSW').
+#'   2. 50 km: Subdivides the 100 km grid into four quadrants. 
+#'     The grid reference adds an ordinal direction suffix (NE, NW, SE, SW) to 
+#'     indicate the quadrant within the 100 km square (e.g. 'TQSW').
 #'   3. 10 km: Adds two-digit easting and northing values (e.g. 'TQ23').
-#'   4. 5 km: Subdivides the 10 km square adding an ordinal suffix (e.g. 'TQ53SW').
-#'   5. 1 km: Adds four-digit easting and northing values (e.g. 'TQ2334').
-#'   6. 500 m: Subdivides the 1 km square adding an ordinal suffix (e.g. 'TQ2334NE').
-#'   7. 100 m: Adds six-digit easting and northing values (e.g. ' TQ238347').
-#'   8. 50 m: Subdivides the 100 m square adding an ordinal suffix (e.g. 'TQ238347SE').
-#'   9. 10 m: Adds eight-digit easting and northing values (e.g. 'TQ23863472').
-#'   10. 5 m: Subdivides the 10 m square adding an ordinal suffix (e.g. e.g. 'TQ23863472NW').
+#'   4. 5 km: Subdivides the 10 km square adding an ordinal suffix 
+#'     (e.g. 'TQ53SW').
+#'   5. 1 km: Adds four-digit easting and northing values 
+#'     (e.g. 'TQ2334').
+#'   6. 500 m: Subdivides the 1 km square adding an ordinal suffix 
+#'     (e.g. 'TQ2334NE').
+#'   7. 100 m: Adds six-digit easting and northing values 
+#'     (e.g. ' TQ238347').
+#'   8. 50 m: Subdivides the 100 m square adding an ordinal suffix 
+#'     (e.g. 'TQ238347SE').
+#'   9. 10 m: Adds eight-digit easting and northing values 
+#'     (e.g. 'TQ23863472').
+#'   10. 5 m: Subdivides the 10 m square adding an ordinal suffix 
+#'     (e.g. e.g. 'TQ23863472NW').
 #'   11. 1 m: Adds ten-digit easting and northing values (e.g. 'TQ2386334729').
 #' 
 #' BNG references must adhere to the following format:
 #' 
-#' * Whitespace may or may not separate  the components of the reference (i.e. between the two-letter 100km grid square prefix, easting, northing, and ordinal suffix).
+#' * Whitespace may or may not separate  the components of the reference 
+#'   (i.e. between the two-letter 100km grid square prefix, easting, northing, 
+#'   and ordinal suffix).
 #' * If whitespace is present, it should be a single space character.
 #' * Whitespace can be inconsistently used between components of the reference.
-#' * The two-letter 100 km grid square prefixes and ordinal direction suffixes (NE, SE, SW, NW) should be capitalised.
+#' * The two-letter 100 km grid square prefixes and ordinal direction suffixes 
+#'   (NE, SE, SW, NW) should be capitalised.
 #' 
 #' At each resolution, a given location can be identified with increasing
 #' detail, allowing for variable accuracy depending on the geospatial

@@ -27,7 +27,7 @@ bbox_to_bng <- function(...) UseMethod("bbox_to_bng")
 #' @export
 bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   # check inputs
-  if (missing(xmin) | missing(ymin) | missing(xmax) | missing(ymax)) {
+  if (missing(xmin) || missing(ymin) || missing(xmax) || missing(ymax)) {
     stop("Please provide bounds.", call. = FALSE)
   }
   
@@ -212,10 +212,9 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   chk_easting <- validate_easting(easting)
   chk_northing <- validate_northing(northing)
   
-  if (all(chk_easting == FALSE) & all(chk_northing == FALSE)) {
+  if (all(chk_easting == FALSE) && all(chk_northing == FALSE)) {
     stop("No valid coordinates provided.", call. = FALSE)
-  } else if (any(chk_easting == FALSE) |
-      any(chk_northing == FALSE)) {
+  } else if (any(chk_easting == FALSE) || any(chk_northing == FALSE)) {
     warning("Invalid coordinates detected.", call. = FALSE)
   }
   
@@ -298,7 +297,7 @@ xy_to_bng.data.frame <- function(df,
     stop("Please provide two column names.", call. = FALSE)
   }
   
-  if (any(is.character(cols)) & any(!cols %in% names(df))) {
+  if (any(is.character(cols)) && any(!cols %in% names(df))) {
     stop("Columns not found in data frame.", call. = FALSE)
   }
   
@@ -571,15 +570,13 @@ bng_to_coords <- function(ref, position) {
   e <- e + x + sx
   n <- n + y + sy
   
-  switch(position,
+  switch(position, 
          "lower-right" = {e <- e + res},
          "upper-left"  = {n <- n + res},
          "upper-right" = {e <- e + res
-                          n <- n + res
-                         },
+                          n <- n + res},
          "centre"      = {e <- e + res / 2
-                          n <- n + res / 2
-                         }
+                          n <- n + res / 2}
         )
   
   matrix(c(e, n), ncol = 2)

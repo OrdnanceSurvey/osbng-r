@@ -91,7 +91,7 @@ get_children <- function(ref, resolution) {
   } else {
     # user provided resolution
     child_res <- internal_resolution_to_numeric(resolution)
-    if (length(child_res) > 1 & length(child_res) != length(ref)) {
+    if ((length(child_res) > 1) && (length(child_res) != length(ref))) {
       stop("Mismatch found between number of valid references and resolutions.",
            call. = FALSE)
     }
@@ -144,7 +144,7 @@ get_parent <- function(ref, resolution) {
   } else {
     # user provided resolution
     parent_res <- internal_resolution_to_numeric(resolution)
-    if (length(parent_res) > 1 & length(parent_res) != length(ref)) {
+    if ((length(parent_res) > 1) && (length(parent_res) != length(ref))) {
       stop("Mismatch found between number of valid references and resolutions.",
            call. = FALSE)
     }
