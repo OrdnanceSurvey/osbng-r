@@ -225,12 +225,12 @@ bng_dwithin <- function(bng_ref, d, ...) {
     stop("Please provide the distance parameter.", call. = FALSE)
   }
   
-  if (is.numeric(d) == FALSE | length(d) > 1L) {
+  if (is.numeric(d) == FALSE || length(d) > 1L) {
     stop("Invalid distance paramter.", call. = FALSE)
   }
   
   if (d <= 0) {
-    stop("The distance parameter must be greater than 0 and less than .", 
+    stop("The distance parameter must be greater than 0.", 
          call. = FALSE)
   }
   
@@ -238,7 +238,8 @@ bng_dwithin <- function(bng_ref, d, ...) {
     ref <- bng_ref[idx]
     resolution <- internal_get_resolution(ref)
     # convert distance to resolution-specific 'k'
-    k <- floor(d / resolution)
+    # k <- floor(d / resolution)
+    k <- ceiling(d / resolution)
     
     neighs <- get_disc_neighbours(ref, resolution, k, type = "disc")
     return(neighs)
@@ -257,15 +258,27 @@ bng_dwithin <- function(bng_ref, d, ...) {
 
 #' @param bng_ref1,bng_ref2 object of \code{BNGReference}
 #' @param by_element logical. If \code{TRUE}, return a vector with distance
-#'   between each BNG reference. An error is raised if the \code{BNGReference}
-#'   objects are not the same length. If \code{FALSE}, return a dense matrix
-#'   with all pairwise distances.
+#'   between each pair of BNG references. An error is raised if the
+#'   \code{BNGReference} objects are not the same length. Default is
+#'   \code{FALSE}, to return a dense matrix with all pairwise distances.
+#' @param edge_to_edge Logical. Should the distances be measured between the
+#'   edges of the grid references? Default is \code{FALSE} to use the centroid.
+#'
+#' @returns If \code{by_element} is \code{FALSE} \code{bng_distance} returns a
+#'   dense numeric matrix of dimension length(x) by length(y); otherwise it
+#'   returns a numeric vector the same length as \code{x} and \code{y} with an
+#'   error raised if the lengths of \code{x} and \code{y} are unequal. Distances
+#'   involving invalid references are \code{NA}.
+#'   
 #' @examples
 #' # example code
 #' 
 #' @rdname bng_distance
 #' @export
-bng_distance <- function(bng_ref1, bng_ref2, by_element = FALSE) {
+bng_distance <- function(bng_ref1, 
+                         bng_ref2, 
+                         by_element = FALSE, 
+                         edge_to_edge = FALSE) {
   validate_bng_ref(bng_ref1)
   
   # follow pattern from sf::st_distance
@@ -279,30 +292,34 @@ bng_distance <- function(bng_ref1, bng_ref2, by_element = FALSE) {
   validate_bng_ref(bng_ref2)
   
   # get locations
-  ref1 <- bng_to_xy(bng_ref1, position = "centre")
-  ref1 <- geos::geos_make_point(ref1[, 1], ref1[, 2])
-  ref2 <- bng_to_xy(bng_ref2, position = "centre")
-  ref2 <- geos::geos_make_point(ref2[, 1], ref2[, 2])
-  
-  if (by_element) {
-    if (!missing_ref2 & (length(ref1) != length(ref2)))
-      stop("BNG references must have the same length", call. = FALSE)
+  if (edge_to_edge) {  # edge-based
+    ref1 <- bng_to_grid_geom(bng_ref1)
+    ref2 <- bng_to_grid_geom(bng_ref2)
+  } else {  # centroid-based
+    ref1 <- bng_to_xy(bng_ref1, position = "centre")
+    ref2 <- bng_to_xy(bng_ref2, position = "centre")
+    
+    ref1 <- geos::geos_make_point(ref1[, 1], ref1[, 2])
+    ref2 <- geos::geos_make_point(ref2[, 1], ref2[, 2])
   }
   
+  # check to fill in results with NA
+  valid1 <- geos::geos_is_empty(ref1)
+  valid2 <- geos::geos_is_empty(ref2)
+
   # distance calculations
   if (by_element) {
-    ref1x <- geos::geos_x(ref1)
-    ref1y <- geos::geos_y(ref1)
-    ref2x <- geos::geos_x(ref2)
-    ref2y <- geos::geos_y(ref2)
+    if (missing_ref2)
+      stop("Please provide bng_ref2 when 'by_element' is TRUE.", call. = FALSE)
     
-    d <- sqrt((ref1x - ref2x)^2 + (ref1y - ref2y)^2)
-  } else {
-    if (missing_ref2) {
-      d <- as.matrix(stats::dist(cbind(geos::geos_x(ref1), geos::geos_y(ref1))))
-    } else {
-      d <- outer(ref1, ref2, FUN = geos::geos_distance)
-    }
+    if (length(ref1) != length(ref2)) 
+      stop("BNG references must have the same length", call. = FALSE)
+    
+    d <- geos::geos_distance(ref1, ref2)
+    d[valid1 | valid2] <- NA
+  } else {  # distance matrix
+    d <- outer(ref1, ref2, FUN = geos::geos_distance)
+    d[valid1, valid2] <- NA
   }
   
   d
