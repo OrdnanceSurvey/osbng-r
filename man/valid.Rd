@@ -4,12 +4,15 @@
 \alias{valid}
 \alias{is_valid_bng}
 \alias{is_valid_bng.character}
+\alias{is_valid_bng.BNGReference}
 \alias{is_valid_bng_resolution}
 \title{Check validity of a BNG Reference}
 \usage{
 is_valid_bng(bng_ref)
 
 \method{is_valid_bng}{character}(bng_ref)
+
+\method{is_valid_bng}{BNGReference}(bng_ref)
 
 is_valid_bng_resolution(resolution)
 }

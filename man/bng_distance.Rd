@@ -7,7 +7,7 @@
 \usage{
 bng_dwithin(bng_ref, d, ...)
 
-bng_distance(bng_ref1, bng_ref2, by_element = FALSE)
+bng_distance(bng_ref1, bng_ref2, by_element = FALSE, edge_to_edge = FALSE)
 }
 \arguments{
 \item{bng_ref}{object of class \code{BNGReference}.}
@@ -19,13 +19,22 @@ bng_distance(bng_ref1, bng_ref2, by_element = FALSE)
 \item{bng_ref1, bng_ref2}{object of \code{BNGReference}}
 
 \item{by_element}{logical. If \code{TRUE}, return a vector with distance
-between each BNG reference. An error is raised if the \code{BNGReference}
-objects are not the same length. If \code{FALSE}, return a dense matrix
-with all pairwise distances.}
+between each pair of BNG references. An error is raised if the
+\code{BNGReference} objects are not the same length. Default is
+\code{FALSE}, to return a dense matrix with all pairwise distances.}
+
+\item{edge_to_edge}{Logical. Should the distances be measured between the
+edges of the grid references? Default is \code{FALSE} to use the centroid.}
 }
 \value{
 an unordered vector of \code{BNGReference} objects around a given
 grid square within an absolute distance \code{d}.
+
+If \code{by_element} is \code{FALSE} \code{bng_distance} returns a
+dense numeric matrix of dimension length(x) by length(y); otherwise it
+returns a numeric vector the same length as \code{x} and \code{y} with an
+error raised if the lengths of \code{x} and \code{y} are unequal. Distances
+involving invalid references are \code{NA}.
 }
 \description{
 Compute Euclidean distances between BNG references and distance-based
