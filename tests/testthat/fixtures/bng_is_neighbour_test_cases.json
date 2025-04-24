@@ -38,7 +38,7 @@
     {
       "bng_ref1": "SPSE",
       "bng_ref2": "SPSE",
-      "expected": "expect_error"
+      "expected": false
     }
   ]
 }
