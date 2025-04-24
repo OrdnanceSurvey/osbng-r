@@ -214,9 +214,7 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   
   if (all(chk_easting == FALSE) && all(chk_northing == FALSE)) {
     stop("No valid coordinates provided.", call. = FALSE)
-  } else if (any(chk_easting == FALSE) || any(chk_northing == FALSE)) {
-    warning("Invalid coordinates detected.", call. = FALSE)
-  }
+  } 
   
   # allow vectors of resolutions
   args <- expand_args(easting, northing, resolution)
@@ -253,6 +251,10 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
   
   if (length(easting) == 0) {
     stop("No valid inputs found.", call. = FALSE)
+  }
+  
+  if (any(!chk_easting) || any(!chk_northing)) {
+    warning("Invalid coordinates detected.", call. = FALSE)
   }
   
   # create from coordinates
