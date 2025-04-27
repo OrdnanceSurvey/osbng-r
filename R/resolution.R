@@ -75,15 +75,16 @@ internal_resolution_to_numeric <- function(x) {
     all_res <- list_bng_resolution("all")
     all_lbl <- list_bng_resolution("all", lbl = TRUE)
     
-    res <- all_res[match(x, all_lbl)]
+    # double to cover the case of c("5000", "5km")
+    res_dup <- c(all_res, all_res)
+    
+    res <- res_dup[match(x, c(all_lbl, all_res))]
     return(res)
     
   } else if (all(is.numeric(x))) {
     # numeric already
     return(x)
-  } else {
-    stop("Resolution values must be all strings or integers.", call. = FALSE)
-  }
+  } 
 }
 
 

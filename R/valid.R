@@ -109,7 +109,8 @@ is_valid_bng_resolution.numeric <- function(resolution) {
 
 #' @export
 is_valid_bng_resolution.character <- function(resolution) {
-  resolution %in% list_bng_resolution("all", lbl = TRUE)
+  resolution %in% c(list_bng_resolution("all", lbl = TRUE),
+                    list_bng_resolution("all", lbl = FALSE))
 }
 
 
