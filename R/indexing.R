@@ -142,6 +142,16 @@ bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
                                       coords[, 1] + resolution,
                                       coords[, 2] + resolution)
   
+  if (format == "wkt") {
+    geom <- geos::geos_write_wkt(geom)
+    
+  } else if (format == "sf") {
+    chk_sf_installed()
+    
+    geom <- sf::st_as_sfc(geom) 
+    sf::st_crs(geom) <- sf::st_crs(27700)
+  }
+  
   geom
 }
 
@@ -382,21 +392,35 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
   if (missing(resolution)) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
+  
+  geom <- geos::as_geos_geometry(geom)
+  geom_bng_intersects(geom, resolution)
 }
 
 
+#' @param format character indicating the type of geometry object to return.
+#'   Default is "geos" while "sf" returns an object of class \code{sfc}.
+#' 
 #' @import geos
 #' @export
 #' @rdname geom_to_bng
 #' @aliases geom_to_bng_intersection
-geom_to_bng_intersection <- function(geom, resolution, ...) {
+geom_to_bng_intersection <- function(geom, 
+                                     resolution, 
+                                     format = c("geos", "sf", "wkt"), 
+                                     ...) {
   UseMethod("geom_to_bng_intersection")
 } 
 
 #' @export
 #' @rdname geom_to_bng
 #' @aliases geom_to_bng_intersection
-geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
+geom_to_bng_intersection.geos_geometry <- function(geom, 
+                                                   resolution, 
+                                                   format = c("geos", 
+                                                              "sf", 
+                                                              "wkt"), 
+                                                   ...) {
   
   if (missing(resolution)) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
@@ -432,6 +456,16 @@ geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
     contains <- geos::geos_contains(g, bng_to_grid_geom(refs))
     geometry <- geos::geos_intersection(g, bng_to_grid_geom(refs))
     
+    if (format == "wkt") {
+      geom <- geos::geos_write_wkt(geom)
+      
+    } else if (format == "sf") {
+      chk_sf_installed()
+      
+      geom <- sf::st_as_sfc(geom) 
+      sf::st_crs(geom) <- sf::st_crs(27700)
+    }
+    
     return(list("BNGReference" = refs, 
                 "is_core" = contains, 
                 "geom" = geometry))
@@ -443,7 +477,10 @@ geom_to_bng_intersection.geos_geometry <- function(geom, resolution, ...) {
 #' @export
 #' @rdname geom_to_bng
 #' @aliases geom_to_bng_intersection
-geom_to_bng_intersection.sf <- function(geom, resolution, ...) {
+geom_to_bng_intersection.sf <- function(geom, 
+                                        resolution, 
+                                        format = c("geos", "sf", "wkt"), 
+                                        ...) {
   
   chk_sf_installed()
   
@@ -451,7 +488,15 @@ geom_to_bng_intersection.sf <- function(geom, resolution, ...) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
+  # if the user submitted 'sf' then assume 'sf' return
+  if (missing(format)) {
+    format <- "sf"
+  } else {
+    format <- match.arg(format) 
+  }
   
+  geom <- geos::as_geos_geometry(geom)
+  geom_to_bng_intersection(geom, resolution, format, ...)
 }
 
 
