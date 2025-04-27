@@ -6,18 +6,42 @@
 #' @param xmin,ymin,xmax,ymax numeric vector of bounding box coordinates
 #' @param ... additional parameters, not currently used
 #' @details
+#' The relationship between the bounding box and the returned BNG grid squares
+#' depends on the alignment of the bounding box with the BNG index system:
+#' 
+#' If the bounding box edges align with the BNG system (e.g. xmin, ymin, xmax,
+#' ymax are multiples of the specified resolution), only the grid squares
+#' entirely contained within the bounding box are returned. Grid squares that
+#' intersect but are not fully contained within the bounding box are excluded.
+#' 
+#' If the bounding box edges are not aligned with the BNG system, grid squares
+#' that are partially overlapped by the bounding box are also included. In this
+#' case, the function ensures all relevant grid squares that the bounding box
+#' touches are returned, including those at the edges.
+#' 
+#' Validates and normalises the bounding box coordinates to the BNG index system
+#' extent. If bounding box coordinates fall outside of the BNG system extent,
+#' the coordinates are snapped to the bounds of the BNG system.
+#' 
 #' Bounding boxes are expressed as four coordinates (min x, min y, max x, max
 #' y). Coordinates must be in British National Grid projection (EPSG:27700).
 #' These functions do not support coordinate transformations.
 #' 
-#' @returns \code{bng_to_bbox}: numeric vector of bounding coordinates. If
-#'   multiple references are supplied to \code{bng_ref} then a matrix of
-#'   coordinates is returned. \code{bbox_to_bng}: vector of type
-#'   \code{BNGReference} objects. \code{bng_to_grid_geom} converts the bounding
-#'   box coordinates into a Polygon using \code{geos}.
+#' @returns 
+#'   * \code{bng_to_bbox}: numeric vector of bounding easting and northing
+#'   coordinates. If multiple references are supplied to \code{bng_ref} then a
+#'   matrix of coordinates is returned. 
+#'   
+#'   * \code{bbox_to_bng}: vector of type \code{BNGReference} objects. If multiple
+#'   bounding boxes are supplied, then a list of results is returned.
+#'   
+#'   * \code{bng_to_grid_geom} converts the bounding box coordinates into a
+#'   polygon geometry object.
 #'   
 #' @examples
-#' # example code
+#' bbox_to_bng(400000, 100000, 500000, 200000, "50km")
+#' 
+#' bbox_to_bng(285137.06, 78633.75, 299851.01, 86427.96, 5000)
 #' 
 #' @export
 #' @rdname bng_to_bbox
@@ -97,7 +121,13 @@ bbox_to_bng.matrix <- function(x, resolution, ...) {
 
 #' @param bng_ref vector of type \code{BNGReference} objects
 #' @examples
-#' # example code
+#' bng_to_bbox(as_bng_reference("SU"))
+#' 
+#' bng_to_bbox(as_bng_reference("SU 3 1"))
+#' 
+#' bng_to_bbox(as_bng_reference("SU 3 1 NE"))
+#' 
+#' bng_to_bbox(as_bng_reference("SU 37289 15541"))
 #' 
 #' @export
 #' @rdname bng_to_bbox
@@ -113,15 +143,22 @@ bng_to_bbox <- function(bng_ref, ...) {
 }
 
 
-#' @param format character indicating the type of geometry object to return
+#' @param format character indicating the type of geometry object to return.
+#'   Default is "geos" while "sf" returns an object of class \code{sfc}.
 #' @examples
-#' # example code
+#' bng_to_grid_geom(as_bng_reference("SU"))
+#' 
+#' bng_to_grid_geom(as_bng_reference("SU 3 1"))
+#' 
+#' bng_to_grid_geom(as_bng_reference("SU 3 1 NE"))
+#' 
+#' bng_to_grid_geom(as_bng_reference("SU 37289 15541"))
 #' 
 #' @import geos
 #' @export
 #' @rdname bng_to_bbox
 #' @aliases bng_to_grid_geom
-bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
+bng_to_grid_geom <- function(bng_ref, format = c("geos", "sf", "wkt"), ...) {
   validate_bng_ref(bng_ref)
   
   # check inputs
@@ -158,8 +195,9 @@ bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
 
 #' Convert BNG References
 #' 
-#' Create British National Grid references from coordinates or convert grid
-#' reference objects to coordinates.
+#' Create British National Grid references from coordinates at a specific
+#' resolution or convert grid reference objects to coordinates at a grid
+#' position.
 #' @param bng_ref vector of type \code{BNGReference} objects
 #' @param position character indicating which point location of the BNG grid
 #'   square is returned. Default is the lower-left corner.
@@ -171,10 +209,17 @@ bng_to_grid_geom <- function(bng_ref, format = c("geos", "wkt", "sf"), ...) {
 #' 
 #' @returns 
 #' * \code{xy_to_bng}: vector of \code{BNGReference} objects
+#' 
 #' * \code{bng_to_xy}: two-column matrix of eastings and northings
 #' 
 #' @examples
-#' # example code
+#' bng_to_xy(as_bng_reference("SU"), "lower-left")
+#' 
+#' bng_to_xy(as_bng_reference("SU 3 1"), "lower-left")
+#' 
+#' bng_to_xy(as_bng_reference("SU 3 1 NE"), "centre")
+#' 
+#' bng_to_xy(as_bng_reference("SU 37289 15541"), "centre")
 #' 
 #' @export
 #' @rdname bng_to_xy
@@ -210,7 +255,13 @@ bng_to_xy <- function(bng_ref, position = c("lower-left",
 #'   or character vector
 #' 
 #' @examples
-#' # example code
+#' xy_to_bng(437289, 115541, "100km")
+#' 
+#' xy_to_bng(437289, 115541, "10km")
+#' 
+#' xy_to_bng(437289, 115541, "5km")
+#' 
+#' xy_to_bng(437289, 115541, 1)
 #'   
 #' @export
 #' @rdname bng_to_xy
@@ -332,13 +383,46 @@ xy_to_bng.data.frame <- function(df,
 
 #' Spatial index for geometries
 #' 
-#' Generate the set of BNG cells that cover a geometry and optionally return an
-#' intersection of the geometry with the grid.
+#' Returns a set of BNG Reference objects given a geometry and a specified
+#' resolution.
 #' @param geom geometry object of type \code{geos-geometry} or \code{sf}
 #' @param resolution spatial resolution of the BNG cell expressed in string or
 #'   integer values
 #' @details
-#' Additional details...
+#' The BNG Reference objects returned represent the grid squares intersected by
+#' the input geometry. BNG Reference objects are de-duplicated in cases where
+#' two or more parts of a multi-part geometry intersect the same grid square.
+#' 
+#' This function is useful for spatial indexing and aggregation of geometries
+#' against the BNG. For geometry decomposition by the BNG index system, use
+#' \code{geom_to_bng_intersection instead}.
+#' 
+#' @returns
+#' 
+#' \code{geom_to_bng}: list of vectors of \code{BNGReference} objects where the
+#' number of items in the list equal \code{length(geom)}.
+#' 
+#' \code{geom_to_bng_intersection}: list of nested lists with
+#' \code{length(geom)}. Each nested list contains three named items:
+#' * "BNGReference" - \code{BNGReference} objects representing the grid squares corresponding to the decomposition.
+#' * "is_core" - logical vector indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside) and "edge" (partially overlapping) grid squares.
+#' * "geom" - The geometry representing the intersection between the input geometry and the grid square. This can one of a number of geometry types depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same as the grid square geometry.
+#' 
+#' @examples
+#' geom_to_bng(geos::geos_make_point(430000, 110000), "100km")
+#' 
+#' geom_to_bng(geos::geos_make_linestring(c(430000, 430010, 430010), c(110000,
+#' 110000, 110010)), "5m")
+#' 
+#' geom_to_bng_intersection(geos::geos_make_point(430000, 110000), "100km")
+#' 
+#' geom_to_bng_intersection(geos::geos_make_linestring(c(430000, 430010,
+#' 430010), c(110000, 110000, 110010)), "5m")
+#' 
+#' geom_to_bng_intersection(geos::geos_make_polygon(c(375480.64511692,
+#' 426949.67604058, 465166.20199588, 453762.88376729, 393510.2158297,
+#' 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078,
+#' 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
 #' 
 #' @import geos
 #' @export
@@ -426,6 +510,8 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
+  format <- match.arg(format) 
+  
   # match length of inputs
   args <- expand_args(geom, resolution)
   geom <- args[[1]]
@@ -457,13 +543,13 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
     geometry <- geos::geos_intersection(g, bng_to_grid_geom(refs))
     
     if (format == "wkt") {
-      geom <- geos::geos_write_wkt(geom)
+      geometry <- geos::geos_write_wkt(geometry)
       
     } else if (format == "sf") {
       chk_sf_installed()
       
-      geom <- sf::st_as_sfc(geom) 
-      sf::st_crs(geom) <- sf::st_crs(27700)
+      geometry <- sf::st_as_sfc(geometry) 
+      sf::st_crs(geometry) <- sf::st_crs(27700)
     }
     
     return(list("BNGReference" = refs, 
@@ -653,7 +739,7 @@ bng_to_coords <- function(ref, position) {
 #' @keywords internal
 #' @noRd
 geom_bng_intersects <- function(geom, resolution) {
-  # get BNG refers under the bounding box
+  # get BNG references under the bounding box
   allrefs <- lapply(seq_along(geom), function(i) {
     res <- resolution[i]
     g <- geos::geos_unnest(geom[i], max_depth = 99)
