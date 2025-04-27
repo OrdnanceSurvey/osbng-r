@@ -666,7 +666,7 @@ geom_bng_intersects <- function(geom, resolution) {
       refs <- xy_to_bng(cbind(geos::geos_x(g),
                               geos::geos_y(g)),
                         resolution = res)
-      return(refs)
+      return(unique(refs))
       
     } else {
       bbox <- geos::geos_extent(g)
@@ -674,7 +674,7 @@ geom_bng_intersects <- function(geom, resolution) {
       refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
       ints <- geos::geos_intersects(g, bng_to_grid_geom(refs))
       
-      return(refs[ints])
+      return(unique(refs[ints]))
     }
   })
   
