@@ -46,9 +46,6 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
     warning("Invalid resolutions detected. NAs returned.", call. = FALSE)
   }
   
-  # convert resolution to numeric values
-  resolution <- internal_resolution_to_numeric(resolution)
-  
   # expand values to allow vector of resolutions
   args <- expand_args(xmin, ymin, xmax, ymax, resolution)
   xmin <- args[[1]]
@@ -57,18 +54,33 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   ymax <- args[[4]]
   resolution <- args[[5]]
   
-  xbound <- (ceiling(xmax / resolution) * resolution)
-  ybound <- (ceiling(ymax / resolution) * resolution)
+  results <- lapply(seq_along(xmin), function(i) {
+    if (is_valid_bng_resolution(resolution[i])) {
+      res <- internal_resolution_to_numeric(type.convert(resolution[i], 
+                                                         as.is = T))
+      
+      xbound <- (ceiling(xmax[i] / res) * res)
+      ybound <- (ceiling(ymax[i] / res) * res)
+      
+      # compute grid of coordinates
+      offxmn <- seq(xmin[i], xbound - 1, by = res)
+      offymn <- seq(ymin[i], ybound - 1, by = res)
+      coords_min <- expand.grid(offxmn, offymn)
+      
+      refs <- rep(NA, nrow(coords_min))
+      refs <- xy_to_bng(coords_min, c(1, 2), res)
+      
+      return(new_bng_reference(refs))
+    } else {
+      return(NA)
+    }
+  })
   
-  # compute grid of coordinates
-  offxmn <- seq(xmin, xbound - 1, by = resolution)
-  offymn <- seq(ymin, ybound - 1, by = resolution)
-  coords_min <- expand.grid(offxmn, offymn)
+  if (length(results) == 1L) {
+    results <- results[[1]]
+  }
   
-  refs <- rep(NA, nrow(coords_min))
-  
-  refs[chk_resolution] <- xy_to_bng(coords_min, c(1, 2), resolution)
-  new_bng_reference(refs)
+  results
 }
 
 #' @export
