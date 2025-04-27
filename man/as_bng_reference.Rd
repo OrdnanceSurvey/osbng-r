@@ -37,6 +37,9 @@ resolutions. At its highest level, the grid is divided into 100 km by 100 km
 squares, each of which is identified by a two-letter code. Successive levels
 of resolution further subdivide the grid squares into finer detail, down to
 individual 1-meter squares.
+
+The package supports the 'standard' and 'intermediate' quadtree resolutions:
+100km, 50km, 10km, 5km, 1km, 500m, 100m, 50m, 10m, 5m and 1m.
 }
 \examples{
 as_bng_reference("TQ1234")

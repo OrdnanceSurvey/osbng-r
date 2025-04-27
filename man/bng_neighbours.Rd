@@ -14,7 +14,7 @@ bng_is_neighbour(bng_ref1, bng_ref2, ...)
 
 \item{...}{additional parameters. Not currently used}
 
-\item{bng_ref1, bng_ref2}{\code{BNGReference} object for comparison when
+\item{bng_ref1, bng_ref2}{\code{BNGReference} objects for comparison when
 assessing neighbour relationships.}
 }
 \value{
@@ -27,13 +27,22 @@ a boolean identifying if the grid references share a border
 Find BNG references which share a grid cell edge with a target BNG reference.
 }
 \details{
-Grid reference cells are "neighbours" when they share a contiguous
+Grid references are "neighbours" when they share a contiguous
 edge (i.e. corners do not define neighbours). In the event that a target
 reference is along the edge or corner of the valid BNG area, then 3 or 2
 references, respectively, will be returned \code{bng_is_neighbour} only
 compares references of equal resolution.
+
+If \code{bng_ref1} exactly matches \code{bng_ref2} then
+\code{bng_is_neighbour} returns \code{FALSE}.
 }
 \examples{
-# example code
+bng_neighbours(as_bng_reference("SU1234"))
+
+bng_is_neighbour(as_bng_reference("SE1921"), as_bng_reference("SE1821"))
+
+bng_is_neighbour(as_bng_reference("SE1922"), as_bng_reference("SE1821"))
+
+bng_is_neighbour(as_bng_reference("SU1234"), as_bng_reference("SU1234"))
 
 }

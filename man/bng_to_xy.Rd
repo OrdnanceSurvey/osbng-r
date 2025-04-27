@@ -50,8 +50,9 @@ or character vector}
 }
 }
 \description{
-Create British National Grid references from coordinates or convert grid
-reference objects to coordinates.
+Create British National Grid references from coordinates at a specific
+resolution or convert grid reference objects to coordinates at a grid
+position.
 }
 \details{
 Coordinates must be in British National Grid projection (EPSG:27700) using
@@ -59,9 +60,21 @@ eastings and northings in meters. These functions do not support coordinate
 transformations.
 }
 \examples{
-# example code
+bng_to_xy(as_bng_reference("SU"), "lower-left")
 
-# example code
+bng_to_xy(as_bng_reference("SU 3 1"), "lower-left")
+
+bng_to_xy(as_bng_reference("SU 3 1 NE"), "centre")
+
+bng_to_xy(as_bng_reference("SU 37289 15541"), "centre")
+
+xy_to_bng(437289, 115541, "100km")
+
+xy_to_bng(437289, 115541, "10km")
+
+xy_to_bng(437289, 115541, "5km")
+
+xy_to_bng(437289, 115541, 1)
   
 # example code
 

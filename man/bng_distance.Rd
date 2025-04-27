@@ -40,9 +40,28 @@ involving invalid references are \code{NA}.
 Compute Euclidean distances between BNG references and distance-based
 neighbours lists.
 }
+\details{
+\code{bng_dwithin} returns all grids squares for which any part of the
+boundary is within the distance \code{d} of any part of \code{bng_ref}'s
+boundary.
+}
 \examples{
-# example code
+bng_dwithin(as_bng_reference("SU1234"), 1000)
 
-# example code
+bng_dwithin(as_bng_reference("SU1234"), 1001)
+
+bng_distance(as_bng_reference("SE1433"), as_bng_reference("SE1631"))
+
+bng_distance(as_bng_reference("SE1433"), as_bng_reference("SENW"))
+
+bng_distance(as_bng_reference("SE1433"), as_bng_reference(c("SE1533", "SE1631", "SE")))
+
+bng_distance(as_bng_reference(c("SE1533", "SE1631", "SE")))
+
+bng_distance(as_bng_reference(c("SE1433", "SE1244")), as_bng_reference(c("SE1533", "SE1631", "SE")))
+
+bng_distance(as_bng_reference(c("SE1433", "SE1244")), as_bng_reference(c("SE1533", "SE1631")), by_element = TRUE)
+
+bng_distance(as_bng_reference("SE1433"), as_bng_reference(c("SE1533", "SE1631", "SE")), edge_to_edge = TRUE)
 
 }

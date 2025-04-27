@@ -15,22 +15,75 @@ geom_to_bng(geom, resolution, ...)
 
 \method{geom_to_bng}{sf}(geom, resolution, ...)
 
-geom_to_bng_intersection(geom, resolution, ...)
+geom_to_bng_intersection(
+  geom,
+  resolution,
+  format = c("geos", "sf", "wkt"),
+  ...
+)
 
-\method{geom_to_bng_intersection}{geos_geometry}(geom, resolution, ...)
+\method{geom_to_bng_intersection}{geos_geometry}(
+  geom,
+  resolution,
+  format = c("geos", "sf", "wkt"),
+  ...
+)
 
-\method{geom_to_bng_intersection}{sf}(geom, resolution, ...)
+\method{geom_to_bng_intersection}{sf}(
+  geom,
+  resolution,
+  format = c("geos", "sf", "wkt"),
+  ...
+)
 }
 \arguments{
 \item{geom}{geometry object of type \code{geos-geometry} or \code{sf}}
 
 \item{resolution}{spatial resolution of the BNG cell expressed in string or
 integer values}
+
+\item{format}{character indicating the type of geometry object to return.
+Default is "geos" while "sf" returns an object of class \code{sfc}.}
+}
+\value{
+\code{geom_to_bng}: list of vectors of \code{BNGReference} objects where the
+number of items in the list equal \code{length(geom)}.
+
+\code{geom_to_bng_intersection}: list of nested lists with
+\code{length(geom)}. Each nested list contains three named items:
+\itemize{
+\item "BNGReference" - \code{BNGReference} objects representing the grid squares corresponding to the decomposition.
+\item "is_core" - logical vector indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside) and "edge" (partially overlapping) grid squares.
+\item "geom" - The geometry representing the intersection between the input geometry and the grid square. This can one of a number of geometry types depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same as the grid square geometry.
+}
 }
 \description{
-Generate the set of BNG cells that cover a geometry and optionally return an
-intersection of the geometry with the grid.
+Returns a set of BNG Reference objects given a geometry and a specified
+resolution.
 }
 \details{
-Additional details...
+The BNG Reference objects returned represent the grid squares intersected by
+the input geometry. BNG Reference objects are de-duplicated in cases where
+two or more parts of a multi-part geometry intersect the same grid square.
+
+This function is useful for spatial indexing and aggregation of geometries
+against the BNG. For geometry decomposition by the BNG index system, use
+\code{geom_to_bng_intersection instead}.
+}
+\examples{
+geom_to_bng(geos::geos_make_point(430000, 110000), "100km")
+
+geom_to_bng(geos::geos_make_linestring(c(430000, 430010, 430010), c(110000,
+110000, 110010)), "5m")
+
+geom_to_bng_intersection(geos::geos_make_point(430000, 110000), "100km")
+
+geom_to_bng_intersection(geos::geos_make_linestring(c(430000, 430010,
+430010), c(110000, 110000, 110010)), "5m")
+
+geom_to_bng_intersection(geos::geos_make_polygon(c(375480.64511692,
+426949.67604058, 465166.20199588, 453762.88376729, 393510.2158297,
+375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078,
+94454.79935802, 91989.21703833, 144999.23691181)), "50km")
+
 }

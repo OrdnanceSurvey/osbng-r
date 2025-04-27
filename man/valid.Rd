@@ -49,24 +49,36 @@ finer resolutions. The grid reference can be expressed at different scales,
 as follows:
 \enumerate{
 \item 100 km: Identified by a two-letter code (e.g. 'TQ').
-\item 50 km: Subdivides the 100 km grid into four quadrants. The grid reference adds an ordinal direction suffix (NE, NW, SE, SW) to indicate the quadrant within the 100 km square (e.g. 'TQSW').
+\item 50 km: Subdivides the 100 km grid into four quadrants.
+The grid reference adds an ordinal direction suffix (NE, NW, SE, SW) to
+indicate the quadrant within the 100 km square (e.g. 'TQSW').
 \item 10 km: Adds two-digit easting and northing values (e.g. 'TQ23').
-\item 5 km: Subdivides the 10 km square adding an ordinal suffix (e.g. 'TQ53SW').
-\item 1 km: Adds four-digit easting and northing values (e.g. 'TQ2334').
-\item 500 m: Subdivides the 1 km square adding an ordinal suffix (e.g. 'TQ2334NE').
-\item 100 m: Adds six-digit easting and northing values (e.g. ' TQ238347').
-\item 50 m: Subdivides the 100 m square adding an ordinal suffix (e.g. 'TQ238347SE').
-\item 10 m: Adds eight-digit easting and northing values (e.g. 'TQ23863472').
-\item 5 m: Subdivides the 10 m square adding an ordinal suffix (e.g. e.g. 'TQ23863472NW').
+\item 5 km: Subdivides the 10 km square adding an ordinal suffix
+(e.g. 'TQ53SW').
+\item 1 km: Adds four-digit easting and northing values
+(e.g. 'TQ2334').
+\item 500 m: Subdivides the 1 km square adding an ordinal suffix
+(e.g. 'TQ2334NE').
+\item 100 m: Adds six-digit easting and northing values
+(e.g. ' TQ238347').
+\item 50 m: Subdivides the 100 m square adding an ordinal suffix
+(e.g. 'TQ238347SE').
+\item 10 m: Adds eight-digit easting and northing values
+(e.g. 'TQ23863472').
+\item 5 m: Subdivides the 10 m square adding an ordinal suffix
+(e.g. e.g. 'TQ23863472NW').
 \item 1 m: Adds ten-digit easting and northing values (e.g. 'TQ2386334729').
 }
 
 BNG references must adhere to the following format:
 \itemize{
-\item Whitespace may or may not separate  the components of the reference (i.e. between the two-letter 100km grid square prefix, easting, northing, and ordinal suffix).
+\item Whitespace may or may not separate  the components of the reference
+(i.e. between the two-letter 100km grid square prefix, easting, northing,
+and ordinal suffix).
 \item If whitespace is present, it should be a single space character.
 \item Whitespace can be inconsistently used between components of the reference.
-\item The two-letter 100 km grid square prefixes and ordinal direction suffixes (NE, SE, SW, NW) should be capitalised.
+\item The two-letter 100 km grid square prefixes and ordinal direction suffixes
+(NE, SE, SW, NW) should be capitalised.
 }
 
 At each resolution, a given location can be identified with increasing
