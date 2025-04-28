@@ -668,8 +668,8 @@ bng_to_coords <- function(ref, position) {
   idx <- arrayInd(idx, .dim = c(7, 13)) - 1
   
   # look up the main coordinates based on prefix
-  e <- idx[1, 1] * 100000
-  n <- idx[1, 2] * 100000
+  e <- idx[, 1] * 100000
+  n <- idx[, 2] * 100000
   
   # extract coordinates (if present)
   xy <- get_digits(ref)
