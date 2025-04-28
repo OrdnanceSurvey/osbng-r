@@ -36,3 +36,47 @@ test_that("distances are calculated", {
   }
 })
 
+
+test_that("krings are generated", {
+  expect_error(bng_kring(as_bng_reference("SU34")))
+  expect_error(bng_kring(as_bng_reference("SU12"), k = -1))
+  
+  df <- readRDS(test_cases("bng_kring"))
+  
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    
+    expect_equal(sort(bng_kring(as_bng_reference(r$bng_ref), k = r$k)),
+                 sort(as_bng_reference(r$expected[[1]])))
+  }
+})
+
+
+test_that("kdiscs are generated", {
+  expect_error(bng_kdisc(as_bng_reference("SU34")))
+  expect_error(bng_kdisc(as_bng_reference("SU12"), k = -1))
+  
+  df <- readRDS(test_cases("bng_kdisc"))
+  
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    
+    expect_equal(sort(bng_kdisc(as_bng_reference(r$bng_ref), k = r$k)),
+                 sort(as_bng_reference(r$expected[[1]])))
+  }
+})
+
+
+test_that("dwithin references are generated", {
+  expect_error(bng_dwithin(as_bng_reference("SU34")))
+  expect_error(bng_dwithin(as_bng_reference("SU12"), d = -1))
+  
+  df <- readRDS(test_cases("bng_dwithin"))
+  
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    
+    expect_equal(sort(bng_dwithin(as_bng_reference(r$bng_ref), d = r$d)),
+                 sort(as_bng_reference(r$expected[[1]])))
+  }
+})
