@@ -84,3 +84,45 @@ df <- data.frame(
             simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
 names(df) <- c("bng_ref", "d", "expected")
 saveRDS(df, "./tests/testthat/fixtures/bng_dwithin_test_cases.rds")
+
+# bbox_to_bng
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/json/bbox_to_bng_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("xmin", "ymin", "xmax", "ymax", 
+               "resolution", "expected_warning", "expected")
+saveRDS(df, "./tests/testthat/fixtures/bbox_to_bng_test_cases.rds")
+
+# bng_to_bbox
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/json/bng_to_bbox_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("bng_ref", "expected")
+saveRDS(df, "./tests/testthat/fixtures/bng_to_bbox_test_cases.rds")
+
+# bng_to_grid_geom
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/json/bng_bbox_geom_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = F))
+names(df) <- c("bng_ref", "output")
+
+df$expected <- sapply(seq_along(df$bng_ref), function(i) {
+  x <- df[i, "output", drop = T]
+  
+  if (x$type == "Polygon") {
+    g <- geos::geos_make_polygon(x$coordinates[[1]][,,1], 
+                                 x$coordinates[[1]][,,2])
+    
+    return(geos::geos_write_wkt(g))
+  }
+})
+
+saveRDS(df[, c("bng_ref", "expected")], 
+        "./tests/testthat/fixtures/bng_to_grid_geom_test_cases.rds")
+
+# geom_to_bng
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/json/geom_to_bng_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("geom", "resolution", "expected", "expected_warning")
+saveRDS(df, "./tests/testthat/fixtures/geom_to_bng_test_cases.rds")
