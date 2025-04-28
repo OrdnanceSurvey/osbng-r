@@ -746,9 +746,9 @@ geom_bng_intersects <- function(geom, resolution) {
   # get BNG references under the bounding box
   allrefs <- lapply(seq_along(geom), function(i) {
     res <- resolution[i]
-    g <- geos::geos_unnest(geom[i], max_depth = 99)
+    g <- geos::geos_unnest(geom[i], keep_multi = FALSE, max_depth = 99)
     
-    if (geos::geos_type_id(g) >= 4) {
+    if (any(geos::geos_type_id(g) >= 4)) {
       stop("Cannot unnest collection further.", call. = FALSE)
     }
     
@@ -759,12 +759,23 @@ geom_bng_intersects <- function(geom, resolution) {
       return(unique(refs))
       
     } else {
-      bbox <- geos::geos_extent(g)
+      partrefs <- lapply(seq_along(g), function(j) {
+        gpart <- g[j]
+        
+        bbox <- geos::geos_extent(gpart)
+        
+        refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
+        ints <- geos::geos_intersects(gpart, bng_to_grid_geom(refs))
+        
+        return(unique(refs[ints]))
+      })
+      # bbox <- geos::geos_extent(g)
+      # 
+      # refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
+      # ints <- geos::geos_intersects(g, bng_to_grid_geom(refs))
+      # return(unique(refs[ints]))
       
-      refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
-      ints <- geos::geos_intersects(g, bng_to_grid_geom(refs))
-      
-      return(unique(refs[ints]))
+      return(unique(as_bng_reference(unlist(partrefs))))
     }
   })
   
