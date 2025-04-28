@@ -16,6 +16,9 @@
 #' of resolution further subdivide the grid squares into finer detail, down to
 #' individual 1-meter squares.
 #' 
+#' The package supports the 'standard' and 'intermediate' quadtree resolutions:
+#' 100km, 50km, 10km, 5km, 1km, 500m, 100m, 50m, 10m, 5m and 1m.
+#' 
 #' @returns An object of type \code{BNGReference}.
 #' 
 #' @examples
@@ -152,7 +155,7 @@ is_bng_reference <- function(bng_ref) {
 #' @export
 #' @name print.BNGReference
 print.BNGReference <- function(x, ...) {
-  res <- unique(get_bng_resolution_string(x))
+  res <- unique(na.omit(get_bng_resolution_string(x)))
   
   if (all(is.na(res)) == TRUE) {
     print(unclass(x))
