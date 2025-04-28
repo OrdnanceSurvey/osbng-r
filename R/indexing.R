@@ -86,6 +86,10 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
       xbound <- (ceiling(xmax[i] / res) * res)
       ybound <- (ceiling(ymax[i] / res) * res)
       
+      if (xbound <= xmin[i] | ybound <= ymin[i]) {
+        return(NA)
+      }
+      
       # compute grid of coordinates
       offxmn <- seq(xmin[i], xbound - 1, by = res)
       offymn <- seq(ymin[i], ybound - 1, by = res)
@@ -94,7 +98,7 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
       refs <- rep(NA, nrow(coords_min))
       refs <- xy_to_bng(coords_min, c(1, 2), res)
       
-      return(new_bng_reference(refs))
+      return(new_bng_reference(na.omit(refs)))
     } else {
       return(NA)
     }
