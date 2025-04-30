@@ -6,7 +6,7 @@ test_that("bboxes convert to BNG", {
   for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     
-    if(!is.na(r$expected_warning)) {
+    if (!is.na(r$expected_warning)) {
       expect_warning(val <- bbox_to_bng(r$xmin, r$ymin, r$xmax, r$ymax, 
                                         resolution = r$resolution))
     } else {
@@ -46,12 +46,11 @@ test_that("bng references are returned for geometries", {
   df <- readRDS(test_cases("geom_to_bng"))
   
   for (i in seq_len(nrow(df))) {
-    print(i)
     r <- df[i, ]
     
-    if(!is.na(r$expected_warning)) {
-      val <- geom_to_bng(geos::geos_read_geojson(r$geom), 
-                         resolution = r$resolution)
+    if (!is.na(r$expected_warning)) {
+      expect_warning(val <- geom_to_bng(geos::geos_read_geojson(r$geom), 
+                                        resolution = r$resolution))
       
       expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]]$bng_ref)))
     } else {
@@ -67,3 +66,46 @@ test_that("bng references are returned for geometries", {
     }
   }
 })
+
+
+test_that("geometries are decomposed to bng references", {
+  df <- readRDS(test_cases("geom_to_bng_intersection"))
+  
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    
+    if (!is.na(r$expected_warning)) {
+      expect_warning(val <- geom_to_bng_intersection(geos::geos_read_geojson(r$geom),
+                                                     resolution = r$resolution))
+      
+      expect_equal(length(val[[1]]), 3L)
+      expect_equal(names(val[[1]]), c("BNGReference", "is_core", "geom"))
+      expect_equal(length(val), length(r$expected))
+      
+      expect_equal(sort(val[[1]]$BNGReference), 
+                   sort(as_bng_reference(r$expected[[1]]$bng_ref)))
+      
+      expect_equal(val[[1]]$is_core[order(val[[1]]$BNGReference)],
+                   r$expected[[1]]$is_core[order(r$expected[[1]]$bng_ref)])
+      
+    } else {
+      if (any(r$expected[[1]] == "expect_error")) {
+        expect_error(geom_to_bng_intersection(geos::geos_read_geojson(r$geom), 
+                                              resolution = r$resolution))
+      } else {
+        val <- geom_to_bng_intersection(geos::geos_read_geojson(r$geom),
+                                        resolution = r$resolution)
+        
+        expect_equal(length(val[[1]]), 3L)
+        expect_equal(names(val[[1]]), c("BNGReference", "is_core", "geom"))
+        expect_equal(length(val), length(r$expected))
+        
+        expect_equal(sort(val[[1]]$BNGReference), 
+                     sort(as_bng_reference(r$expected[[1]]$bng_ref)))
+        
+        expect_equal(val[[1]]$is_core[order(val[[1]]$BNGReference)],
+                     r$expected[[1]]$is_core[order(r$expected[[1]]$bng_ref)])
+      }
+    }
+  }
+}) 

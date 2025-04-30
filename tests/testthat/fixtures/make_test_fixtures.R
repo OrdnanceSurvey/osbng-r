@@ -126,3 +126,10 @@ df <- data.frame(
             simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
 names(df) <- c("geom", "resolution", "expected", "expected_warning")
 saveRDS(df, "./tests/testthat/fixtures/geom_to_bng_test_cases.rds")
+
+# geom_to_bng_intersection
+df <- data.frame(
+  read_json("./tests/testthat/fixtures/json/geom_to_bng_intersection_test_cases.json", 
+            simplifyVector = TRUE, simplifyDataFrame = TRUE, flatten = TRUE))
+names(df) <- c("geom", "resolution", "expected", "expected_warning")
+saveRDS(df, "./tests/testthat/fixtures/geom_to_bng_intersection_test_cases.rds")
