@@ -397,7 +397,12 @@ xy_to_bng.data.frame <- function(df,
 #' the input geometry. BNG Reference objects are de-duplicated in cases where
 #' two or more parts of a multi-part geometry intersect the same grid square.
 #' 
-#' This function is useful for spatial indexing and aggregation of geometries
+#' Unlike \code{geom_to_bng} which only returnS BNG Reference objects
+#' representing the grid squares intersected by the input geometry,
+#' \code{geom_to_bng_intersection} returns list objects that store the
+#' intersection between the input geometry and the grid square geometries.
+#' 
+#' These functions are useful for spatial indexing and aggregation of geometries
 #' against the BNG. For geometry decomposition by the BNG index system, use
 #' \code{geom_to_bng_intersection instead}.
 #' 
@@ -408,9 +413,11 @@ xy_to_bng.data.frame <- function(df,
 #' 
 #' \code{geom_to_bng_intersection}: list of nested lists with
 #' \code{length(geom)}. Each nested list contains three named items:
-#' * "BNGReference" - \code{BNGReference} objects representing the grid squares corresponding to the decomposition.
-#' * "is_core" - logical vector indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside) and "edge" (partially overlapping) grid squares.
-#' * "geom" - The geometry representing the intersection between the input geometry and the grid square. This can one of a number of geometry types depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same as the grid square geometry.
+#' \itemize{
+#'  \item "BNGReference" - \code{BNGReference} objects representing the grid squares corresponding to the decomposition.
+#'  \item "is_core" - logical vector indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside) and "edge" (partially overlapping) grid squares.
+#'  \item "geom" - The geometry representing the intersection between the input geometry and the grid square. This can one of a number of geometry types depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same as the grid square geometry.
+#' }
 #' 
 #' @examples
 #' geom_to_bng(geos::geos_make_point(430000, 110000), "100km")
@@ -536,23 +543,32 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
   # main processing loop
   results <- lapply(seq_along(geom), function(i) {
     res <- resolution[i]
-    g <- geos::geos_unnest(geom[i], max_depth = 99)
+    g <- geos::geos_unnest(geom[i], keep_multi = FALSE, max_depth = 99)
     
-    if (geos::geos_type_id(g) >= 4) {
+    if (any(geos::geos_type_id(g) >= 4)) {
       stop("Cannot unnest collection further.", call. = FALSE)
     }
-    
+    # get references for all parts, but deduplicate
     refs <- geom_to_bng(g, res)
-    contains <- geos::geos_contains(g, bng_to_grid_geom(refs))
-    geometry <- geos::geos_intersection(g, bng_to_grid_geom(refs))
+    refs <- as_bng_reference(unique(unlist(refs)))
+    # get grid square geometry
+    grid_geoms <- bng_to_grid_geom(refs)
     
+    # check grid relationship
+    contains <- geos::geos_contains(g, grid_geoms)
+    chips <- geos::geos_intersection(g, grid_geoms[!contains])
+    
+    geometry <- rep(NA, length(refs))
+    geometry[contains] <- grid_geoms[contains]
+    geometry[!contains] <- chips
+
     if (format == "wkt") {
       geometry <- geos::geos_write_wkt(geometry)
-      
+
     } else if (format == "sf") {
       chk_sf_installed()
-      
-      geometry <- sf::st_as_sfc(geometry) 
+
+      geometry <- sf::st_as_sfc(geometry)
       sf::st_crs(geometry) <- sf::st_crs(27700)
     }
     
@@ -769,11 +785,6 @@ geom_bng_intersects <- function(geom, resolution) {
         
         return(unique(refs[ints]))
       })
-      # bbox <- geos::geos_extent(g)
-      # 
-      # refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
-      # ints <- geos::geos_intersects(g, bng_to_grid_geom(refs))
-      # return(unique(refs[ints]))
       
       return(unique(as_bng_reference(unlist(partrefs))))
     }
