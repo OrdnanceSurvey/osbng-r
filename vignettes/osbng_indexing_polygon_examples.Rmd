@@ -86,11 +86,12 @@ library(sf)
 # Read the Office for National Statistics (ONS) England Regions GeoPackage
 # Create an sf data frame
 # See examples/data/metadata.json for more information about the data source
-gdf <- st_read(system.file("extdata/Regions_December_2024_Boundaries_EN_BFC.gpkg", 
+gdf <- st_read(system.file("extdata", 
+                           "London_Regions_December_2024_Boundaries_EN_BFC.gpkg", 
                            package = "osbng"))
 
-# Filter the data frame
-gdf_london <- gdf[gdf$RGN24NM == "London", c("RGN24CD", "RGN24NM")]
+# Filter the data frame columns
+gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
 
 # Return the data frame
 gdf_london
@@ -206,8 +207,8 @@ separate rows.
 
 ```{r decompose_london}
 # Create a new data frame of the London Region
-# Filter the data frame
-gdf_london <- gdf[gdf$RGN24NM == "London", c("RGN24CD", "RGN24NM")]
+# Filter the data frame columns
+gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
 
 # Decompose the London Region intoa simplified representation bounded by its
 # presence in each BNG grid square at a 5km resolution.
