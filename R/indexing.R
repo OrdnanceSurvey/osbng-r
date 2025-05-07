@@ -45,6 +45,8 @@
 #' @export
 #' @rdname bng_to_bbox
 #' @aliases bbox_to_bng 
+#' @importFrom utils type.convert
+#' @importFrom stats na.omit
 bbox_to_bng <- function(...) UseMethod("bbox_to_bng")
 
 #' @export
@@ -391,6 +393,7 @@ xy_to_bng.data.frame <- function(df,
 #' @param geom geometry object of type \code{geos-geometry} or \code{sf}
 #' @param resolution spatial resolution of the BNG cell expressed in string or
 #'   integer values
+#' @param ... additional parameters. Not currently used.
 #' @details
 #' The BNG Reference objects returned represent the grid squares intersected by
 #' the input geometry. BNG Reference objects are de-duplicated in cases where

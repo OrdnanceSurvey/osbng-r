@@ -154,6 +154,7 @@ is_bng_reference <- function(bng_ref) {
 #' 
 #' @export
 #' @name print.BNGReference
+#' @importFrom stats na.omit
 print.BNGReference <- function(x, ...) {
   res <- unique(na.omit(get_bng_resolution_string(x)))
   
@@ -221,6 +222,9 @@ c.BNGReference <- function(...) {
 }
 
 
+#' @param incomparables A vector of values that cannot be compared. See
+#'   [\code{unique()}].
+#' @param ... Additional parameters.
 #' @export
 #' @rdname BNGReference
 unique.BNGReference <- function(x, incomparables = FALSE, ...) {
