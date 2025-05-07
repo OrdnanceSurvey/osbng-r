@@ -48,17 +48,7 @@
         {
             "geom": "{\"type\": \"MultiPoint\", \"coordinates\":[[448305,1268032],[453577.2,1461288.1]]}",
             "resolution": "100m",
-            "expected_warning": true,
-            "expected": [
-                {
-                    "bng_ref": "HP 483 680",
-                    "is_core": false
-                },
-                {
-                    "bng_ref": "",
-                    "is_core": false
-                }
-            ]
+            "expected": "expect_error"
         },
         {
             "geom": "{\"type\": \"LineString\", \"coordinates\":[[322151.67478431,423602.49962155],[426164.94966458,423602.49962155],[426164.94966458,372381.46093429],[371801.51596583,372381.46093429],[373372.71347157,476394.73581456]]}",

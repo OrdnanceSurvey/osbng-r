@@ -28,11 +28,13 @@ test_that("bng children are returned", {
       expect_error(bng_to_children(r$bng_ref, r$resolution))
     } else {
       if (r$resolution == "NULL") {
-        expect_equal(bng_to_children(as_bng_reference(r$bng_ref)), 
+        val <- bng_to_children(as_bng_reference(r$bng_ref))
+        expect_equal(val[[1]], 
                      as_bng_reference(r$expected[[1]]))
       } else {
-        expect_equal(bng_to_children(as_bng_reference(r$bng_ref), 
-                                   type.convert(r$resolution, as.is = TRUE)), 
+        val <- bng_to_children(as_bng_reference(r$bng_ref), 
+                               type.convert(r$resolution, as.is = TRUE))
+        expect_equal(val[[1]], 
                      as_bng_reference(r$expected[[1]]))
       }
     }

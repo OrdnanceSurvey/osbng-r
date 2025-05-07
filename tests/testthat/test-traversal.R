@@ -46,7 +46,7 @@ test_that("krings are generated", {
   for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     
-    expect_equal(sort(bng_kring(as_bng_reference(r$bng_ref), k = r$k)),
+    expect_equal(sort(bng_kring(as_bng_reference(r$bng_ref), k = r$k)[[1]]),
                  sort(as_bng_reference(r$expected[[1]])))
   }
 })
@@ -61,7 +61,7 @@ test_that("kdiscs are generated", {
   for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     
-    expect_equal(sort(bng_kdisc(as_bng_reference(r$bng_ref), k = r$k)),
+    expect_equal(sort(bng_kdisc(as_bng_reference(r$bng_ref), k = r$k)[[1]]),
                  sort(as_bng_reference(r$expected[[1]])))
   }
 })
@@ -76,7 +76,7 @@ test_that("dwithin references are generated", {
   for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     
-    expect_equal(sort(bng_dwithin(as_bng_reference(r$bng_ref), d = r$d)),
+    expect_equal(sort(bng_dwithin(as_bng_reference(r$bng_ref), d = r$d)[[1]]),
                  sort(as_bng_reference(r$expected[[1]])))
   }
 })

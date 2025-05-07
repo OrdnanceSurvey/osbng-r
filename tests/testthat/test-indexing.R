@@ -1,17 +1,17 @@
 test_that("bboxes convert to BNG", {
-  df <- readRDS(test_cases("bbox_to_bng"))
+  expect_equal(bbox_to_bng(0, 0, 0, 0, "1km")[[1]], NA)
   
-  expect_equal(bbox_to_bng(0, 0, 0, 0, "1km"), NA)
+  df <- readRDS(test_cases("bbox_to_bng"))
   
   for (i in seq_len(nrow(df))) {
     r <- df[i, ]
     
     if (!is.na(r$expected_warning)) {
       expect_warning(val <- bbox_to_bng(r$xmin, r$ymin, r$xmax, r$ymax, 
-                                        resolution = r$resolution))
+                                        resolution = r$resolution)[[1]])
     } else {
       val <- bbox_to_bng(r$xmin, r$ymin, r$xmax, r$ymax, 
-                         resolution = r$resolution)
+                         resolution = r$resolution)[[1]]
     }
     expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]])))
   }
@@ -52,7 +52,8 @@ test_that("bng references are returned for geometries", {
       expect_warning(val <- geom_to_bng(geos::geos_read_geojson(r$geom), 
                                         resolution = r$resolution))
       
-      expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]]$bng_ref)))
+      expect_equal(sort(val[[1]]), 
+                   sort(as_bng_reference(r$expected[[1]]$bng_ref)))
     } else {
       if (r$expected[[1]] == "expect_error") {
         expect_error(geom_to_bng(geos::geos_read_geojson(r$geom), 
@@ -61,7 +62,8 @@ test_that("bng references are returned for geometries", {
         val <- geom_to_bng(geos::geos_read_geojson(r$geom), 
                            resolution = r$resolution)
         
-        expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]]$bng_ref)))
+        expect_equal(sort(val[[1]]), 
+                     sort(as_bng_reference(r$expected[[1]]$bng_ref)))
       }
     }
   }
