@@ -18,8 +18,8 @@ bng_is_neighbour(bng_ref1, bng_ref2, ...)
 assessing neighbour relationships.}
 }
 \value{
-A set of up to four \code{BNGReference} objects that border the
-target reference.
+A list containing a set of up to four \code{BNGReference} objects
+that border the target reference.
 
 a boolean identifying if the grid references share a border
 }

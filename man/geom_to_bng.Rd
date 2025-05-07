@@ -42,6 +42,8 @@ geom_to_bng_intersection(
 \item{resolution}{spatial resolution of the BNG cell expressed in string or
 integer values}
 
+\item{...}{additional parameters. Not currently used.}
+
 \item{format}{character indicating the type of geometry object to return.
 Default is "geos" while "sf" returns an object of class \code{sfc}.}
 }
@@ -66,7 +68,12 @@ The BNG Reference objects returned represent the grid squares intersected by
 the input geometry. BNG Reference objects are de-duplicated in cases where
 two or more parts of a multi-part geometry intersect the same grid square.
 
-This function is useful for spatial indexing and aggregation of geometries
+Unlike \code{geom_to_bng} which only returnS BNG Reference objects
+representing the grid squares intersected by the input geometry,
+\code{geom_to_bng_intersection} returns list objects that store the
+intersection between the input geometry and the grid square geometries.
+
+These functions are useful for spatial indexing and aggregation of geometries
 against the BNG. For geometry decomposition by the BNG index system, use
 \code{geom_to_bng_intersection instead}.
 }

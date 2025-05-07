@@ -21,6 +21,9 @@ and practical exploration of the index system's structure.
 Other contributors:
 \itemize{
   \item Ordnance Survey Ltd [copyright holder, funder]
+  \item Steve Kingston [contributor]
+  \item Kate New [contributor]
+  \item Tom Peterken [contributor]
 }
 
 }

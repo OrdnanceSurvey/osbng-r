@@ -27,8 +27,8 @@ between each pair of BNG references. An error is raised if the
 edges of the grid references? Default is \code{FALSE} to use the centroid.}
 }
 \value{
-an unordered vector of \code{BNGReference} objects around a given
-grid square within an absolute distance \code{d}.
+list containing an unordered vector of \code{BNGReference} objects
+around a given grid square within an absolute distance \code{d}.
 
 If \code{by_element} is \code{FALSE} \code{bng_distance} returns a
 dense numeric matrix of dimension length(x) by length(y); otherwise it
@@ -50,18 +50,25 @@ bng_dwithin(as_bng_reference("SU1234"), 1000)
 
 bng_dwithin(as_bng_reference("SU1234"), 1001)
 
-bng_distance(as_bng_reference("SE1433"), as_bng_reference("SE1631"))
 
-bng_distance(as_bng_reference("SE1433"), as_bng_reference("SENW"))
+ref1 <- as_bng_reference("SE1433")
 
-bng_distance(as_bng_reference("SE1433"), as_bng_reference(c("SE1533", "SE1631", "SE")))
+bng_distance(ref1, as_bng_reference("SE1631"))
 
-bng_distance(as_bng_reference(c("SE1533", "SE1631", "SE")))
+bng_distance(ref1, as_bng_reference("SENW"))
 
-bng_distance(as_bng_reference(c("SE1433", "SE1244")), as_bng_reference(c("SE1533", "SE1631", "SE")))
+ref2 <- as_bng_reference(c("SE1533", "SE1631", "SE"))
 
-bng_distance(as_bng_reference(c("SE1433", "SE1244")), as_bng_reference(c("SE1533", "SE1631")), by_element = TRUE)
+bng_distance(ref1, ref2)
 
-bng_distance(as_bng_reference("SE1433"), as_bng_reference(c("SE1533", "SE1631", "SE")), edge_to_edge = TRUE)
+bng_distance(ref2)
+
+ref3 <- as_bng_reference(c("SE1433", "SE1244"))
+
+bng_distance(ref3, ref2)
+
+bng_distance(ref3, ref2, by_element = TRUE)
+
+bng_distance(ref1, ref2, edge_to_edge = TRUE)
 
 }

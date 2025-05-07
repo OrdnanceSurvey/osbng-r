@@ -18,8 +18,9 @@ the ring and input BNG reference}
 \item{...}{additional parameters. Not currently used}
 }
 \value{
-an unordered collection of objects of type \code{BNGReference}
-within the neighbourhood around the given grid reference.
+list containing an unordered collection of objects of type
+\code{BNGReference} within the neighbourhood around the given grid
+reference.
 }
 \description{
 Identify neighbours in a hollow ring or solid disc at grid distance 'k' from

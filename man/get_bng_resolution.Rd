@@ -26,6 +26,6 @@ How the resolution of grid reference is determined.
 \examples{
 get_bng_resolution(as_bng_reference("TQ1234"))
 
-get_bng_resolution_string("TQ1234NE")
+get_bng_resolution_string(as_bng_reference("TQ1234NE"))
 
 }

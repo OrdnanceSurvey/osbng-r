@@ -31,6 +31,11 @@
 \item{i}{Record selection.}
 
 \item{value}{A suitable replacement value of type \code{BNGReference}.}
+
+\item{...}{Additional parameters.}
+
+\item{incomparables}{A vector of values that cannot be compared. See
+\link{\code{unique()}}.}
 }
 \value{
 A vector of type \code{BNGReference}.
