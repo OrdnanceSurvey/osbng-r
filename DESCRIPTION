@@ -3,7 +3,10 @@ Title: Access the British National Grid Index System
 Version: 0.1.0
 Authors@R: c(
     person("Chris", "Jochem", email = "chris.jochem@os.uk", role = c("cre", "aut")),
-    person("Ordnance Survey Ltd", role = c("cph", "fnd")))
+    person("Ordnance Survey Ltd", role = c("cph", "fnd")),
+    person("Steve", "Kingston", role = c("ctb")),
+    person("Kate", "New", role = c("ctb")),
+    person("Tom", "Peterken", role = c("ctb")))
 Description: A programmatic interface to Ordnance Survey's British National Grid
     (BNG) index system, supporting efficient grid-based spatial indexing and 
     analysis. The BNG enables applications such as statistical aggregation, data
@@ -17,6 +20,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests: 
+    knitr,
+    rmarkdown,
     sf,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
@@ -24,3 +29,4 @@ Depends:
     R (>= 3.5.0)
 Imports: 
     geos
+VignetteBuilder: knitr
