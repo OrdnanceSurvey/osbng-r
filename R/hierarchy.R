@@ -37,9 +37,9 @@ bng_to_children <- function(bng_ref, resolution, ...) {
   # fill in results
   child_list[valid_idx] <- child_results
   
-  if (length(child_list) == 1L) {
-    child_list <- child_list[[1]]
-  }
+  # if (length(child_list) == 1L) {
+  #   child_list <- child_list[[1]]
+  # }
   
   child_list
 }
@@ -114,7 +114,7 @@ get_children <- function(ref, resolution) {
     # get shape of BNG as bbox
     bb <- bng_to_bbox(ref[i])
     # get child refs within the box
-    refs <- bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])
+    refs <- bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])[[1]]
     
     return(refs)
   })

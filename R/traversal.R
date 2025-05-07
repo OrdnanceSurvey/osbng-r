@@ -7,7 +7,7 @@
 #' @param k numeric value measuring the number of grid squares traversed between
 #'   the ring and input BNG reference
 #' @param ... additional parameters. Not currently used
-#' @details K-rings are hollow rings of grid cells at a grid distance \code{k}
+#' @details K-rings are hollow rings of grid squares at a grid distance \code{k}
 #' while k-discs are filled areas around a given grid square up to a grid
 #' distance k. \code{bng_kdisc} includes the given BNG Reference (i.e. the
 #' central grid square).
@@ -16,8 +16,9 @@
 #' BNG area, then any return BNG references of the ring/disc outside the valid
 #' BNG range will not be returned.
 #' 
-#' @returns an unordered collection of objects of type \code{BNGReference}
-#'   within the neighbourhood around the given grid reference.
+#' @returns list containing an unordered collection of objects of type
+#'   \code{BNGReference} within the neighbourhood around the given grid
+#'   reference.
 #' 
 #' @examples
 #' bng_kring(as_bng_reference("SU1234"), 1)
@@ -64,9 +65,9 @@ bng_kring <- function(bng_ref, k, ...) {
   # replace valid
   ring_list[valid_idx] <- rings
   
-  if (length(ring_list) == 1L) {
-    ring_list <- ring_list[[1]]
-  }
+  # if (length(ring_list) == 1L) {
+  #   ring_list <- ring_list[[1]]
+  # }
   
   ring_list
 }
@@ -107,9 +108,9 @@ bng_kdisc <- function(bng_ref, k, ...) {
   # replace valid
   disc_list[valid_idx] <- discs
   
-  if (length(disc_list) == 1L) {
-    disc_list <- disc_list[[1]]
-  }
+  # if (length(disc_list) == 1L) {
+  #   disc_list <- disc_list[[1]]
+  # }
   
   disc_list
 }
@@ -120,13 +121,13 @@ bng_kdisc <- function(bng_ref, k, ...) {
 #' Find BNG references which share a grid cell edge with a target BNG reference.
 #' @param bng_ref target object of type \code{BNGReference}
 #' @param ... additional parameters. Not currently used
-#' @details Grid reference cells are "neighbours" when they share a contiguous
+#' @details Grid references are "neighbours" when they share a contiguous
 #' edge (i.e. corners do not define neighbours). In the event that a target
 #' reference is along the edge or corner of the valid BNG area, then 3 or 2
 #' references, respectively, will be returned \code{bng_is_neighbour} only
 #' compares references of equal resolution.
-#' @returns A set of up to four \code{BNGReference} objects that border the
-#'   target reference.
+#' @returns A list containing a set of up to four \code{BNGReference} objects
+#'   that border the target reference.
 #' @examples
 #' bng_neighbours(as_bng_reference("SU1234"))
 #' 
@@ -154,9 +155,9 @@ bng_neighbours <- function(bng_ref, ...) {
   # replace valid
   neigh_list[valid_idx] <- neighbours
   
-  if (length(neigh_list) == 1L) {
-    neigh_list <- neigh_list[[1]]
-  }
+  # if (length(neigh_list) == 1L) {
+  #   neigh_list <- neigh_list[[1]]
+  # }
   
   neigh_list
 }
@@ -214,7 +215,7 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
       return(FALSE)
     } else {
       b2 <- as.character(bng_ref2[i])
-      n <- as.character(bng_neighbours(bng_ref1[i]))
+      n <- as.character(bng_neighbours(bng_ref1[i])[[1]])
       
       return(match(b2, n, nomatch = 0) > 0)
     }
@@ -233,8 +234,8 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
 #' @param bng_ref object of class \code{BNGReference}.
 #' @param d numeric. Distance expressed in metres.
 #' @param ... additional parameters. Not currently used.
-#' @returns an unordered vector of \code{BNGReference} objects around a given
-#'   grid square within an absolute distance \code{d}. 
+#' @returns list containing an unordered vector of \code{BNGReference} objects
+#'   around a given grid square within an absolute distance \code{d}.
 #'
 #' @details
 #' \code{bng_dwithin} returns all grids squares for which any part of the
@@ -284,9 +285,9 @@ bng_dwithin <- function(bng_ref, d, ...) {
   # replace valid
   dlist[valid_idx] <- dneighs
   
-  if (length(dlist) == 1L) {
-    dlist <- dlist[[1]]
-  }
+  # if (length(dlist) == 1L) {
+  #   dlist <- dlist[[1]]
+  # }
   
   dlist
 }

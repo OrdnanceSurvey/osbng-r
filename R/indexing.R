@@ -32,8 +32,7 @@
 #'   coordinates. If multiple references are supplied to \code{bng_ref} then a
 #'   matrix of coordinates is returned. 
 #'   
-#'   * \code{bbox_to_bng}: vector of type \code{BNGReference} objects. If multiple
-#'   bounding boxes are supplied, then a list of results is returned.
+#'   * \code{bbox_to_bng}: list containing vectors of \code{BNGReference} objects. 
 #'   
 #'   * \code{bng_to_grid_geom} converts the bounding box coordinates into a
 #'   polygon geometry object.
@@ -104,9 +103,9 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
     }
   })
   
-  if (length(results) == 1L) {
-    results <- results[[1]]
-  }
+  # if (length(results) == 1L) {
+  #   results <- results[[1]]
+  # }
   
   results
 }
@@ -488,8 +487,17 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
+  if (!is.na(sf::st_crs(geom)) & 
+             (sf::st_crs(geom) != sf::st_crs(27700))) {
+    stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
+         call. = FALSE)
+  }
+  
   geom <- geos::as_geos_geometry(geom)
-  geom_bng_intersects(geom, resolution)
+  # scrub CRS info to avoid geos conflicts
+  attr(geom, "crs") <- NULL
+  
+  geom_to_bng(geom, resolution, ...)
 }
 
 
@@ -548,22 +556,37 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
     if (any(geos::geos_type_id(g) >= 4)) {
       stop("Cannot unnest collection further.", call. = FALSE)
     }
-    # get references for all parts, but deduplicate
-    refs <- geom_to_bng(g, res)
-    refs <- as_bng_reference(unique(unlist(refs)))
-    # get grid square geometry
-    grid_geoms <- bng_to_grid_geom(refs)
     
-    # check grid relationship
-    contains <- geos::geos_contains(g, grid_geoms)
-    chips <- geos::geos_intersection(g, grid_geoms[!contains])
+    # process each geometry part
+    partrefs <- lapply(seq_along(g), function(j) {
+      gpart <- g[j]
+      
+      refs <- geom_to_bng(gpart, res)[[1]]
+      grid_geoms <- bng_to_grid_geom(refs)
+      
+      # check grid relationship
+      contains <- geos::geos_contains(gpart, grid_geoms)
+      chips <- geos::geos_intersection(gpart, grid_geoms[!contains])
+      
+      geometry <- rep(NA, length(refs))
+      geometry[contains] <- geos::geos_write_wkt(grid_geoms[contains])
+      geometry[!contains] <- geos::geos_write_wkt(chips)
+      # using wkt to simplify combining vectors and avoid pointer issues
+      
+      return(list("refs" = refs, 
+                  "contains" = contains, 
+                  "geometry" = geometry))
+    })
     
-    geometry <- rep(NA, length(refs))
-    geometry[contains] <- grid_geoms[contains]
-    geometry[!contains] <- chips
+    # combine parts
+    allparts <- unlist(partrefs, recursive = F)
+    refs <- unname(do.call(c, allparts[grepl("refs", names(allparts))]))
+    contains <- unname(do.call(c, allparts[grepl("contains", names(allparts))]))
+    geometry <- unname(do.call(c, allparts[grepl("geometry", names(allparts))]))
 
-    if (format == "wkt") {
-      geometry <- geos::geos_write_wkt(geometry)
+    # adjust format
+    if (format == "geos") {
+      geometry <- geos::geos_read_wkt(geometry)
 
     } else if (format == "sf") {
       chk_sf_installed()
@@ -601,7 +624,16 @@ geom_to_bng_intersection.sf <- function(geom,
     format <- match.arg(format) 
   }
   
+  if (!is.na(sf::st_crs(geom)) & 
+      (sf::st_crs(geom) != sf::st_crs(27700))) {
+    stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
+         call. = FALSE)
+  }
+  
   geom <- geos::as_geos_geometry(geom)
+  # scrub CRS info to avoid geos conflicts
+  attr(geom, "crs") <- NULL
+  
   geom_to_bng_intersection(geom, resolution, format, ...)
 }
 
@@ -780,7 +812,9 @@ geom_bng_intersects <- function(geom, resolution) {
         
         bbox <- geos::geos_extent(gpart)
         
-        refs <- bbox_to_bng(bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax, res)
+        refs <- bbox_to_bng(bbox$xmin, bbox$ymin, 
+                            bbox$xmax, bbox$ymax, 
+                            res)[[1]]
         ints <- geos::geos_intersects(gpart, bng_to_grid_geom(refs))
         
         return(unique(refs[ints]))
@@ -790,9 +824,9 @@ geom_bng_intersects <- function(geom, resolution) {
     }
   })
   
-  if (length(allrefs) == 1L) {
-    allrefs <- allrefs[[1]]
-  }
+  # if (length(allrefs) == 1L) {
+  #   allrefs <- allrefs[[1]]
+  # }
   
   allrefs
 }
