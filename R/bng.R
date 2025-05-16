@@ -33,6 +33,15 @@ as_bng_reference <- function(bng_ref, ...) UseMethod("as_bng_reference")
 
 #' @export
 #' @rdname as_bng_reference
+as_bng_reference.default <- function(bng_ref, ...) {
+  warning("Invalid BNG grid references detected. NAs returned.", 
+          call. = FALSE)
+  
+  new_bng_reference("")
+}
+
+#' @export
+#' @rdname as_bng_reference
 as_bng_reference.BNGReference <- function(bng_ref, ...) {
   bng_ref
 }
