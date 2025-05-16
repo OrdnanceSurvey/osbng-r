@@ -87,13 +87,23 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
       xbound <- (ceiling(xmax[i] / res) * res)
       ybound <- (ceiling(ymax[i] / res) * res)
       
-      if (xbound <= xmin[i] | ybound <= ymin[i]) {
+      if (xbound < xmin[i] | ybound < ymin[i]) {
         return(NA)
       }
       
       # compute grid of coordinates
-      offxmn <- seq(xmin[i], xbound - 1, by = res)
-      offymn <- seq(ymin[i], ybound - 1, by = res)
+      if (xbound - res <= xmin[i]) {
+        offxmn <- xmin[i]
+      } else {
+        offxmn <- seq(xmin[i], xbound - 1, by = res)
+      }
+
+      if (ybound - res <= ymin[i]) {
+        offymn <- ymin[i]
+      } else {
+        offymn <- seq(ymin[i], ybound - 1, by = res)
+      }
+      
       coords_min <- expand.grid(offxmn, offymn)
       
       refs <- rep(NA, nrow(coords_min))
@@ -818,7 +828,12 @@ geom_bng_intersects <- function(geom, resolution) {
         refs <- bbox_to_bng(bbox$xmin, bbox$ymin, 
                             bbox$xmax, bbox$ymax, 
                             res)[[1]]
-        ints <- geos::geos_intersects(gpart, bng_to_grid_geom(refs))
+        
+        if (any(!is.na(refs))) {
+          ints <- geos::geos_intersects(gpart, bng_to_grid_geom(refs))
+        } else {
+          return(NA)
+        }
         
         return(unique(refs[ints]))
       })
