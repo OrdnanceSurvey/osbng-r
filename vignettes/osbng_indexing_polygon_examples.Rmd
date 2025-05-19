@@ -86,9 +86,11 @@ library(sf)
 # Read the Office for National Statistics (ONS) England Regions GeoPackage
 # Create an sf data frame
 # See examples/data/metadata.json for more information about the data source
-gdf <- st_read(system.file("extdata", 
-                           "London_Regions_December_2024_Boundaries_EN_BFC.gpkg", 
-                           package = "osbng"))
+gdf <- st_read(
+  system.file("extdata", 
+              "London_Regions_December_2024_Boundaries_EN_BFC.gpkg", 
+              package = "osbng"), 
+  quiet = TRUE)
 
 # Filter the data frame columns
 gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
@@ -136,7 +138,7 @@ an alternative when that package is not available.
 # Expand the bng_ref_5km column to separate rows for each BNG Reference object
 df <- data.frame(id = rep(seq_len(nrow(gdf_london)), 
                           lengths(gdf_london$bng_ref_5km)), 
-           bng_ref_5km = as_bng_reference(unlist(gdf_london$bng_ref_5km)))
+                 bng_ref_5km = as_bng_reference(unlist(gdf_london$bng_ref_5km)))
 
 # Create a data frame of London and combine with BNG observations
 df_london <- st_drop_geometry(gdf_london)
@@ -145,6 +147,15 @@ df_london <- st_drop_geometry(gdf_london)
 df_london <- df_london[, !names(df_london) %in% c("bng_ref_5km")]
 
 df_london <- cbind(df_london[df$id, ], df)
+```
+
+
+```{r expanding_alt, eval=FALSE}
+# Alternative approach requiring `tidyr` - NOT RUN
+
+df_london <- gdf_london %>% 
+  unnest(bng_ref_5km) %>%
+  st_drop_geometry()
 ```
 
 This new data frame contains a row for each of the BNG grid squares that
@@ -237,6 +248,14 @@ gdf_london_exp <- st_sf(gdf_london)
 head(gdf_london_exp)
 ```
 
+```{r expanding_decompose_alt, eval=FALSE}
+# Alternative approach requiring `tidyr` - NOT RUN
+gdf_london_exp <- gdf_london %>%
+  unnest_wider(bng_ref_5km) %>%
+  unnest(cols = c(BNGReference, is_core, geom)) %>%
+  st_sf()
+```
+
 This spatial data frame contains decomposed London Region's geometry decomposed
 into BNG grid squares. Using this expanded set of records demonstrates the
 `is_core` property when grid squares are fully contained by the original
@@ -256,6 +275,4 @@ legend(0.8, 0.3,
        legend = c("True", "False"),  
        fill = c("#ff1f5b", "#009ade"))
 ```
-
-
 
