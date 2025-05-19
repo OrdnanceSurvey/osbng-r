@@ -32,8 +32,7 @@ test_that("resolutions are returned as strings", {
   df <- readRDS(test_cases("get_bng_resolution_string"))
   for (i in seq_len(nrow(df))) {
     r <- df[i, ]
-    expect_equal(get_bng_resolution_string(as_bng_reference(r$bng_ref)), r$expected)
+    expect_equal(get_bng_resolution_string(as_bng_reference(r$bng_ref)), 
+                 r$expected)
   }
 })
-
-

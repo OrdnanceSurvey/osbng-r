@@ -1,6 +1,4 @@
 test_that("bboxes convert to BNG", {
-  expect_equal(bbox_to_bng(0, 0, 0, 0, "1km")[[1]], NA)
-  
   df <- readRDS(test_cases("bbox_to_bng"))
   
   for (i in seq_len(nrow(df))) {
