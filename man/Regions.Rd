@@ -3,9 +3,9 @@
 \docType{data}
 \name{Regions}
 \alias{Regions}
-\title{Region Boundaries for England}
+\title{Region Boundaries for London}
 \format{
-GeoPackage with one layer, 9 rows and 8 columns:
+GeoPackage with one layer, 1 rows and 8 columns:
 \describe{
 \item{fid}{Row index.}
 \item{RGN24CD}{Character. Region GSS code.}
@@ -22,11 +22,12 @@ Office for National Statistics (ONS), released 16 February 2025,
 Regions (December 2024) Boundaries EN BFC, \href{https://geoportal.statistics.gov.uk/}{ONS Open Geography Portal}.
 }
 \description{
-This file (Regions_December_2024_Boundaries_EN_BFC.gpkg) contains the digital
-vector boundaries for Regions in England as at December 2024. The boundaries
-available are: (BFC) Full resolution - clipped to the coastline (Mean High
-Water mark). The coordinate reference system is British National Grid
-(OSGB36; EPSG:27700). Contains both Ordnance Survey and ONS Intellectual
-Property Rights. Licenced under the Open Government Licence (OGLv3).
+This file (London_Regions_December_2024_Boundaries_EN_BFC.gpkg) contains the
+digital vector boundaries for the London Region in England as at December
+2024. The boundaries available are: (BFC) Full resolution - clipped to the
+coastline (Mean High Water mark). The coordinate reference system is British
+National Grid (OSGB36; EPSG:27700). Contains both Ordnance Survey and ONS
+Intellectual Property Rights. Licenced under the Open Government Licence
+(OGLv3).
 }
 \keyword{data}

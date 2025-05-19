@@ -2,12 +2,15 @@
 % Please edit documentation in R/bng.R
 \name{as_bng_reference}
 \alias{as_bng_reference}
+\alias{as_bng_reference.default}
 \alias{as_bng_reference.BNGReference}
 \alias{as_bng_reference.character}
 \alias{is_bng_reference}
 \title{Create BNG reference objects}
 \usage{
 as_bng_reference(bng_ref, ...)
+
+\method{as_bng_reference}{default}(bng_ref, ...)
 
 \method{as_bng_reference}{BNGReference}(bng_ref, ...)
 

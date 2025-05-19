@@ -3,7 +3,7 @@
 \name{bng_to_children}
 \alias{bng_to_children}
 \alias{bng_to_parent}
-\title{Retrieve a hierarchy of BNG indices}
+\title{Navigate the British National Grid hierarchy}
 \usage{
 bng_to_children(bng_ref, resolution, ...)
 
@@ -12,9 +12,9 @@ bng_to_parent(bng_ref, resolution, ...)
 \arguments{
 \item{bng_ref}{object of type \code{BNGReference}}
 
-\item{resolution}{(optional) numeric value of the target resolution of
-parent/child references. If omitted, the next "whole" resolution relative
-to the input BNG reference is assumed.}
+\item{resolution}{(optional) value of the target resolution of parent/child
+references. If omitted, the next resolution relative to the input BNG
+reference is assumed.}
 
 \item{...}{additional parameters. Not currently used}
 }
@@ -29,9 +29,35 @@ Identify the "parent" or "children" references which contain or are nested
 within a given BNG reference.
 }
 \details{
-More details
+The BNG is structured using a hierarchical system of grid squares at
+various resolutions. At its highest level, the grid divides GB into 100 km
+by 100 km squares, each identified by a two-letter code. Successive levels
+of resolution further subdivide the grid squares into finer detail, down to
+individual 1-meter squares. These functions allow for the traversal of this
+hierarchy by providing methods to return the parent and children of
+BNGReference objects at specified resolutions.
+
+Definitions:
+\itemize{
+\item{Parent}{The parent of a BNGReference object is the grid square at
+the next higher (coarser) resolution level that contains the current
+reference. For example, the parent of a 1km grid square reference would be
+the 5km grid square that contains it.}
+\item{Children}{The children of a BNGReference object are the grid squares
+at the next lower (finer) resolution level that are contained within the
+current reference. For example, the children of a 10km grid square
+reference would be all the 5km grid squares that it contains.}
+}
 }
 \examples{
-# example code
+bng_to_children(as_bng_reference("SU"))
+
+bng_to_children(as_bng_reference("SU36"))
+
+bng_to_parent(as_bng_reference("SU36SW"))
+
+bng_to_parent(as_bng_reference("SU342567"))
+
+bng_to_parent(as_bng_reference("SU342567"), resolution = 10000)
 
 }

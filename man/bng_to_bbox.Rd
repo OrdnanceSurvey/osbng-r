@@ -27,7 +27,8 @@ Default is "geos" while "sf" returns an object of class \code{sfc}.}
 \item \code{bng_to_bbox}: numeric vector of bounding easting and northing
 coordinates. If multiple references are supplied to \code{bng_ref} then a
 matrix of coordinates is returned.
-\item \code{bbox_to_bng}: list containing vectors of \code{BNGReference} objects.
+\item \code{bbox_to_bng}: list containing vectors of \code{BNGReference}
+objects.
 \item \code{bng_to_grid_geom} converts the bounding box coordinates into a
 polygon geometry object.
 }

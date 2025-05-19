@@ -3,7 +3,7 @@
 \name{bng_neighbours}
 \alias{bng_neighbours}
 \alias{bng_is_neighbour}
-\title{Identify neighbours}
+\title{Identify neighbouring grid squares}
 \usage{
 bng_neighbours(bng_ref, ...)
 

@@ -3,7 +3,7 @@
 \name{bng_kring}
 \alias{bng_kring}
 \alias{bng_kdisc}
-\title{Spatial neighbourhoods}
+\title{Spatial neighbourhoods in the British National Grid index system}
 \usage{
 bng_kring(bng_ref, k, ...)
 

@@ -54,9 +54,16 @@ number of items in the list equal \code{length(geom)}.
 \code{geom_to_bng_intersection}: list of nested lists with
 \code{length(geom)}. Each nested list contains three named items:
 \itemize{
-\item "BNGReference" - \code{BNGReference} objects representing the grid squares corresponding to the decomposition.
-\item "is_core" - logical vector indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside) and "edge" (partially overlapping) grid squares.
-\item "geom" - The geometry representing the intersection between the input geometry and the grid square. This can one of a number of geometry types depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same as the grid square geometry.
+\item "BNGReference" - \code{BNGReference} objects representing the grid
+squares corresponding to the decomposition.
+\item "is_core" - logical vector indicating whether the grid square geometry
+is entirely contained by the input geometry. This is relevant for Polygon
+geometries and helps distinguish between "core" (fully inside) and "edge"
+(partially overlapping) grid squares.
+\item "geom" - The geometry representing the intersection between the input
+geometry and the grid square. This can one of a number of geometry types
+depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same
+as the grid square geometry.
 }
 }
 \description{
