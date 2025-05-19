@@ -23,5 +23,6 @@
 #' }
 #' @keywords data
 #' @source Office for National Statistics (ONS), released 16 February 2025,
-#'   Regions (December 2024) Boundaries EN BFC, [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/).
+#'   Regions (December 2024) Boundaries EN BFC, [ONS Open Geography
+#'   Portal](https://geoportal.statistics.gov.uk/).
 NULL

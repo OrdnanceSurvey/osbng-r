@@ -32,8 +32,9 @@
 #'   coordinates. If multiple references are supplied to \code{bng_ref} then a
 #'   matrix of coordinates is returned. 
 #'   
-#'   * \code{bbox_to_bng}: list containing vectors of \code{BNGReference} objects. 
-#'   
+#'   * \code{bbox_to_bng}: list containing vectors of \code{BNGReference} 
+#'   objects.
+#'
 #'   * \code{bng_to_grid_geom} converts the bounding box coordinates into a
 #'   polygon geometry object.
 #'   
@@ -82,7 +83,7 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   results <- lapply(seq_along(xmin), function(i) {
     if (is_valid_bng_resolution(resolution[i])) {
       res <- internal_resolution_to_numeric(type.convert(resolution[i], 
-                                                         as.is = T))
+                                                         as.is = TRUE))
       
       xbound <- (ceiling(xmax[i] / res) * res)
       ybound <- (ceiling(ymax[i] / res) * res)
@@ -114,10 +115,6 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
       return(NA)
     }
   })
-  
-  # if (length(results) == 1L) {
-  #   results <- results[[1]]
-  # }
   
   results
 }
@@ -426,9 +423,16 @@ xy_to_bng.data.frame <- function(df,
 #' \code{geom_to_bng_intersection}: list of nested lists with
 #' \code{length(geom)}. Each nested list contains three named items:
 #' \itemize{
-#'  \item "BNGReference" - \code{BNGReference} objects representing the grid squares corresponding to the decomposition.
-#'  \item "is_core" - logical vector indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside) and "edge" (partially overlapping) grid squares.
-#'  \item "geom" - The geometry representing the intersection between the input geometry and the grid square. This can one of a number of geometry types depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same as the grid square geometry.
+#'  \item "BNGReference" - \code{BNGReference} objects representing the grid
+#'  squares corresponding to the decomposition.
+#'  \item "is_core" - logical vector indicating whether the grid square geometry
+#'  is entirely contained by the input geometry. This is relevant for Polygon
+#'  geometries and helps distinguish between "core" (fully inside) and "edge"
+#'  (partially overlapping) grid squares.
+#'  \item "geom" - The geometry representing the intersection between the input
+#'  geometry and the grid square. This can one of a number of geometry types
+#'  depending on the overlap. When "is_core" is \code{TRUE}, "geom" is the same
+#'  as the grid square geometry.
 #' }
 #' 
 #' @examples
@@ -493,15 +497,14 @@ geom_to_bng.geos_geometry <- function(geom, resolution, ...) {
 #' @rdname geom_to_bng
 #' @aliases geom_to_bng_intersection
 geom_to_bng.sf <- function(geom, resolution, ...) {
-  
   chk_sf_installed()
   
   if (missing(resolution)) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
-  if (!is.na(sf::st_crs(geom)) & 
-             (sf::st_crs(geom) != sf::st_crs(27700))) {
+  if (!is.na(sf::st_crs(geom)) && 
+      (sf::st_crs(geom) != sf::st_crs(27700))) {
     stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
          call. = FALSE)
   }
@@ -592,7 +595,7 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
     })
     
     # combine parts
-    allparts <- unlist(partrefs, recursive = F)
+    allparts <- unlist(partrefs, recursive = FALSE)
     refs <- unname(do.call(c, allparts[grepl("refs", names(allparts))]))
     contains <- unname(do.call(c, allparts[grepl("contains", names(allparts))]))
     geometry <- unname(do.call(c, allparts[grepl("geometry", names(allparts))]))
@@ -637,7 +640,7 @@ geom_to_bng_intersection.sf <- function(geom,
     format <- match.arg(format) 
   }
   
-  if (!is.na(sf::st_crs(geom)) & 
+  if (!is.na(sf::st_crs(geom)) && 
       (sf::st_crs(geom) != sf::st_crs(27700))) {
     stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
          call. = FALSE)
@@ -841,10 +844,6 @@ geom_bng_intersects <- function(geom, resolution) {
       return(unique(as_bng_reference(unlist(partrefs))))
     }
   })
-  
-  # if (length(allrefs) == 1L) {
-  #   allrefs <- allrefs[[1]]
-  # }
-  
+
   allrefs
 }

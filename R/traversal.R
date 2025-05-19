@@ -1,5 +1,5 @@
 
-#' Spatial neighbourhoods
+#' Spatial neighbourhoods in the British National Grid index system
 #' 
 #' Identify neighbours in a hollow ring or solid disc at grid distance 'k' from
 #' a target BNG reference.
@@ -65,10 +65,6 @@ bng_kring <- function(bng_ref, k, ...) {
   # replace valid
   ring_list[valid_idx] <- rings
   
-  # if (length(ring_list) == 1L) {
-  #   ring_list <- ring_list[[1]]
-  # }
-  
   ring_list
 }
 
@@ -107,16 +103,12 @@ bng_kdisc <- function(bng_ref, k, ...) {
   
   # replace valid
   disc_list[valid_idx] <- discs
-  
-  # if (length(disc_list) == 1L) {
-  #   disc_list <- disc_list[[1]]
-  # }
-  
+
   disc_list
 }
 
 
-#' Identify neighbours
+#' Identify neighbouring grid squares
 #' 
 #' Find BNG references which share a grid cell edge with a target BNG reference.
 #' @param bng_ref target object of type \code{BNGReference}
@@ -154,11 +146,7 @@ bng_neighbours <- function(bng_ref, ...) {
   
   # replace valid
   neigh_list[valid_idx] <- neighbours
-  
-  # if (length(neigh_list) == 1L) {
-  #   neigh_list <- neigh_list[[1]]
-  # }
-  
+
   neigh_list
 }
 
@@ -277,17 +265,13 @@ bng_dwithin <- function(bng_ref, d, ...) {
     # get potential neighbours
     neighs <- get_disc_neighbours(ref, resolution, k, type = "disc")
     # test any part of square within distance
-    valid_dist <- bng_distance(ref, neighs, edge_to_edge = T) <= d
+    valid_dist <- bng_distance(ref, neighs, edge_to_edge = TRUE) <= d
     
     return(neighs[valid_dist])
   })
   
   # replace valid
   dlist[valid_idx] <- dneighs
-  
-  # if (length(dlist) == 1L) {
-  #   dlist <- dlist[[1]]
-  # }
   
   dlist
 }
