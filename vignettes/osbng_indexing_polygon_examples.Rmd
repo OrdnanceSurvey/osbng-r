@@ -1,0 +1,278 @@
+---
+title: "Indexing Polygon Example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{osbng_indexing_polygon_examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  tidy = FALSE
+)
+```
+
+# British National Grid Indexing Polygon Examples
+
+A key component of the `osbng` package is the indexing functionality. The
+`geom_to_bng` and `geom_to_bng_intersection` functions enable the indexing of
+geometries, represented using
+[`geos`](https://paleolimbot.github.io/geos/index.html) geometry objects, into
+grid squares at a specified resolution. Both functions accept `geos` (or
+optionally [`sf`](https://r-spatial.github.io/sf/index.html)) objects of the
+following types: `Point`, `LineString`, `Polygon`, `MultiPoint`,
+`MultiLineString`, `MultiPolygon`, and `GeometryCollection.` The geometry
+coordinates must be encoded in the [British National Grid (OSGB36)
+EPSG:27700](https://epsg.io/27700) coordinate reference system.
+
+These functions facilitate grid-based spatial analysis, enabling applications
+such as statistical aggregation, data visualisation, and data interoperability.
+The two functions differ in their operation: `geom_to_bng` returns the British
+National Grid (BNG) grid squares intersected by the input geometry, while
+`geom_to_bng_intersection` returns the intersections (shared areas) between the
+input geometry and the grid square geometries.
+
+When deciding between the two functions, consider whether a decomposition of the
+input geometry by BNG grid squares is required. The decomposition logic is
+computationally more expensive but is useful when the intersection between the
+input geometry and a grid square is needed. This approach supports spatial join
+optimisations, such as point-in-polygon and polygon-to-polygon operations, using
+the `is_core` value of the indexed geometry object. These optimisations are
+particularly valuable for geospatial analysis of medium to large datasets in
+distributed processing systems, where geometries may be colocated by their BNG
+references.
+
+## Indexing Functions Accepting Geometries
+
+### geom_to_bng
+
+This function returns a list of `BNGReference` objects representing the BNG grid
+squares intersected by the input geometry. Note that `BNGReference` objects are
+deduplicated in cases where multiple parts of a multi-part geometry intersect
+the same grid square.
+
+### geom_to_bng_intersection
+
+This function returns a list of objects representing the decomposition of the
+input geometry into BNG grid squares. Unlike `geom_to_bng`, no deduplication
+occurs. If multiple parts of a multi-part geometry intersect the same grid
+square, the intersection for each part is returned.
+
+## Examples
+
+The examples below demonstrate the application of the two indexing functions
+using the London boundary from the administrative England Regions dataset
+provided by the Office for National Statistics (ONS). Metadata for this dataset
+is available from `?osbng::`. The indexing functions are applied to geometries
+within an `sf` spatial data frame.
+
+## Optional sf Dependency
+
+While `osbng` is fully compatible with sf and can seamlessly work with data
+frames in `R`, it does not require sf as a hard dependency. The indexing
+functions operate directly on `geos` Geometry objects. This allows you to use
+these functions with standard data structures (e.g., vectors, data frames)
+containing geos geometries.
+
+```{r setup}
+library(osbng)
+library(sf)
+```
+
+```{r loader}
+# Read the Office for National Statistics (ONS) England Regions GeoPackage
+# Create an sf data frame
+# See examples/data/metadata.json for more information about the data source
+gdf <- st_read(
+  system.file("extdata", 
+              "London_Regions_December_2024_Boundaries_EN_BFC.gpkg", 
+              package = "osbng"), 
+  quiet = TRUE)
+
+# Filter the data frame columns
+gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
+
+# Return the data frame
+gdf_london
+```
+
+Check/confirm the coordinate reference system used.
+
+```{r crs}
+# osbng indexing functions require geometry coordinates to be specified 
+# in British National Grid (BNG) (OSGB36) cordinate reference system
+# EPSG:27700
+# https://epsg.io/27700
+st_crs(gdf_london)
+```
+
+### geom_to_bng
+
+Returns a list of `BNGReference` objects representing the BNG grid squares
+intersected by the input geometry. The `BNGReference` provides functions to
+access and manipulate the reference. This includes the following:
+
+* `print(x, compact = TRUE)`: The BNG reference with whitespace removed.
+* `bng_to_grid_geom()`: Returns a grid square as a `geos` or `sf` Polygon.
+
+For more information on the BNG Reference object, see `?as_bng_reference`.
+
+```{r geom_to_bng}
+# Return the BNG grid squares intersected by the London Region
+# Uses `geom_to_bng()`
+# Uses a 5km grid square resolution
+# Returns a list of `BNGRefernce` objects for each geometry
+gdf_london$bng_ref_5km <- geom_to_bng(gdf_london, resolution = "5km")
+```
+
+The resulting data frame includes a list column containing all the BNG reference
+objects that intersect the London region. To make it easier to map these grid
+squares, we need to transform the data frame so that each reference is its own
+row. The easiest way to do this is using `tidyr::unnest`, but this example uses
+an alternative when that package is not available.
+
+```{r expanding}
+# Expand the bng_ref_5km column to separate rows for each BNG Reference object
+df <- data.frame(id = rep(seq_len(nrow(gdf_london)), 
+                          lengths(gdf_london$bng_ref_5km)), 
+                 bng_ref_5km = as_bng_reference(unlist(gdf_london$bng_ref_5km)))
+
+# Create a data frame of London and combine with BNG observations
+df_london <- st_drop_geometry(gdf_london)
+
+# Drop the original bng_ref_5km column
+df_london <- df_london[, !names(df_london) %in% c("bng_ref_5km")]
+
+df_london <- cbind(df_london[df$id, ], df)
+```
+
+
+```{r expanding_alt, eval=FALSE}
+# Alternative approach requiring `tidyr` - NOT RUN
+
+df_london <- gdf_london %>% 
+  unnest(bng_ref_5km) %>%
+  st_drop_geometry()
+```
+
+This new data frame contains a row for each of the BNG grid squares that
+intersected the original region geometry. This column still contains
+`BNGReference` objects, so we can extract information about the reference, such
+as the geometry.
+
+```{r get_geometry}
+# Using the data frame with the set of BNG grid squares
+# Get the geometry for each grid square
+df_london$geometry <- bng_to_grid_geom(df_london$bng_reference, format = "sf")
+
+# Convert this data frame to an `sf` object with the grid square geometry
+gdf_london_exp <- st_sf(df_london)
+
+# Return the first few rows
+head(gdf_london_exp)
+```
+
+Now that we have the grid square geometries organised in a spatial data frame,
+we can visualise the data and demonstrate the concept of assigning geometries to
+BNG grid squares. Since this is an `sf` object, `ggplot2::geom_sf` or `tmap` can
+be used. Here we demonstrate an alternative without dependencies.
+
+```{r map_bng, fig.height=6.5, fig.width=6.5, warning=FALSE}
+# Plot the original London Region
+plot(st_geometry(gdf_london), 
+     col = "#ffc61e", 
+     border = "#fff",
+     main = "BNG Grid Squares at 5km Resolution Intersected by London Region",
+     cex.main = .8, 
+     extent = st_bbox(gdf_london_exp))
+
+# Add the indexed and exploded London regions
+plot(st_geometry(gdf_london_exp), 
+     col = NA, 
+     border = "#333333", 
+     add = TRUE)
+
+# Add feature labels at grid square centroids
+coords <- st_coordinates(st_centroid(gdf_london_exp))
+text(coords[, 1],
+     coords[, 2],
+     gdf_london_exp$bng_reference, cex = 0.4)
+
+```
+
+### geom_to_bng_intersection
+
+Returns a list of nested lists representing the decomposition of the input
+geometry into BNG grid squares. The three elements of each nested list are:
+
+* `bng_ref`: The `BNGReference` object representing the grid square corresponding to the decomposition.
+* `is_core`: A Boolean flag indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside)and "edge" (partially overlapping) grid squares.
+* `geom`: The geometry (in `geos`, `sf`, or WKT format) representing the intersection between the input geometry and the grid square. This can be one of a number of geometry types depending on the overlap. When `is_core` is True, geom is the same as the grid square geometry.
+
+Starting again with the original London Region, the intersecting BNG grid
+squares are identified and then the decomposed geometry is exploded into
+separate rows.
+
+```{r decompose_london}
+# Create a new data frame of the London Region
+# Filter the data frame columns
+gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
+
+# Decompose the London Region intoa simplified representation bounded by its
+# presence in each BNG grid square at a 5km resolution.
+# Uses the geom_to_bng_intersection function
+# Returns a list of nested lists
+gdf_london$bng_ref_5km <- geom_to_bng_intersection(gdf_london, 
+                                                   resolution = "5km")
+
+# Drop original geometry column
+gdf_london <- st_drop_geometry(gdf_london)
+```
+
+Given the list column of BNG reference objects, the easiest way to expand this
+into multiple rows is using `tidyr::unnest_wider` followed by `tidyr::unnest`.
+This example shows an alternative approach without the dependency on `tidyr`.
+
+```{r expanding_decompose}
+# Expand the bng_ref_5km column to separate rows for each object.
+gdf_london <- cbind("RGN24CD" = gdf_london[, c("RGN24CD")], 
+                    data.frame(gdf_london$bng_ref_5km))
+
+# Convert this data frame to an `sf` object with the grid square geometry
+gdf_london_exp <- st_sf(gdf_london)
+
+# Return the first few rows of the GeoDataFrame
+head(gdf_london_exp)
+```
+
+```{r expanding_decompose_alt, eval=FALSE}
+# Alternative approach requiring `tidyr` - NOT RUN
+gdf_london_exp <- gdf_london %>%
+  unnest_wider(bng_ref_5km) %>%
+  unnest(cols = c(BNGReference, is_core, geom)) %>%
+  st_sf()
+```
+
+This spatial data frame contains decomposed London Region's geometry decomposed
+into BNG grid squares. Using this expanded set of records demonstrates the
+`is_core` property when grid squares are fully contained by the original
+geometry.
+
+```{r viz_is_core, fig.height=6.5, fig.width=6.5, warning=FALSE}
+
+# Plot the indexed and expanded London Region spatial data frame
+plot(gdf_london_exp["is_core"],
+     border = "#fff",
+     col = c("#009ade", "#ff1f5b")[gdf_london$is_core + 1],
+     main = "Decomposition of the London Region into BNG Grid Squares at 5km Resolution",
+     cex.main = .75)
+
+legend(0.8, 0.3, 
+       title = "is_core",
+       legend = c("True", "False"),  
+       fill = c("#ff1f5b", "#009ade"))
+```
+

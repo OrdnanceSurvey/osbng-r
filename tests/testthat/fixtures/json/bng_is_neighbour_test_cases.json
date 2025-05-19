@@ -1,0 +1,44 @@
+{
+  "bng_is_neighbour": [
+    {
+      "bng_ref1": "SE1822",
+      "bng_ref2": "SE1922",
+      "expected": true
+    },
+    {
+      "bng_ref1": "SE1822",
+      "bng_ref2": "SE1721",
+      "expected": false
+    },
+    {
+      "bng_ref1": "SV",
+      "bng_ref2": "SQ",
+      "expected": true
+    },
+    {
+      "bng_ref1": "SV",
+      "bng_ref2": "SR",
+      "expected": false
+    },
+    {
+      "bng_ref1": "JM",
+      "bng_ref2": "JR",
+      "expected": true
+    },
+    {
+      "bng_ref1": "SE",
+      "bng_ref2": "TA0030",
+      "expected": "expect_error"
+    },
+    {
+      "bng_ref1": "SPSE",
+      "bng_ref2": "TL02",
+      "expected": "expect_error"
+    },
+    {
+      "bng_ref1": "SPSE",
+      "bng_ref2": "SPSE",
+      "expected": false
+    }
+  ]
+}

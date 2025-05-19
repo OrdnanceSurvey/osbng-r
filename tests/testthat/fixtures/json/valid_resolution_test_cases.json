@@ -1,0 +1,48 @@
+{
+  "get_bng_resolution": [
+        {
+            "bng_ref": "SU",
+            "expected": 100000
+        },
+        {
+            "bng_ref": "SUSW",
+            "expected": 50000
+        },
+        {
+            "bng_ref": "SU12",
+            "expected": 10000
+        },
+        {
+            "bng_ref": "SU12SW",
+            "expected": 5000
+        },
+        {
+            "bng_ref": "SU1234",
+            "expected": 1000
+        },
+        {
+            "bng_ref": "SU1234NW",
+            "expected": 500
+        },
+        {
+            "bng_ref": "SU124348",
+            "expected": 100
+        },
+        {
+            "bng_ref": "SU124348SE",
+            "expected": 50
+        },
+        {
+            "bng_ref": "SU12473483",
+            "expected": 10
+        },
+        {
+            "bng_ref": "SU12473483NE",
+            "expected": 5
+        },
+        {
+            "bng_ref": "SU1247834838",
+            "expected": 1
+        }
+    ]
+}

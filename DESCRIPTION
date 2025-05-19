@@ -1,0 +1,32 @@
+Package: osbng
+Title: Access the British National Grid Index System
+Version: 0.1.0
+Authors@R: c(
+    person("Chris", "Jochem", email = "chris.jochem@os.uk", role = c("cre", "aut")),
+    person("Ordnance Survey Ltd", role = c("cph", "fnd")),
+    person("Steve", "Kingston", role = c("ctb")),
+    person("Kate", "New", role = c("ctb")),
+    person("Tom", "Peterken", role = c("ctb")))
+Description: A programmatic interface to Ordnance Survey's British National Grid
+    (BNG) index system, supporting efficient grid-based spatial indexing and 
+    analysis. The BNG enables applications such as statistical aggregation, data
+    visualisation, and data interoperability using BNG grid references. Designed
+    for developers working with geospatial data in the context of Great Britain,
+    'osbng' offers tools to simplify working with the BNG, facilitating both 
+    technical integration into geospatial workflows and practical exploration of
+    the index system's structure.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Suggests: 
+    knitr,
+    rmarkdown,
+    sf,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Depends: 
+    R (>= 3.5.0)
+Imports: 
+    geos
+VignetteBuilder: knitr

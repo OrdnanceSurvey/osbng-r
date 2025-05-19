@@ -1,0 +1,49 @@
+{
+  "bng_distance": [
+    {
+      "bng_ref1": "SE1822",
+      "bng_ref2": "SE1922",
+      "expected": 1000.0
+    },
+    {
+      "bng_ref1": "SE12",
+      "bng_ref2": "SE13",
+      "expected": 10000.0
+    },
+    {
+      "bng_ref1": "SE12",
+      "bng_ref2": "SE14",
+      "expected": 20000.0
+    },
+    {
+      "bng_ref1": "TL2029",
+      "bng_ref2": "TL2130",
+      "expected": 1414.213562373095
+    },
+    {
+      "bng_ref1": "TL1928",
+      "bng_ref2": "TL2231",
+      "expected": 4242.640687119285
+    },
+    {
+      "bng_ref1": "SE0718",
+      "bng_ref2": "SE0922",
+      "expected": 4472.13595499958
+    },
+    {
+      "bng_ref1": "SE1118",
+      "bng_ref2": "SE22NW",
+      "expected": 14212.670403551896
+    },
+    {
+      "bng_ref1": "STSW",
+      "bng_ref2": "TASW",
+      "expected": 360555.1275463989
+    },
+    {
+      "bng_ref1": "TL1928",
+      "bng_ref2": "STSW",
+      "expected": 220323.62560560773
+    }
+  ]
+}
