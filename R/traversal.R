@@ -309,7 +309,7 @@ bng_dwithin <- function(bng_ref, d, ...) {
 #' 
 #' bng_distance(ref3, ref2)
 #' 
-#' bng_distance(ref3, ref2, by_element = TRUE)
+#' bng_distance(ref3, ref2[1:2], by_element = TRUE)
 #' 
 #' bng_distance(ref1, ref2, edge_to_edge = TRUE)
 #' 

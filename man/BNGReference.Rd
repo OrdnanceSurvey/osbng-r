@@ -35,7 +35,7 @@
 \item{...}{Additional parameters.}
 
 \item{incomparables}{A vector of values that cannot be compared. See
-\link{\code{unique()}}.}
+\code{\link[base]{unique}}.}
 }
 \value{
 A vector of type \code{BNGReference}.
