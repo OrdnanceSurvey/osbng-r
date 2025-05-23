@@ -2,11 +2,17 @@
 % Please edit documentation in R/indexing.R
 \name{bbox_to_bng}
 \alias{bbox_to_bng}
+\alias{bbox_to_bng.numeric}
+\alias{bbox_to_bng.matrix}
 \alias{bng_to_bbox}
 \alias{bng_to_grid_geom}
 \title{Convert bounding boxes}
 \usage{
 bbox_to_bng(...)
+
+\method{bbox_to_bng}{numeric}(xmin, ymin, xmax, ymax, resolution, ...)
+
+\method{bbox_to_bng}{matrix}(x, resolution, ...)
 
 bng_to_bbox(bng_ref, ...)
 
@@ -15,12 +21,17 @@ bng_to_grid_geom(bng_ref, format = c("geos", "sf", "wkt"), ...)
 \arguments{
 \item{...}{additional parameters, not currently used}
 
+\item{xmin, ymin, xmax, ymax}{numeric vector of bounding box coordinates}
+
+\item{resolution}{the resolution of the BNG reference expressed either as a
+metre-based integer or as a string label}
+
+\item{x}{optional input of the bounding box as a matrix of values}
+
 \item{bng_ref}{vector of type \code{BNGReference} objects}
 
 \item{format}{character indicating the type of geometry object to return.
 Default is "geos" while "sf" returns an object of class \code{sfc}.}
-
-\item{xmin, ymin, xmax, ymax}{numeric vector of bounding box coordinates}
 }
 \value{
 \itemize{

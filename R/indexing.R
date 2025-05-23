@@ -4,6 +4,9 @@
 #' Create British National Grid reference from bounding boxes or convert grid
 #' reference objects into bounding boxes.
 #' @param xmin,ymin,xmax,ymax numeric vector of bounding box coordinates
+#' @param x optional input of the bounding box as a matrix of values
+#' @param resolution the resolution of the BNG reference expressed either as a
+#'   metre-based integer or as a string label
 #' @param ... additional parameters, not currently used
 #' @details
 #' The relationship between the bounding box and the returned BNG grid squares
@@ -51,6 +54,8 @@
 bbox_to_bng <- function(...) UseMethod("bbox_to_bng")
 
 #' @export
+#' @rdname bng_to_bbox
+#' @aliases bbox_to_bng
 bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
   # check inputs
   if (missing(xmin) || missing(ymin) || missing(xmax) || missing(ymax)) {
@@ -120,6 +125,8 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
 }
 
 #' @export
+#' @rdname bng_to_bbox
+#' @aliases bbox_to_bng
 bbox_to_bng.matrix <- function(x, resolution, ...) {
   # convert to numeric vector approach
   xmin <- x[, 1]

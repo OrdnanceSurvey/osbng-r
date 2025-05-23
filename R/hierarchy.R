@@ -17,7 +17,7 @@
 #'   BNGReference objects at specified resolutions.
 #'   
 #'   Definitions:
-#'   \itemize{
+#'   \describe{
 #'    \item{Parent}{The parent of a BNGReference object is the grid square at
 #'    the next higher (coarser) resolution level that contains the current
 #'    reference. For example, the parent of a 1km grid square reference would be

@@ -232,7 +232,7 @@ c.BNGReference <- function(...) {
 
 
 #' @param incomparables A vector of values that cannot be compared. See
-#'   [\code{unique()}].
+#'   \code{\link[base]{unique}}.
 #' @param ... Additional parameters.
 #' @export
 #' @rdname BNGReference
