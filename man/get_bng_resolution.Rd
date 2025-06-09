@@ -2,30 +2,46 @@
 % Please edit documentation in R/resolution.R
 \name{get_bng_resolution}
 \alias{get_bng_resolution}
+\alias{bng_resolutions}
 \alias{get_bng_resolution_string}
+\alias{list_bng_resolution}
 \title{BNG reference resolution}
 \usage{
 get_bng_resolution(bng_ref)
 
 get_bng_resolution_string(bng_ref)
+
+list_bng_resolution(which = c("all", "whole", "quad"), lbl = FALSE)
 }
 \arguments{
 \item{bng_ref}{Vector of \code{BNGReference} objects to test.}
+
+\item{which}{character indicating what set of resolutions to return.}
+
+\item{lbl}{logical. Should resolutions labels be returned? Default is
+\code{FALSE} to return numeric resolutions.}
 }
 \value{
 A vector of numeric values for \code{get_bng_resolution()} in metres
 or character strings expressing the resolution of the grid references.
+
+vector of BNG resolutions as either numeric values or character
+labels.
 }
 \description{
 Find the spatial resolution (i.e. grid size) of a British National Grid
-square.
+square, or list valid resolutions.
 }
 \details{
-How the resolution of grid reference is determined.
+The integer values represent spatial resolutions in metres, while the string
+labels provide a human-readable descriptor for each resolution level. For
+example, the numeric resolution 1000 is mapped to the label '1km'.
 }
 \examples{
 get_bng_resolution(as_bng_reference("TQ1234"))
 
 get_bng_resolution_string(as_bng_reference("TQ1234NE"))
+
+list_bng_resolution(which = "all", lbl = TRUE)
 
 }
