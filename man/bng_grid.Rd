@@ -24,8 +24,8 @@ bng_grid_1km(xmin, ymin, xmax, ymax, ...)
 \item{...}{Additional arguments. Not currently used.}
 }
 \value{
-Data frame object of type \code{sf} with the grid reference and the
-grid square geometry.
+Data frame object of type \code{sf} with the grid reference as a
+\code{BNGReference} object and the grid square polygon geometry.
 }
 \description{
 Generate a spatial data frame of BNG references and grid square geometries.

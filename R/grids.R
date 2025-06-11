@@ -17,8 +17,8 @@
 #' repo](https://github.com/OrdnanceSurvey/osbng-grids/).
 #' 
 #' The \code{sf} packge is required for this function.
-#' @returns Data frame object of type \code{sf} with the grid reference and the
-#'   grid square geometry.
+#' @returns Data frame object of type \code{sf} with the grid reference as a
+#'   \code{BNGReference} object and the grid square polygon geometry.
 #'   
 #' @examplesIf require("sf")
 #' bng_grid_100km()
@@ -30,12 +30,7 @@
 #' @rdname bng_grid
 bng_grid_100km <- function(xmin, ymin, xmax, ymax, ...) {
   
-  # Default to the full GB boundary
-  if (any(missing(xmin), missing(ymin), missing(xmax), missing(ymax))) {
-    bbox <- bng_bounds
-  } else {
-    bbox <- c(xmin, ymin, xmax, ymax)
-  }
+  bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   
   bbox_bng_grid(c(bbox[1], 
                   bbox[2], 
@@ -48,12 +43,7 @@ bng_grid_100km <- function(xmin, ymin, xmax, ymax, ...) {
 #' @rdname bng_grid
 bng_grid_50km <- function(xmin, ymin, xmax, ymax, ...) {
   
-  # Default to the full GB boundary
-  if (any(missing(xmin), missing(ymin), missing(xmax), missing(ymax))) {
-    bbox <- bng_bounds
-  } else {
-    bbox <- c(xmin, ymin, xmax, ymax)
-  }
+  bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   
   bbox_bng_grid(c(bbox[1], 
                   bbox[2], 
@@ -66,12 +56,7 @@ bng_grid_50km <- function(xmin, ymin, xmax, ymax, ...) {
 #' @rdname bng_grid
 bng_grid_10km <- function(xmin, ymin, xmax, ymax, ...) {
   
-  # Default to the full GB boundary
-  if (any(missing(xmin), missing(ymin), missing(xmax), missing(ymax))) {
-    bbox <- bng_bounds
-  } else {
-    bbox <- c(xmin, ymin, xmax, ymax)
-  }
+  bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   
   bbox_bng_grid(c(bbox[1], 
                   bbox[2], 
@@ -84,12 +69,7 @@ bng_grid_10km <- function(xmin, ymin, xmax, ymax, ...) {
 #' @rdname bng_grid
 bng_grid_5km <- function(xmin, ymin, xmax, ymax, ...) {
   
-  # Default to the full GB boundary
-  if (any(missing(xmin), missing(ymin), missing(xmax), missing(ymax))) {
-    bbox <- bng_bounds
-  } else {
-    bbox <- c(xmin, ymin, xmax, ymax)
-  }
+  bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   
   bbox_bng_grid(c(bbox[1], 
                   bbox[2], 
@@ -102,18 +82,45 @@ bng_grid_5km <- function(xmin, ymin, xmax, ymax, ...) {
 #' @rdname bng_grid
 bng_grid_1km <- function(xmin, ymin, xmax, ymax, ...) {
   
-  # Default to the full GB boundary
-  if (any(missing(xmin), missing(ymin), missing(xmax), missing(ymax))) {
-    bbox <- bng_bounds
-  } else {
-    bbox <- c(xmin, ymin, xmax, ymax)
-  }
+  bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   
   bbox_bng_grid(c(bbox[1], 
                   bbox[2], 
                   bbox[3], 
                   bbox[4]), 
                 resolution = "1km")
+}
+
+#' Helper function to validate bbox input
+#' Confirms the inputs to the functions that generate BNG feature grid data
+#' frames.
+#' @param xmin,ymin,xmax,ymax Optional bounding box coordinates.
+#' @details
+#' If bounding box inputs are missing, then the default is to use the full BNG
+#' extent.
+#' 
+#' @returns A numeric vector of four bounding box values.
+#' @keywords internal
+#' @noRd
+chk_bbox <- function(xmin, ymin, xmax, ymax) {
+  
+  # Default to the full GB boundary
+  if (any(missing(xmin), missing(ymin), missing(xmax), missing(ymax))) {
+    bbox <- bng_bounds
+  } else {
+    
+    # Should only be 1 digit
+    if (any(length(xmin) > 1, 
+            length(xmax) > 1, 
+            length(ymin) > 1, 
+            length(ymax) > 1)) {
+      stop("Please supply only one bounding box.", call. = FALSE)
+    }
+    
+    bbox <- c(xmin, ymin, xmax, ymax)
+  }
+  
+  bbox
 }
 
 
@@ -149,7 +156,7 @@ bbox_bng_grid <- function(bbox,
   bng_refs <- data.frame(bng_refs)
   
   bng_refs$geometry <- bng_to_grid_geom(bng_refs$bng_reference, format = "sf")
-  bng_refs <- st_sf(bng_refs, 
+  bng_refs <- sf::st_sf(bng_refs, 
                     sf_column_name = "geometry", 
                     crs = 27700)
   
