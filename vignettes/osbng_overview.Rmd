@@ -1,0 +1,555 @@
+---
+title: "osbng Overview"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{osbng Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  tidy = FALSE
+)
+```
+
+The `osbng` R package support geospatial grid indexing and interaction with
+Ordnance Survey's British National Grid (BNG) index system. `osbng` uses
+[`geos`](https://paleolimbot.github.io/geos/) for geospatial operations, with
+[`sf`](https://r-spatial.github.io/sf/) an optional dependency. The `osbng`
+package provides functionality supporting different interactions with the BNG
+index system (e.g. indexing, hierarchy, traversal). This notebook provides an
+overview of the package functionality, including example usage.
+
+```{r setup}
+library(osbng)
+library(sf)
+```
+
+## BNG Index System
+
+The OS BNG index system, also known as the OS National Grid, is a rectangular
+Cartesian 700 x 1300km grid system based upon the transverse Mercator
+projection. In the BNG, locations are specified using coordinates, eastings (x)
+and northings (y), measured in meters from a defined origin point (0, 0)
+southwest of the Isles of Scilly off the coast of Cornwall, England. Values
+increase to the northeast, covering all of mainland GB and surrounding islands.
+
+The BNG is structured using a hierarchical system of grid squares at various
+resolutions. At its highest level, the grid divides GB into 100 km by 100 km
+squares, each identified bya two-letter code. Successive levels of resolution
+further subdivide the grid squares into finder detail, down to individual
+1-meter squares.
+
+```{r}
+bng_bounds
+```
+
+```{r}
+bng_prefixes
+```
+
+## Resolutions
+
+`osbng` supports the "standard" BNG meter-based resolutions, which represent
+powers of ten from 1m to 100km `(1m, 10m, 100m, 1km, 10km, 100km)`. It also
+supports the "intermediate" quadtree resolutions `(5m, 50m, 500m, 5km, 50km)`,
+identified by an ordinal `(NE, SE, WS, NW)` BNG reference direction suffix. The
+`resolution` argument for functions can be expressed as a meter-based integer or
+as a label.
+
+```{r}
+list_bng_resolution(lbl = TRUE)
+```
+
+```{r}
+list_bng_resolution(lbl = FALSE)
+```
+
+## `BNGReference`
+
+The BNG index system uses BNG references, also known more simply as grid or tile
+references, to identify and index locations across Great Britain (GB) into grid
+squares at various resolutions. The `osbng` package implements a custom
+`BNGReference` object. This object validates and encapsulates a BNG reference,
+providing functions to access and manipulate the reference. All functions
+accepting or returning BNG references enforce the use of this class. Functions
+within `osbng` are vectorised and compatible with pipes (`%>%`, `|>`) for
+efficient processing of multiple BNG references.
+
+```{r}
+# Convert a BNG reference string into a `BNGReference` object
+bng_ref <- as_bng_reference("SU 372 155")
+
+bng_ref
+```
+
+```{r}
+# The BNG reference string as a compact string
+print(bng_ref, compact = TRUE)
+```
+
+```{r}
+# The BNG reference string as a formatted string (default behaviour)
+print(bng_ref, compact = FALSE)
+```
+
+```{r}
+# The BNG resolution expressed in metres
+get_bng_resolution(bng_ref)
+```
+
+```{r}
+# The BNG resolution expressed as a descriptive label
+get_bng_resolution_string(bng_ref)
+```
+
+## Indexing
+
+A core component of `osbng` is the ability to index and work with coordinates
+and geometries against the BNG index system. This includes:
+
+* Encoding easting and northing coordinates into `BNGReference` objects at a specified resolution.
+* Decoding `BNGReference` objects back into coordiantes, bounding boxes, and grid squares as `geos` geometries.
+* Indexing boudning boxes and `geos` geometries into grid squares at a specified resolution for spatial analysis.
+
+```{r}
+# Easting and northing coordinates
+x <- 437293
+y <- 115543
+
+# Convert easting and northing to BNGReference at 1km resolution
+bng_ref <- xy_to_bng(x, y, resolution = "1km")
+
+bng_ref
+```
+
+```{r}
+# Decode BNGReference back into coordinates
+# Default "position" is "lower-left"
+bng_to_xy(bng_ref)
+```
+
+```{r}
+# Decode BNGRefernece back into coordinates
+# Centroid of the grid square
+# "position" can be one of "lower-left", "upper-left", "lower-right", "upper-right", "centre"
+bng_to_xy(bng_ref, position = "centre")
+```
+
+```{r}
+# Return the grid square bounding box coordinates for the BNGRference object
+bng_to_bbox(bng_ref)
+```
+
+```{r}
+# Return the grid square as a geos geometry object for the BNGReference object
+# Alternatively return the geometry as WKT or `sf` object
+bng_to_grid_geom(bng_ref)
+```
+
+### Indexing `geos` Geometries
+
+The `geom_to_bng` and `geom_to_bng_intersection` functions enable the indexing
+of geometries, represented using `geos` Geometry objects, into grid squares at a
+specified resolution. Both functions accept `geos` Geometry objects of the
+following types: `Point`, `LineString`, `Polygon`, `MultiPoint`,
+`MultiLineString`, `MultiPolygon`, and `GeometryCollection`. The coodinates must
+be encoded in the [British National Grid (OSGB36)
+EPSG:27700](https://epsg.io/27700) coordinate reference system.
+
+These functions facilitate grid-based spatial analysis, enabling applications such as statistical aggregation, data visualisation, and data interoperability. The two functions differ in their operation:
+
+* `geom_to_bng` returns the BNG grid squares intersected by the input geometry.
+* `geom_to_bng_intersection` returns the intersections (shared geometries) between the input geometry and the grid square geometries.
+
+See the vignette indexing for more examples and etail on the operation of the
+two functions.
+
+#### Point
+
+```{r}
+# Easting and norhting coordinates
+x <- 437293
+y <- 115543
+
+# Construct a geos Point geometry from easting and northing coordinates
+geom <- geos_make_point(x, y)
+
+# Return the BNGReference object for the geometry at a 5km resolution
+geom_to_bng(geom = geom, resolution = "5km")
+```
+
+```{r}
+# Return the indexed results for the geometry at a 5km resolution
+# For a Point geometry, the intersection geometry is the same as the original geometry
+# The is_core property will always be False for a Point geometry
+geom_to_bng_intersection(geom = geom, resolution = "5km")
+```
+
+#### LineString
+
+```{r}
+# Create a geos LineString geometry from Well Known Text (WKT)
+geom <- geos_read_wkt("LINESTRING (436171.8 114893.7, 437861.3 116130.0)")
+
+# Return a list of the BNGReference object(s) intersected by the geometry at a 1km resolution
+geom_to_bng(geom = geom, resolution = "1km")
+```
+
+```{r}
+# Return a nested list of the indexing results for the geometry at a 1km resolution
+# The is_core property will always be False for a LineString geometry
+geom_to_bng_intersection(geom = geom, resolution = "1km")
+```
+
+##### Visualise the results
+
+For this example of visualising the results, we will use the `sf` library for
+spatial data handling, which is a suggested package that works well with
+`osbng`.
+
+```{r, tidy=FALSE}
+# Return the indexed results
+bng_idx_geoms <- geom_to_bng_intersection(geom = geom, 
+                                          resolution = "1km", 
+                                          format = "sf")
+
+# Store the indexed results as a spatial data frame
+bng_idx_geoms <- st_sf(data.frame(bng_idx_geoms))
+
+# Store the intersected BNGReference grid squares for context
+bng_grid_geoms <- bng_to_grid_geom(bng_idx_geoms$bng_reference, 
+                                   format = "sf")
+```
+
+```{r, tidy=FALSE, fig.height=6.5, fig.width=6.5}
+# Categorical colours
+# https://github.com/OrdnanceSurvey/GeoDataViz-Toolkit/blob/master/Colours/GDV%20colour%20palettes_v0.9.1.pdf
+catcols <- c("#FF1F5B", "#009ADE", "#FFC61E", "#AF58BA")
+
+# Plot geometries representing the intersection between the geometry and the BNG grid squares
+plot(st_geometry(bng_idx_geoms),
+     col = catcols,
+     lwd = 3,
+     extent = st_bbox(bng_grid_geoms),
+     main = "Decomposition of LineString Geometry into BNG Grid Squares at a 1km Resolution",
+     cex.main = .8,
+     axes = TRUE,
+     xlab = "Easting",
+     ylab = "Northing")
+
+# Plot intersected BNGReference grid squares for context
+plot(st_geometry(bng_grid_geoms),
+     col = NA,
+     border = "#00000075",
+     lty = "dashed",
+     add = TRUE)
+```
+
+#### Polygon
+
+```{r}
+# Create a geos Polygon geometry from Well Known Text (WKT)
+geom <- geos_read_wkt("POLYGON ((436661.45305455 115784.01571607, 437629.10896848 116112.11767069, 438229.486575 115953.45344189, 437990.51082297 114935.84767816, 436630.11197232 115085.69722758, 436661.45305455 115784.01571607))")
+```
+
+```{r}
+# Return a list of the BNGRefernce objects intersected by the geometry at a 500m resolution
+geom_to_bng(geom, resolution = 500)
+```
+
+```{r}
+# Return a nested list of the indexed geometry and BNGReference objects for the geometry at 500m resolution
+geom_to_bng_intersection(geom, resolution = 500)
+```
+
+##### Visualise the results
+
+```{r}
+# Return the indexed results
+bng_idx_geoms <- geom_to_bng_intersection(geom = geom, 
+                                          resolution = 500, 
+                                          format = "sf")
+
+# Store the indexed results as a spatial data frame
+bng_idx_geoms <- st_sf(data.frame(bng_idx_geoms))
+
+# Store the intersected BNGReference grid squares for context
+bng_grid_geoms <- bng_to_grid_geom(bng_idx_geoms$bng_reference, 
+                                   format = "sf")
+```
+
+```{r, tidy=FALSE, fig.height=6.5, fig.width=6.5}
+# Plot core and edge geoemtries
+plot(bng_idx_geoms["is_core"],
+     border = "#fff",
+     col = c("#009ade", "#ff1f5b")[bng_idx_geoms$is_core + 1],
+     main = "Decomposition of Polygon Geometry into BNG Grid Squares at a 500m Resolution",
+     cex.main = .8,
+     axes = TRUE,
+     xlab = "Easting",
+     ylab = "Northing")
+
+legend(0.05, 1, 
+       title = "is_core",
+       legend = c("True", "False"),  
+       fill = c("#ff1f5b", "#009ade"))
+```
+
+## Hierarchy
+
+`osbng` provides functionality to navigate the hierarchical structure of the BNG
+index system. Traversal of this hierarchy is enabled by functions providing
+methods to return the parent and children of `BNGReference` objects at specified
+resolutions.
+
+Parent and child definitions:
+
+* **Parent**: The parent of a `BNGReference` object is the grid square at the next higher (i.e. coarser) resolution level that contains the current reference. For example, the parent of a 1km grid square reference would be the 5km grid square that contains it.
+
+* **Children**: The children of a `BNGReference` object are the grid squares at the next lower (i.e. finer) resolution level that are contained within the current reference. For example, the children of a 10km grid square reference would be the 5km grid squares that it contains.
+
+* While parent and child derivation defaults to the next higher and lower lower resolution, respectively, **any** supported resolution in the hiearchy can be specified.
+
+```{r}
+# Convert a BNG reference string into a BNGReference object
+bng_ref <- as_bng_reference("SU 372 155")
+
+# The resolution of the BNGReference object as a descriptive label
+get_bng_resolution_string(bng_ref)
+```
+
+### Parent
+
+```{r}
+# Return the parent BNGReference object at the next higher resolution
+bng_to_parent(bng_ref)
+```
+
+```{r}
+# Return the parent BNGReference object at a custom higher resolution
+bng_to_parent(bng_ref, resolution = "50km")
+```
+
+#### Visualise the results
+
+```{r, tidy=FALSE, fig.height=6.5, fig.width=6.5}
+# Return the parent BNGReference object
+bng_ref_parent <- bng_to_parent(bng_ref)
+
+# Store the BNGReference grid squares
+bng_geom <- bng_to_grid_geom(bng_ref, format = "sf")
+bng_parent_geom <- bng_to_grid_geom(bng_ref_parent, format = "sf")
+
+# Plot the parent BNGReference grid square
+plot(st_geometry(bng_parent_geom),
+     col = "gray80",
+     border = "#00000075",
+     lty = "dashed",
+     lwd = 2,
+     main = "500m Resolution Parent of a 100m Resolution BNG Grid Square",
+     cex.main = .9,
+     axes = TRUE,
+     xlab = "Easting",
+     ylab = "Northing")
+
+# Plot the original BNGReference grid square
+plot(st_geometry(bng_geom),
+     col = "#AF58BA",
+     add = TRUE)
+```
+
+### Children
+
+```{r}
+# Return the children of the BNGReference object at the next lower resolution
+bng_to_children(bng_ref)
+```
+
+```{r}
+# Return the children of the BNGReference object at a custom lower resolution
+bng_to_children(bng_ref, resolution = "10m")
+```
+
+#### Visualise the results
+
+```{r, tidy=FALSE, fig.height=6.5, fig.width=6.5}
+# Return the BNGReference object for the children at 10m resolution
+bng_refs_children <- bng_to_children(bng_ref, resolution = "10m")
+
+# Store the BNGReference grid squares
+bng_geom <- bng_to_grid_geom(bng_ref, format = "sf")
+bng_children_geom <- bng_to_grid_geom(bng_refs_children[[1]], format = "sf")
+
+# Plot the parent BNGReference grid square
+plot(st_geometry(bng_children_geom),
+     col = "gray80",
+     border = "#00000075",
+     lty = "dashed",
+     main = "10m Resolution Children of a 100m Resolution BNG Grid Square",
+     cex.main = .9,
+     axes = TRUE,
+     xlab = "Easting",
+     ylab = "Northing")
+
+# Plot the original BNGReference grid square
+plot(st_geometry(bng_geom),
+     col = NA,
+     border = "#AF58BA",
+     lwd = 3,
+     add = TRUE)
+```
+
+## Traversal
+
+Traversal functionality in `osbng` includes calculating distances and neighbours
+within the BNG index system. It supports spatial analyses such as
+distance-constrained nearest neighbour searches and "distance within" queries by
+offering:
+
+* Generation of k-discs and k-rings around a give grid square.
+* Identification of neighbouring grid squares and checking adjacency.
+* Calculating the distance between grid square centroids or edges.
+* Retrieving all grid squares within a specified absolute distance.
+
+```{r}
+# Convert a BNG reference string into a BNGReference object
+bng_ref <- as_bng_reference("SU 372 155")
+```
+
+### K-disc
+
+```{r}
+# Return a list of BNGReference objects representing a filled disc around the BNGReference object
+#  up to a grid distance k, including the given central BNGReference object
+bng_kdisc(bng_ref, k = 2)
+```
+
+```{r, tidy=FALSE, fig.height=6.5, fig.width=6.5}
+# Return a k-disc of the BNGReference object at a grid distance of k=2
+bng_ref_kdisc = bng_kdisc(bng_ref, k = 2)
+
+# Store the BNGReference grid squares
+bng_geom <- bng_to_grid_geom(bng_ref, format = "sf")
+bng_kdisc_geoms <- bng_to_grid_geom(bng_ref_kdisc[[1]], format = "sf")
+
+# Plot the BNGReference grid squares in the k-disc
+plot(st_geometry(bng_kdisc_geoms),
+     col = "gray80",
+     border = "#00000075",
+     lty = "dashed",
+     main = "K-Disc Around a BNG Grid Square Where k=2",
+     cex.main = .9,
+     axes = TRUE,
+     xlab = "Easting",
+     ylab = "Northing")
+
+# Plot the original BNGReference grid square for context
+plot(st_geometry(bng_geom),
+     col = "#009ade",
+     add = TRUE)
+```
+
+### K-ring
+
+```{r}
+# Return a list of BNGReference objects representing a hollow ring around around 
+#  the BNGReference object at a grid distance k
+bng_kring(bng_ref, k = 1)
+```
+
+```{r, tidy=FALSE, fig.height=6.5, fig.width=6.5}
+# Return a k-ring of the BNGReference object at a grid distance of k=2
+bng_ref_kring = bng_kring(bng_ref, k = 3)
+
+# Store the BNGReference grid squares
+bng_geom <- bng_to_grid_geom(bng_ref, format = "sf")
+bng_kring_geoms <- bng_to_grid_geom(bng_ref_kring[[1]], format = "sf")
+
+# Plot the BNGReference grid squares in the k-disc
+plot(st_geometry(bng_kring_geoms),
+     col = "gray80",
+     border = "#00000075",
+     lty = "dashed",
+     main = "K-Ring Around a BNG Grid Square Where k=3",
+     cex.main = .9,
+     axes = TRUE,
+     xlab = "Easting",
+     ylab = "Northing")
+
+# Plot the original BNGReference grid square for context
+plot(st_geometry(bng_geom),
+     col = "#009ade",
+     add = TRUE)
+```
+
+### Neighbours
+
+```{r}
+# Convert BNG reference strings into BNGReference objects
+bng_ref1 <- as_bng_reference("SU 372 155")
+bng_ref2 <- as_bng_reference("SU 371 155")
+```
+
+```{r}
+# Check if the two BNGReference objects are neighbours
+bng_is_neighbour(bng_ref1, bng_ref2)
+```
+
+### Distance
+
+```{r}
+# Convert BNG reference strings into BNGReference objects
+bng_ref1 <- as_bng_reference("SX")
+bng_ref2 <- as_bng_reference("SU 1 2")
+
+# Return the distance between two BNGReference objects in metres
+# The default distance is calculated as the Euclidean distance between the centroids of the grid squares
+bng_distance(bng_ref1, bng_ref2)
+```
+
+```{r}
+# Return the distance between two BNGReference objects in metres
+# edge_to_edge=True calculates the distance between the edges of the grid squares
+bng_distance(bng_ref1, bng_ref2, edge_to_edge = TRUE)
+```
+
+```{r}
+# Convert BNG reference stringsinto a BNGReference object
+bng_ref <- as_bng_reference("ST 3 8")
+
+# Return all BNGReference objects within a given distance d of the input BNGReference object
+bng_dwithin(bng_ref, d = 1000)
+```
+
+## Grids
+
+`osbng` provides additional several convenience functions to generate BNG grid
+square data within specified bounds as a spatial data frame. These functions
+require the `sf` package to be available. Grid square data covvering the BNG
+index system bounds is provided at 100km, 50km, 10km, 5km and 1km resolutions.
+The functions are all named `bng_grid_<resolution>()`. Optionally, these
+functions can take a bound box argument to restrict the grids to specific
+bounds. Resolutions finer than 1km are not supported in these functions to avoid
+accidental memory intensive processing.
+
+```{r}
+# Create an sf data frame of 100km resolution BNGReference object features
+gdf <- bng_grid_100km()
+
+gdf
+```
+
+```{r}
+# Create an sf data frame of 1km resolution BNGReference object features within a bunding box
+
+# Custom bounding box coordinates
+# (xmin, ymin, xmax, ymax)
+gdf <- bng_grid_1km(529476, 179654, 532170, 181116)
+
+gdf
+```
+
