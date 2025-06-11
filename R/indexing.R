@@ -413,7 +413,7 @@ xy_to_bng.data.frame <- function(df,
 #' the input geometry. BNG Reference objects are de-duplicated in cases where
 #' two or more parts of a multi-part geometry intersect the same grid square.
 #' 
-#' Unlike \code{geom_to_bng} which only returnS BNG Reference objects
+#' Unlike \code{geom_to_bng} which only returns BNG Reference objects
 #' representing the grid squares intersected by the input geometry,
 #' \code{geom_to_bng_intersection} returns list objects that store the
 #' intersection between the input geometry and the grid square geometries.
@@ -458,6 +458,7 @@ xy_to_bng.data.frame <- function(df,
 #' 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078,
 #' 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
 #' 
+#' @seealso [geom_to_bng_intersection_explode()]
 #' @import geos
 #' @export
 #' @rdname geom_to_bng
@@ -661,6 +662,66 @@ geom_to_bng_intersection.sf <- function(geom,
 }
 
 
+#' Spatial index data frame for geometries
+#' 
+#' Generate a set of BNG Reference objects given a geometry and a specified
+#' resolution. Specifically this function will provide results in a spatial data
+#' frame format.
+#' @param geom geometry object of type \code{geos-geometry} or \code{sf}
+#' @param resolution spatial resolution of the BNG cell expressed in string or
+#'   integer values
+#' @param add_index logical. Should an index of the input feaure be added?
+#' @param ... additional parameters. Not currently used.
+#' @details
+#' The BNG Reference objects returned represent the grid squares intersected by
+#' the input geometry. This function followings the pattern of
+#' \code{geom_to_bng_intersection()}, but flattens the list structure of results
+#' into a spatial data frame. The \code{sf} package is required to use this
+#' functionality.
+#' 
+#' When \code{add_index} is \code{TRUE}, the numeric index of the input geometry
+#' will be added to the output data frame to indentify the source and enable
+#' additional attributes to be rejoined to the results.
+#' 
+#' @returns a spatial data frame of type \code{sf} with the coordinate reference
+#'   system to British National Grid (EPSG:27700) and three columns for the
+#'   \code{BNGReference} object, the \code{is_core} property, and the
+#'   \code{geometry}. Optionally, a fourth column \code{index} will be added
+#'   when \code{add_index} is \code{TRUE}.
+#' 
+#' @seealso [geom_to_bng()]
+#' @export
+geom_to_bng_intersection_explode <- function(geom, 
+                                             resolution, 
+                                             add_index = FALSE, 
+                                             ...) {
+  UseMethod("geom_to_bng_intersection")
+}
+
+#' @rdname geom_to_bng_intersection_explode
+#' @export
+geom_to_bng_intersection_explode.geos <- function(geom, 
+                                                  resolution, 
+                                                  add_index = FALSE, 
+                                                  ...) {
+  chk_sf_installed()
+  bng_idx <- geom_to_bng_intersection(geom, resolution, format = "sf")
+  
+  bng_intersection_explode(bng_idx, add_index)
+}
+
+#' @rdname geom_to_bng_intersection_explode
+#' @export
+geom_to_bng_intersection_explode.sf <- function(geom, 
+                                                resolution, 
+                                                add_index = FALSE, 
+                                                ...) {
+  bng_idx <- geom_to_bng_intersection(geom, resolution, format = "sf")
+  
+  bng_intersection_explode(bng_idx, add_index)
+}
+  
+
 #' Convert eastings and northings to BNG grid reference
 #' 
 #' Internal helper function to create BNG reference strings.
@@ -853,4 +914,40 @@ geom_bng_intersects <- function(geom, resolution) {
   })
 
   allrefs
+}
+
+
+#' Flatten a list of indexed geometries
+#' 
+#' Creates a spatial data frame from the nested list structure of results from
+#' \code{geom_to_bng_intersection()}.
+#' @param bng_idx list with results of an indexed geometry
+#' @param add_index logical. Should an index of the input feaure be added?
+#' @details
+#' The \code{sf} package is required for this function.
+#' @returns a data frame of type \code{sf} with the \code{BNGReference},
+#'   \code{is_core}, and \code{geometry} columns. Optionally, a fourth column
+#'   \code{index}, will be added to list the row index of the input feature.
+#' @keywords internal
+#' @noRd
+bng_intersection_explode <- function(bng_idx, add_index) {
+  if (length(bng_idx) == 1) {
+    df <- data.frame(bng_idx)
+    if (add_index) {
+      df <- cbind("index" = 1, df) 
+    }
+  } else {
+    if (add_index) {
+      df <- do.call(rbind, lapply(bng_idx, 
+                                  function(x) { cbind("index" = 1, 
+                                                      data.frame(x)) }))
+    } else {
+      df <- do.call(rbind, lapply(bng_idx, data.frame)) 
+    }
+  }
+  
+  # Convert to spatial format to return
+  gdf <- sf::st_sf(df)
+  
+  gdf
 }

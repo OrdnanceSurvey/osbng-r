@@ -75,7 +75,7 @@ The BNG Reference objects returned represent the grid squares intersected by
 the input geometry. BNG Reference objects are de-duplicated in cases where
 two or more parts of a multi-part geometry intersect the same grid square.
 
-Unlike \code{geom_to_bng} which only returnS BNG Reference objects
+Unlike \code{geom_to_bng} which only returns BNG Reference objects
 representing the grid squares intersected by the input geometry,
 \code{geom_to_bng_intersection} returns list objects that store the
 intersection between the input geometry and the grid square geometries.
@@ -100,4 +100,7 @@ geom_to_bng_intersection(geos::geos_make_polygon(c(375480.64511692,
 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078,
 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
 
+}
+\seealso{
+\code{\link[=geom_to_bng_intersection_explode]{geom_to_bng_intersection_explode()}}
 }
