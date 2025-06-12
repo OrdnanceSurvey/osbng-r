@@ -115,9 +115,9 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
       refs <- rep(NA, nrow(coords_min))
       refs <- xy_to_bng(coords_min, c(1, 2), res)
       
-      return(new_bng_reference(na.omit(refs)))
+      new_bng_reference(na.omit(refs))
     } else {
-      return(NA)
+      NA
     }
   })
   
@@ -511,8 +511,7 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
-  if (!is.na(sf::st_crs(geom)) && 
-      (sf::st_crs(geom) != sf::st_crs(27700))) {
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
     stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
          call. = FALSE)
   }
@@ -597,9 +596,7 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
       geometry[!contains] <- geos::geos_write_wkt(chips)
       # using wkt to simplify combining vectors and avoid pointer issues
       
-      return(list("refs" = refs, 
-                  "contains" = contains, 
-                  "geometry" = geometry))
+      list("refs" = refs, "contains" = contains, "geometry" = geometry)
     })
     
     # combine parts
@@ -620,9 +617,7 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
       sf::st_crs(geometry) <- sf::st_crs(27700)
     }
     
-    return(list("BNGReference" = refs, 
-                "is_core" = contains, 
-                "geom" = geometry))
+    list("BNGReference" = refs, "is_core" = contains, "geom" = geometry)
   })
   
   results
@@ -649,8 +644,7 @@ geom_to_bng_intersection.sf <- function(geom,
     format <- match.arg(format) 
   }
   
-  if (!is.na(sf::st_crs(geom)) && 
-      (sf::st_crs(geom) != sf::st_crs(27700))) {
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
     stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
          call. = FALSE)
   }
@@ -663,63 +657,96 @@ geom_to_bng_intersection.sf <- function(geom,
 }
 
 
-#' Spatial index data frame for geometries
+#' Spatial data frame for indexed geometries
 #' 
 #' Generate a set of BNG Reference objects given a geometry and a specified
-#' resolution. Specifically this function will provide results in a spatial data
-#' frame format.
+#' resolution and provide results in a spatial data frame format.
 #' @param geom geometry object of type \code{geos-geometry} or \code{sf}
 #' @param resolution spatial resolution of the BNG cell expressed in string or
 #'   integer values
-#' @param add_index logical. Should an index of the input feaure be added?
+#' @param reset_index logical. Should the row names be reset in the output?
+#'   Default is \code{TRUE} to renumber the output rows sequentially.
 #' @param ... additional parameters. Not currently used.
-#' @details
+#' @details 
 #' The BNG Reference objects returned represent the grid squares intersected by
 #' the input geometry. This function followings the pattern of
 #' \code{geom_to_bng_intersection()}, but flattens the list structure of results
-#' into a spatial data frame. The \code{sf} package is required to use this
-#' functionality.
+#' into a spatial data frame. The original geometry is dropped in this process
+#' and all other columns are retained in the output.
 #' 
-#' When \code{add_index} is \code{TRUE}, the numeric index of the input geometry
-#' will be added to the output data frame to indentify the source and enable
-#' additional attributes to be rejoined to the results.
+#' The \code{sf} package is required to use this functionality.
 #' 
 #' @returns a spatial data frame of type \code{sf} with the coordinate reference
-#'   system to British National Grid (EPSG:27700) and three columns for the
-#'   \code{BNGReference} object, the \code{is_core} property, and the
-#'   \code{geometry}. Optionally, a fourth column \code{index} will be added
-#'   when \code{add_index} is \code{TRUE}.
+#'   system to British National Grid (EPSG:27700). The non-geometry columns of
+#'   the input (if any) are joined with three columns for the
+#'   \code{BNGReference} object, the \code{is_core} property, and the indexed
+#'   \code{geometry}.
+#'   
+#' @examplesIf require("sf")
+#' # example code
+#' 
 #' 
 #' @seealso [geom_to_bng()]
 #' @export
 geom_to_bng_intersection_explode <- function(geom, 
                                              resolution, 
-                                             add_index = FALSE, 
+                                             reset_index = TRUE, 
                                              ...) {
   UseMethod("geom_to_bng_intersection_explode")
 }
 
 #' @rdname geom_to_bng_intersection_explode
 #' @export
-geom_to_bng_intersection_explode.geos <- function(geom, 
-                                                  resolution, 
-                                                  add_index = FALSE, 
-                                                  ...) {
+geom_to_bng_intersection_explode.geos_geometry <- function(geom, 
+                                                           resolution, 
+                                                           reset_index = TRUE, 
+                                                           ...) {
   chk_sf_installed()
-  bng_idx <- geom_to_bng_intersection(geom, resolution, format = "sf")
+  bng_idx <- geom_to_bng_intersection(geom, 
+                                      resolution, 
+                                      format = "sf")
   
-  bng_intersection_explode(bng_idx, add_index)
+  df <- bng_intersection_explode(bng_idx)
+  df$bnginternalrowindex <- NULL  # remove internal column
+  
+  if (reset_index) {
+    rownames(df) <- NULL
+  }
+  
+  # convert to spatial data.frame
+  gdf <- sf::st_sf(df)
+  
+  gdf
 }
 
 #' @rdname geom_to_bng_intersection_explode
 #' @export
 geom_to_bng_intersection_explode.sf <- function(geom, 
                                                 resolution, 
-                                                add_index = FALSE, 
+                                                reset_index = TRUE, 
                                                 ...) {
-  bng_idx <- geom_to_bng_intersection(geom, resolution, format = "sf")
+  bng_idx <- geom_to_bng_intersection(geom, 
+                                      resolution, 
+                                      format = "sf")
   
-  bng_intersection_explode(bng_idx, add_index)
+  df <- bng_intersection_explode(bng_idx)
+  
+  # rejoin to non geometry columns
+  geom <- sf::st_drop_geometry(geom)
+  
+  if (ncol(geom) > 0) {
+    df <- cbind(geom[df$bnginternalrowindex, , drop = FALSE], df)
+  } 
+  df$bnginternalrowindex <- NULL  # remove internal column
+  
+  if (reset_index) {
+    rownames(df) <- NULL
+  }
+  
+  # convert to spatial data.frame
+  gdf <- sf::st_sf(df)
+  
+  gdf
 }
   
 
@@ -890,7 +917,6 @@ geom_bng_intersects <- function(geom, resolution) {
                               geos::geos_y(g)),
                         resolution = res)
       return(unique(refs))
-      
     } else {
       partrefs <- lapply(seq_along(g), function(j) {
         gpart <- g[j]
@@ -920,35 +946,23 @@ geom_bng_intersects <- function(geom, resolution) {
 
 #' Flatten a list of indexed geometries
 #' 
-#' Creates a spatial data frame from the nested list structure of results from
+#' Creates a data frame from the nested list structure of results from
 #' \code{geom_to_bng_intersection()}.
 #' @param bng_idx list with results of an indexed geometry
-#' @param add_index logical. Should an index of the input feaure be added?
 #' @details
-#' The \code{sf} package is required for this function.
-#' @returns a data frame of type \code{sf} with the \code{BNGReference},
-#'   \code{is_core}, and \code{geometry} columns. Optionally, a fourth column
-#'   \code{index}, will be added to list the row index of the input feature.
+#' Helper function used in the processing of
+#' \code{geom_to_bng_intersection_explode()}.
+#' @returns a data frame with the \code{BNGReference}, \code{is_core}, and
+#'   \code{geometry} columns from the indexing. A fourth column \code{rowindex},
+#'   is added to list the row index of the input feature to support joining back
+#'   to the input.
 #' @keywords internal
 #' @noRd
-bng_intersection_explode <- function(bng_idx, add_index) {
-  if (length(bng_idx) == 1) {
-    df <- data.frame(bng_idx)
-    if (add_index) {
-      df <- cbind("index" = 1, df) 
-    }
-  } else {
-    if (add_index) {
-      df <- do.call(rbind, lapply(bng_idx, 
-                                  function(x) { cbind("index" = 1, 
-                                                      data.frame(x)) }))
-    } else {
-      df <- do.call(rbind, lapply(bng_idx, data.frame)) 
-    }
-  }
+bng_intersection_explode <- function(bng_idx) {
+  df <- do.call(rbind, 
+                lapply(seq_along(bng_idx), 
+                       function(i) { cbind("bnginternalrowindex" = i, 
+                                           data.frame(bng_idx[[i]])) }))
   
-  # Convert to spatial format to return
-  gdf <- sf::st_sf(df)
-  
-  gdf
+  df
 }

@@ -157,8 +157,8 @@ bbox_bng_grid <- function(bbox,
   
   bng_refs$geometry <- bng_to_grid_geom(bng_refs$bng_reference, format = "sf")
   bng_refs <- sf::st_sf(bng_refs, 
-                    sf_column_name = "geometry", 
-                    crs = 27700)
+                        sf_column_name = "geometry", 
+                        crs = 27700)
   
   bng_refs
 }

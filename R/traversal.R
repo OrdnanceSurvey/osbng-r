@@ -59,7 +59,7 @@ bng_kring <- function(bng_ref, k, ...) {
     
     refs <- get_disc_neighbours(ref, resolution, k, type = "ring")
     
-    return(refs)
+    refs
   })
   
   # replace valid
@@ -98,7 +98,7 @@ bng_kdisc <- function(bng_ref, k, ...) {
     resolution <- internal_get_resolution(ref)
     
     neighs <- get_disc_neighbours(ref, resolution, k, type = "disc")
-    return(neighs)
+    neighs
   })
   
   # replace valid
@@ -141,7 +141,7 @@ bng_neighbours <- function(bng_ref, ...) {
     resolution <- internal_get_resolution(ref)
     
     neighs <- get_disc_neighbours(ref, resolution, k = 1, type = "rook")
-    return(neighs)
+    neighs
   })
   
   # replace valid
@@ -200,12 +200,12 @@ bng_is_neighbour <- function(bng_ref1, bng_ref2, ...) {
   
   neighs <- sapply(seq_along(bng_ref1), function(i) {
     if (bng_ref2[i] == bng_ref1[i]) {
-      return(FALSE)
+      FALSE
     } else {
       b2 <- as.character(bng_ref2[i])
       n <- as.character(bng_neighbours(bng_ref1[i])[[1]])
       
-      return(match(b2, n, nomatch = 0) > 0)
+      match(b2, n, nomatch = 0) > 0
     }
   })
   
@@ -267,7 +267,7 @@ bng_dwithin <- function(bng_ref, d, ...) {
     # test any part of square within distance
     valid_dist <- bng_distance(ref, neighs, edge_to_edge = TRUE) <= d
     
-    return(neighs[valid_dist])
+    neighs[valid_dist]
   })
   
   # replace valid
