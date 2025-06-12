@@ -529,7 +529,7 @@ bng_dwithin(bng_ref, d = 1000)
 
 `osbng` provides additional several convenience functions to generate BNG grid
 square data within specified bounds as a spatial data frame. These functions
-require the `sf` package to be available. Grid square data covvering the BNG
+require the `sf` package to be available. Grid square data covering the BNG
 index system bounds is provided at 100km, 50km, 10km, 5km and 1km resolutions.
 The functions are all named `bng_grid_<resolution>()`. Optionally, these
 functions can take a bound box argument to restrict the grids to specific

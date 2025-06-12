@@ -2,15 +2,15 @@
 % Please edit documentation in R/indexing.R
 \name{geom_to_bng_intersection_explode}
 \alias{geom_to_bng_intersection_explode}
-\alias{geom_to_bng_intersection_explode.geos}
+\alias{geom_to_bng_intersection_explode.geos_geometry}
 \alias{geom_to_bng_intersection_explode.sf}
-\title{Spatial index data frame for geometries}
+\title{Spatial data frame for indexed geometries}
 \usage{
-geom_to_bng_intersection_explode(geom, resolution, add_index = FALSE, ...)
+geom_to_bng_intersection_explode(geom, resolution, reset_index = TRUE, ...)
 
-\method{geom_to_bng_intersection_explode}{geos}(geom, resolution, add_index = FALSE, ...)
+\method{geom_to_bng_intersection_explode}{geos_geometry}(geom, resolution, reset_index = TRUE, ...)
 
-\method{geom_to_bng_intersection_explode}{sf}(geom, resolution, add_index = FALSE, ...)
+\method{geom_to_bng_intersection_explode}{sf}(geom, resolution, reset_index = TRUE, ...)
 }
 \arguments{
 \item{geom}{geometry object of type \code{geos-geometry} or \code{sf}}
@@ -18,32 +18,39 @@ geom_to_bng_intersection_explode(geom, resolution, add_index = FALSE, ...)
 \item{resolution}{spatial resolution of the BNG cell expressed in string or
 integer values}
 
-\item{add_index}{logical. Should an index of the input feaure be added?}
+\item{reset_index}{logical. Should the row names be reset in the output?
+Default is \code{TRUE} to renumber the output rows sequentially.}
 
 \item{...}{additional parameters. Not currently used.}
 }
 \value{
 a spatial data frame of type \code{sf} with the coordinate reference
-system to British National Grid (EPSG:27700) and three columns for the
-\code{BNGReference} object, the \code{is_core} property, and the
-\code{geometry}. Optionally, a fourth column \code{index} will be added
-when \code{add_index} is \code{TRUE}.
+system to British National Grid (EPSG:27700). The non-geometry columns of
+the input (if any) are joined with three columns for the
+\code{BNGReference} object, the \code{is_core} property, and the indexed
+\code{geometry}.
 }
 \description{
 Generate a set of BNG Reference objects given a geometry and a specified
-resolution. Specifically this function will provide results in a spatial data
-frame format.
+resolution and provide results in a spatial data frame format.
 }
 \details{
 The BNG Reference objects returned represent the grid squares intersected by
 the input geometry. This function followings the pattern of
 \code{geom_to_bng_intersection()}, but flattens the list structure of results
-into a spatial data frame. The \code{sf} package is required to use this
-functionality.
+into a spatial data frame. The original geometry is dropped in this process
+and all other columns are retained in the output.
 
-When \code{add_index} is \code{TRUE}, the numeric index of the input geometry
-will be added to the output data frame to indentify the source and enable
-additional attributes to be rejoined to the results.
+The \code{sf} package is required to use this functionality.
+}
+\examples{
+\dontshow{if (require("sf")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+geom_to_bng_intersection_explode(geos::geos_make_polygon(c(375480.64511692, 
+426949.67604058, 465166.20199588, 453762.88376729, 393510.2158297, 
+375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078, 
+94454.79935802, 91989.21703833, 144999.23691181)), "50km")
+ 
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=geom_to_bng]{geom_to_bng()}}

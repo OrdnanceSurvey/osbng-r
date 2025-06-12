@@ -2,7 +2,7 @@
 title: "Indexing Polygon Example"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{osbng_indexing_polygon_examples}
+  %\VignetteIndexEntry{Indexing Polygon Example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -232,9 +232,12 @@ gdf_london$bng_ref_5km <- geom_to_bng_intersection(gdf_london,
 gdf_london <- st_drop_geometry(gdf_london)
 ```
 
-Given the list column of BNG reference objects, the easiest way to expand this
-into multiple rows is using `tidyr::unnest_wider` followed by `tidyr::unnest`.
-This example shows an alternative approach without the dependency on `tidyr`.
+Given the list column of BNG reference objects, there are several ways to expand
+and flatten this into multiple rows. One option is using `tidyr::unnest_wider`
+followed by `tidyr::unnest`. If the `sf` package is available, then
+`geom_to_bng_intersection_explode()` provides this functionality directly.
+
+The example code below shows an alternative approach without the dependency on `tidyr`.
 
 ```{r expanding_decompose}
 # Expand the bng_ref_5km column to separate rows for each object.
