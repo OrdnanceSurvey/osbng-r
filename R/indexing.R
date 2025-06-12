@@ -695,7 +695,7 @@ geom_to_bng_intersection_explode <- function(geom,
                                              resolution, 
                                              add_index = FALSE, 
                                              ...) {
-  UseMethod("geom_to_bng_intersection")
+  UseMethod("geom_to_bng_intersection_explode")
 }
 
 #' @rdname geom_to_bng_intersection_explode
