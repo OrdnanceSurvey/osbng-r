@@ -607,10 +607,11 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
     refs <- unname(do.call(c, allparts[grepl("refs", names(allparts))]))
     contains <- unname(do.call(c, allparts[grepl("contains", names(allparts))]))
     geometry <- unname(do.call(c, allparts[grepl("geometry", names(allparts))]))
+    geometry <- geos::geos_read_wkt(geometry)
 
     # adjust format
-    if (format == "geos") {
-      geometry <- geos::geos_read_wkt(geometry)
+    if (format == "wkt") {
+      geometry <- geos::geos_write_wkt(geometry)
 
     } else if (format == "sf") {
       chk_sf_installed()
