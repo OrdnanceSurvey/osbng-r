@@ -683,9 +683,11 @@ geom_to_bng_intersection.sf <- function(geom,
 #'   \code{geometry}.
 #'   
 #' @examplesIf require("sf")
-#' # example code
-#' 
-#' 
+#' geom_to_bng_intersection_explode(geos::geos_make_polygon(c(375480.64511692, 
+#' 426949.67604058, 465166.20199588, 453762.88376729, 393510.2158297, 
+#' 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078, 
+#' 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
+#'  
 #' @seealso [geom_to_bng()]
 #' @export
 geom_to_bng_intersection_explode <- function(geom, 
