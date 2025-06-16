@@ -45,7 +45,7 @@ integer values}
 \item{...}{additional parameters. Not currently used.}
 
 \item{format}{character indicating the type of geometry object to return.
-Default is "geos" while "sf" returns an object of class \code{sfc}.}
+Default is "geos" while "sf" returns a geometry object of class \code{sfc}.}
 }
 \value{
 \code{geom_to_bng}: list of vectors of \code{BNGReference} objects where the

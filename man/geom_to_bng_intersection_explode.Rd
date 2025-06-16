@@ -53,5 +53,5 @@ geom_to_bng_intersection_explode(geos::geos_make_polygon(c(375480.64511692,
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=geom_to_bng]{geom_to_bng()}}
+\code{\link[=geom_to_bng_intersection]{geom_to_bng_intersection()}}
 }
