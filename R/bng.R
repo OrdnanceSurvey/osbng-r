@@ -245,7 +245,7 @@ unique.BNGReference <- function(x, incomparables = FALSE, ...) {
 #' @rdname BNGReference
 as.data.frame.BNGReference <- function(x, ...) {
   df <- data.frame(row.names = seq_along(x))
-  df$bng_ref <- x
+  df$bng_reference <- x
   
   df
 }
