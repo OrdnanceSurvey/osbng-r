@@ -4,7 +4,8 @@
 #' Create British National Grid reference from bounding boxes or convert grid
 #' reference objects into bounding boxes.
 #' @param xmin,ymin,xmax,ymax numeric vector of bounding box coordinates
-#' @param x optional input of the bounding box as a matrix of values
+#' @param x optional input of the bounding box as a matrix or data frame of
+#'   values. Either a numeric vector or object must be supplied.
 #' @param resolution the resolution of the BNG reference expressed either as a
 #'   metre-based integer or as a string label
 #' @param ... additional parameters, not currently used
@@ -29,6 +30,13 @@
 #' Bounding boxes are expressed as four coordinates (min x, min y, max x, max
 #' y). Coordinates must be in British National Grid projection (EPSG:27700).
 #' These functions do not support coordinate transformations.
+#' 
+#' For matrix input, the first four columns are used as xmin, ymin, xmax, and
+#' ymax, respectively. For \code{data.frame} input columns must be named "xmin",
+#' "ymin", "xmax", and "ymax" or the first columns will be assumed.
+#' 
+#' To return the BNG grid squares within the bounding box of a geometry, see
+#' \code{geom_to_bng()}.
 #' 
 #' @returns 
 #'   * \code{bng_to_bbox}: numeric vector of bounding easting and northing
@@ -133,6 +141,31 @@ bbox_to_bng.matrix <- function(x, resolution, ...) {
   ymin <- x[, 2]
   xmax <- x[, 3]
   ymax <- x[, 4]
+  
+  bbox_to_bng(xmin, ymin, xmax, ymax, resolution, ...)
+}
+
+#' @export
+#' @rdname bng_to_bbox
+#' @aliases bbox_to_bng
+bbox_to_bng.data.frame <- function(x, resolution, ...) {
+  # consistency checks
+  if (ncol(x) < 4) {
+    stop("Data frame input must have four columns.", call. = FALSE)
+  }
+  
+  if (all(c("xmin","ymin","xmax","ymax") %in% names(x))) {
+    xmin <- x$xmin
+    ymin <- x$ymin
+    xmax <- x$xmax
+    ymax <- x$ymax
+  } else {
+    # use the first 4 columns
+    xmin <- x[, 1]
+    ymin <- x[, 2]
+    xmax <- x[, 3]
+    ymax <- x[, 4]
+  }
   
   bbox_to_bng(xmin, ymin, xmax, ymax, resolution, ...)
 }
@@ -525,7 +558,7 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
 
 
 #' @param format character indicating the type of geometry object to return.
-#'   Default is "geos" while "sf" returns an object of class \code{sfc}.
+#'   Default is "geos" while "sf" returns a geometry object of class \code{sfc}.
 #' 
 #' @import geos
 #' @export
@@ -688,7 +721,7 @@ geom_to_bng_intersection.sf <- function(geom,
 #' 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078, 
 #' 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
 #'  
-#' @seealso [geom_to_bng()]
+#' @seealso [geom_to_bng_intersection()]
 #' @export
 geom_to_bng_intersection_explode <- function(geom, 
                                              resolution, 

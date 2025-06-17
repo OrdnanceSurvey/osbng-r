@@ -4,6 +4,7 @@
 \alias{bbox_to_bng}
 \alias{bbox_to_bng.numeric}
 \alias{bbox_to_bng.matrix}
+\alias{bbox_to_bng.data.frame}
 \alias{bng_to_bbox}
 \alias{bng_to_grid_geom}
 \title{Convert bounding boxes}
@@ -13,6 +14,8 @@ bbox_to_bng(...)
 \method{bbox_to_bng}{numeric}(xmin, ymin, xmax, ymax, resolution, ...)
 
 \method{bbox_to_bng}{matrix}(x, resolution, ...)
+
+\method{bbox_to_bng}{data.frame}(x, resolution, ...)
 
 bng_to_bbox(bng_ref, ...)
 
@@ -26,7 +29,8 @@ bng_to_grid_geom(bng_ref, format = c("geos", "sf", "wkt"), ...)
 \item{resolution}{the resolution of the BNG reference expressed either as a
 metre-based integer or as a string label}
 
-\item{x}{optional input of the bounding box as a matrix of values}
+\item{x}{optional input of the bounding box as a matrix or data frame of
+values. Either a numeric vector or object must be supplied.}
 
 \item{bng_ref}{vector of type \code{BNGReference} objects}
 
@@ -69,6 +73,13 @@ the coordinates are snapped to the bounds of the BNG system.
 Bounding boxes are expressed as four coordinates (min x, min y, max x, max
 y). Coordinates must be in British National Grid projection (EPSG:27700).
 These functions do not support coordinate transformations.
+
+For matrix input, the first four columns are used as xmin, ymin, xmax, and
+ymax, respectively. For \code{data.frame} input columns must be named "xmin",
+"ymin", "xmax", and "ymax" or the first columns will be assumed.
+
+To return the BNG grid squares within the bounding box of a geometry, see
+\code{geom_to_bng()}.
 }
 \examples{
 bbox_to_bng(400000, 100000, 500000, 200000, "50km")
