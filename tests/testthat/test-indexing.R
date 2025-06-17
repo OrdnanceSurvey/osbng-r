@@ -13,6 +13,36 @@ test_that("bboxes convert to BNG", {
     }
     expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]])))
   }
+  
+  # input as a matrix
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    bbox <- matrix(c(r$xmin, r$ymin, r$xmax, r$ymax), ncol=4)
+    
+    if (!is.na(r$expected_warning)) {
+      expect_warning(val <- bbox_to_bng(bbox, 
+                                        resolution = r$resolution)[[1]])
+    } else {
+      val <- bbox_to_bng(bbox, 
+                         resolution = r$resolution)[[1]]
+    }
+    expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]])))
+  }
+  
+  # input as a data.frame
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    bbox <- data.frame(t(c(r$xmin, r$ymin, r$xmax, r$ymax)))
+    
+    if (!is.na(r$expected_warning)) {
+      expect_warning(val <- bbox_to_bng(bbox, 
+                                        resolution = r$resolution)[[1]])
+    } else {
+      val <- bbox_to_bng(bbox, 
+                         resolution = r$resolution)[[1]]
+    }
+    expect_equal(sort(val), sort(as_bng_reference(r$expected[[1]])))
+  }
 })
 
 
@@ -109,3 +139,50 @@ test_that("geometries are decomposed to bng references", {
     }
   }
 }) 
+
+
+test_that("geometries are decomposed in a spatial data frame", {
+  skip_if_not_installed("sf")
+  
+  df <- readRDS(test_cases("geom_to_bng_intersection"))
+  
+  for (i in seq_len(nrow(df))) {
+    r <- df[i, ]
+    
+    if (!is.na(r$expected_warning)) {
+      expect_warning(val <- geom_to_bng_intersection_explode(geos::geos_read_geojson(r$geom),
+                                                             resolution = r$resolution))
+      
+      expect_s3_class(val, "sf")
+      expect_equal(ncol(val), 3L)
+      expect_equal(names(val), c("bng_reference", "is_core", "geometry"))
+      expect_equal(nrow(val), length(r$expected[[1]]$bng_ref))
+      
+      expect_equal(sort(val$bng_ref), 
+                   sort(as_bng_reference(r$expected[[1]]$bng_ref)))
+      
+      expect_equal(val$is_core[order(val$bng_reference)],
+                   r$expected[[1]]$is_core[order(r$expected[[1]]$bng_ref)])
+      
+    } else {
+      if (any(r$expected[[1]] == "expect_error")) {
+        expect_error(geom_to_bng_intersection(geos::geos_read_geojson(r$geom), 
+                                              resolution = r$resolution))
+      } else {
+        val <- geom_to_bng_intersection_explode(geos::geos_read_geojson(r$geom),
+                                                resolution = r$resolution)
+        
+        expect_s3_class(val, "sf")
+        expect_equal(ncol(val), 3L)
+        expect_equal(names(val), c("bng_reference", "is_core", "geometry"))
+        expect_equal(nrow(val), length(r$expected[[1]]$bng_ref))
+        
+        expect_equal(sort(val$bng_reference), 
+                     sort(as_bng_reference(r$expected[[1]]$bng_ref)))
+        
+        expect_equal(val$is_core[order(val$bng_reference)],
+                     r$expected[[1]]$is_core[order(r$expected[[1]]$bng_ref)])
+      }
+    }
+  }
+})
