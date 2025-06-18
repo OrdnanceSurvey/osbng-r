@@ -31,12 +31,7 @@
 bng_grid_100km <- function(xmin, ymin, xmax, ymax, ...) {
   
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
-  
-  bbox_bng_grid(c(bbox[1], 
-                  bbox[2], 
-                  bbox[3], 
-                  bbox[4]), 
-                resolution = "100km")
+  bbox_bng_grid(bbox, resolution = "100km")
 }
 
 #' @export
@@ -44,12 +39,7 @@ bng_grid_100km <- function(xmin, ymin, xmax, ymax, ...) {
 bng_grid_50km <- function(xmin, ymin, xmax, ymax, ...) {
   
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
-  
-  bbox_bng_grid(c(bbox[1], 
-                  bbox[2], 
-                  bbox[3], 
-                  bbox[4]), 
-                resolution = "50km")
+  bbox_bng_grid(bbox, resolution = "50km")
 }
 
 #' @export
@@ -57,12 +47,7 @@ bng_grid_50km <- function(xmin, ymin, xmax, ymax, ...) {
 bng_grid_10km <- function(xmin, ymin, xmax, ymax, ...) {
   
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
-  
-  bbox_bng_grid(c(bbox[1], 
-                  bbox[2], 
-                  bbox[3], 
-                  bbox[4]), 
-                resolution = "10km")
+  bbox_bng_grid(bbox, resolution = "10km")
 }
 
 #' @export
@@ -71,11 +56,7 @@ bng_grid_5km <- function(xmin, ymin, xmax, ymax, ...) {
   
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   
-  bbox_bng_grid(c(bbox[1], 
-                  bbox[2], 
-                  bbox[3], 
-                  bbox[4]), 
-                resolution = "5km")
+  bbox_bng_grid(bbox, resolution = "5km")
 }
 
 #' @export
@@ -83,12 +64,7 @@ bng_grid_5km <- function(xmin, ymin, xmax, ymax, ...) {
 bng_grid_1km <- function(xmin, ymin, xmax, ymax, ...) {
   
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
-  
-  bbox_bng_grid(c(bbox[1], 
-                  bbox[2], 
-                  bbox[3], 
-                  bbox[4]), 
-                resolution = "1km")
+  bbox_bng_grid(bbox, resolution = "1km")
 }
 
 #' Helper function to validate bbox input
@@ -131,7 +107,8 @@ chk_bbox <- function(xmin, ymin, xmax, ymax) {
 #' @param resolution character. Grid resolution to return. Must be one of
 #'   "100km", "50km", "10km", "5km", "1km".
 #' @param ... Additional arguments. Not currently used.
-#' @details The \code{sf} package is required for this function.
+#' @details The \code{sf} package is required for this function. Resolutions
+#'   below 1km are not supported to avoid memory issues.
 #' @returns Data frame object of type \code{sf} with the grid reference and the
 #'   grid square geometry.
 #' 
