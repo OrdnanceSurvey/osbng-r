@@ -30,3 +30,5 @@ Depends:
 Imports: 
     geos
 VignetteBuilder: knitr
+URL: https://github.com/OrdnanceSurvey/osbng-r
+BugReports: https://github.com/OrdnanceSurvey/osbng-r/issues
