@@ -1,0 +1,43 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "osbng" in publications use:'
+type: software
+license: MIT
+title: 'osbng: Access the British National Grid Index System'
+version: 0.2.0
+abstract: A programmatic interface to Ordnance Survey's British National Grid (BNG)
+  index system, supporting efficient grid-based spatial indexing and analysis. The
+  BNG enables applications such as statistical aggregation, data visualisation, and
+  data interoperability using BNG grid references. Designed for developers working
+  with geospatial data in the context of Great Britain, 'osbng' offers tools to simplify
+  working with the BNG, facilitating both technical integration into geospatial workflows
+  and practical exploration of the index system's structure.
+authors:
+- family-names: Jochem
+  given-names: Chris
+  email: chris.jochem@os.uk
+- family-names: Kingston
+  given-names: Steve
+- family-names: New
+  given-names: Kate
+- family-names: Peterken
+  given-names: Tom
+preferred-citation:
+  type: manual
+  title: 'osbng: Access the British National Grid Index System'
+  authors:
+  - name: Ordnance Survey
+  institution:
+    name: Ordnance Survey Ltd
+  year: '2025'
+  notes: R package version 0.2.0
+  url: https://github.com/OrdnanceSurvey/osbng-r
+contact:
+- family-names: Jochem
+  given-names: Chris
+  email: chris.jochem@os.uk
+
