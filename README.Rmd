@@ -36,7 +36,7 @@ powers of ten from 1m to 100km (1m, 10m, 100m, 1km, 10km, 100km). It also
 supports the 'intermediate' quadtree resolutions (5m, 50m, 500m, 5km, 50km),
 identified by an ordinal (NE, SE, SW, NW) BNG reference direction suffix.
 
-![BNG index system overview at 100km, 10km and 1km resolutions](man/figures/osbng_100km_10km_1km_grid.png) <!-- -->
+![BNG index system overview at 100km, 10km and 1km resolutions](man/figures/osbng_grids_100km_10km_1km_R.png) <!-- -->
 
 ## Installation
 
@@ -144,6 +144,22 @@ grid squares:
 
 ```{r}
 bng_kring(as_bng_reference("SU1234"), k = 2)
+```
+
+### Grids
+
+Provides functionality to generate BNG grid square data within specified bounds. This includes:
+
+ * Grid square data covering the BNG index system bounds at 100km, 50km, 10km, 5km and 1km resolutions.
+ * Grid squares can be filtered to specific regions of interest.
+
+This functionality requires the `sf` package to be available. The following
+example constructs an `sf` data frame:
+
+```{r}
+library(sf)
+
+bng_grid_100km()
 ```
 
 

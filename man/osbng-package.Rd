@@ -15,6 +15,14 @@ context of Great Britain, the library offers tools to simplify working with
 the BNG, facilitating both technical integration into geospatial workflows
 and practical exploration of the index system's structure.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/OrdnanceSurvey/osbng-r}
+  \item Report bugs at \url{https://github.com/OrdnanceSurvey/osbng-r/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Chris Jochem \email{chris.jochem@os.uk}
 

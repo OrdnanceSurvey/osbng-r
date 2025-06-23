@@ -6,7 +6,7 @@
 #' @details
 #' These convenience functions generate a spatial data frame of BNG references
 #' and grid square geometries at pre-determined resolutions. This function
-#' combined \code{bbox_to_bng()} and \code{bng_to_grid_geom()} into a data
+#' combines \code{bbox_to_bng()} and \code{bng_to_grid_geom()} into a data
 #' frame. Optionally, the grid can be for a defined bounding box area of
 #' interest. If the bounding box is omitted, then all grid squares within the
 #' valid bounds of the BNG are returned.
@@ -16,7 +16,8 @@
 #' [\code{osbng-grids} GitHub
 #' repo](https://github.com/OrdnanceSurvey/osbng-grids/).
 #' 
-#' The \code{sf} packge is required for this function.
+#' The \code{sf} package is required for this function.
+#' 
 #' @returns Data frame object of type \code{sf} with the grid reference as a
 #'   \code{BNGReference} object and the grid square polygon geometry.
 #'   
@@ -25,7 +26,7 @@
 #' 
 #' bng_grid_1km(529476, 179654, 532170, 181116)
 #' 
-#' @seealso [bbox_to_bng()]
+#' @seealso [bbox_to_bng(),geom_to_bng()]
 #' @export
 #' @rdname bng_grid
 bng_grid_100km <- function(xmin, ymin, xmax, ymax, ...) {

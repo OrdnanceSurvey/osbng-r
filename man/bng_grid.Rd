@@ -33,7 +33,7 @@ Generate a spatial data frame of BNG references and grid square geometries.
 \details{
 These convenience functions generate a spatial data frame of BNG references
 and grid square geometries at pre-determined resolutions. This function
-combined \code{bbox_to_bng()} and \code{bng_to_grid_geom()} into a data
+combines \code{bbox_to_bng()} and \code{bng_to_grid_geom()} into a data
 frame. Optionally, the grid can be for a defined bounding box area of
 interest. If the bounding box is omitted, then all grid squares within the
 valid bounds of the BNG are returned.
@@ -42,7 +42,7 @@ Only selected resolutions are provided to avoid excessively large data
 frames. For additional spatial data files of all resolutions, please see the
 \href{https://github.com/OrdnanceSurvey/osbng-grids/}{\code{osbng-grids} GitHub repo}.
 
-The \code{sf} packge is required for this function.
+The \code{sf} package is required for this function.
 }
 \examples{
 \dontshow{if (require("sf")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -52,5 +52,5 @@ bng_grid_1km(529476, 179654, 532170, 181116)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=bbox_to_bng]{bbox_to_bng()}}
+\code{\link[=bbox_to_bng(),geom_to_bng]{bbox_to_bng(),geom_to_bng()}}
 }
