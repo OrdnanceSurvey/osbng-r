@@ -26,9 +26,9 @@
 #' 
 #' bng_grid_1km(529476, 179654, 532170, 181116)
 #' 
-#' @seealso [bbox_to_bng(),geom_to_bng()]
+#' @seealso [bbox_to_bng()], [geom_to_bng()]
 #' @export
-#' @rdname bng_grid
+#' @name bng_grid
 bng_grid_100km <- function(xmin, ymin, xmax, ymax, ...) {
   
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
@@ -67,6 +67,56 @@ bng_grid_1km <- function(xmin, ymin, xmax, ymax, ...) {
   bbox <- chk_bbox(xmin, ymin, xmax, ymax)
   bbox_bng_grid(bbox, resolution = "1km")
 }
+
+
+#' List the components of the British National Grid
+#' 
+#' Helper functions to provide access to the bounds and set of 100km grid
+#' reference identifiers.
+#' @param arranged logical. Should the grid reference letters be arranged into a
+#'   2D matrix? Default is \code{FALSE}.
+#' @details
+#' When \code{arranged} is \code{TRUE}, the matrix arrangement matches the
+#' British National Grid, but note the orientation. The first element "SV" would
+#' be mapped in the southwest corner.
+#' 
+#' @returns a character vector of 2-letter identifiers for all valid 100km grid
+#'   squares. When \code{arranged} is \code{TRUE} this vector is coerced into a
+#'   2D matrix.  
+#'  
+#' @examples
+#' list_bng_prefixes()
+#' 
+#' list_bng_prefixes(arranged = TRUE)
+#'
+#' @export
+#' @name list_bng
+list_bng_prefixes <- function(arranged = FALSE) {
+  if (arranged) {
+    m <- matrix(bng_prefixes, nrow = 13, ncol = 7, byrow = TRUE)
+    return(m)
+  } else {
+    return(bng_prefixes)
+  }
+}
+
+#' @param named logical. Should the bounding box vector include the names (e.g.
+#'   'xmin')? Default is \code{TRUE}.
+#' @returns a numeric vector with four values for the xmin, ymin, xmax, and ymax
+#'   coordinates for the valid extant of the British National Grid.
+#' @examples
+#' list_bng_bounds()
+#' 
+#' @export
+#' @rdname list_bng
+list_bng_bounds <- function(named = TRUE) {
+  if (named) {
+    return(bng_bounds)
+  } else {
+    return(unname(bng_bounds))
+  }
+}
+
 
 #' Helper function to validate bbox input
 #' Confirms the inputs to the functions that generate BNG feature grid data
