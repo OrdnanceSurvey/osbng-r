@@ -44,11 +44,11 @@ further subdivide the grid squares into finder detail, down to individual
 1-meter squares.
 
 ```{r}
-bng_bounds
+list_bng_bounds()
 ```
 
 ```{r}
-bng_prefixes
+list_bng_prefixes()
 ```
 
 ## Resolutions
