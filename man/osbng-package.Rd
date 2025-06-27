@@ -18,6 +18,7 @@ and practical exploration of the index system's structure.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://ordnancesurvey.github.io/osbng-r/}
   \item \url{https://github.com/OrdnanceSurvey/osbng-r}
   \item Report bugs at \url{https://github.com/OrdnanceSurvey/osbng-r/issues}
 }
