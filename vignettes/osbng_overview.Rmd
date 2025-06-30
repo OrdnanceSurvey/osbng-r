@@ -171,12 +171,12 @@ two functions.
 #### Point
 
 ```{r}
-# Easting and norhting coordinates
+# Easting and northing coordinates
 x <- 437293
 y <- 115543
 
 # Construct a geos Point geometry from easting and northing coordinates
-geom <- geos_make_point(x, y)
+geom <- geos::geos_make_point(x, y)
 
 # Return the BNGReference object for the geometry at a 5km resolution
 geom_to_bng(geom = geom, resolution = "5km")
@@ -193,7 +193,7 @@ geom_to_bng_intersection(geom = geom, resolution = "5km")
 
 ```{r}
 # Create a geos LineString geometry from Well Known Text (WKT)
-geom <- geos_read_wkt("LINESTRING (436171.8 114893.7, 437861.3 116130.0)")
+geom <- geos::geos_read_wkt("LINESTRING (436171.8 114893.7, 437861.3 116130.0)")
 
 # Return a list of the BNGReference object(s) intersected by the geometry at a 1km resolution
 geom_to_bng(geom = geom, resolution = "1km")
@@ -253,7 +253,7 @@ plot(st_geometry(bng_grid_geoms),
 
 ```{r}
 # Create a geos Polygon geometry from Well Known Text (WKT)
-geom <- geos_read_wkt("POLYGON ((436661.45305455 115784.01571607, 437629.10896848 116112.11767069, 438229.486575 115953.45344189, 437990.51082297 114935.84767816, 436630.11197232 115085.69722758, 436661.45305455 115784.01571607))")
+geom <- geos::geos_read_wkt("POLYGON ((436661.45305455 115784.01571607, 437629.10896848 116112.11767069, 438229.486575 115953.45344189, 437990.51082297 114935.84767816, 436630.11197232 115085.69722758, 436661.45305455 115784.01571607))")
 ```
 
 ```{r}
