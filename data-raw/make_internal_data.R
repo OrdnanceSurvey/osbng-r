@@ -33,7 +33,7 @@ bng_prefixes <- c("SV", "SW", "SX", "SY", "SZ", "TV", "TW", "SQ", "SR", "SS",
 bng_suffixes <- c("SW", "SE", "NW", "NE")
 
 bng_bounds <- c(0, 0, 700000, 1300000)
-names(bng_bounds) <- c("xmin","ymin","xmax","ymax")
+names(bng_bounds) <- c("xmin", "ymin", "xmax", "ymax")
 
 
 # Store .rda file for the package.

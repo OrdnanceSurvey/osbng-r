@@ -154,7 +154,7 @@ bbox_to_bng.data.frame <- function(x, resolution, ...) {
     stop("Data frame input must have four columns.", call. = FALSE)
   }
   
-  if (all(c("xmin","ymin","xmax","ymax") %in% names(x))) {
+  if (all(c("xmin", "ymin", "xmax", "ymax") %in% names(x))) {
     xmin <- x$xmin
     ymin <- x$ymin
     xmax <- x$xmax

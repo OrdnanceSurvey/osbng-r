@@ -156,11 +156,13 @@ The `geom_to_bng` and `geom_to_bng_intersection` functions enable the indexing
 of geometries, represented using `geos` Geometry objects, into grid squares at a
 specified resolution. Both functions accept `geos` Geometry objects of the
 following types: `Point`, `LineString`, `Polygon`, `MultiPoint`,
-`MultiLineString`, `MultiPolygon`, and `GeometryCollection`. The coodinates must
-be encoded in the [British National Grid (OSGB36)
+`MultiLineString`, `MultiPolygon`, and `GeometryCollection`. The coordinates
+must be encoded in the [British National Grid (OSGB36)
 EPSG:27700](https://epsg.io/27700) coordinate reference system.
 
-These functions facilitate grid-based spatial analysis, enabling applications such as statistical aggregation, data visualisation, and data interoperability. The two functions differ in their operation:
+These functions facilitate grid-based spatial analysis, enabling applications
+such as statistical aggregation, data visualisation, and data interoperability.
+The two functions differ in their operation:
 
 * `geom_to_bng` returns the BNG grid squares intersected by the input geometry.
 * `geom_to_bng_intersection` returns the intersections (shared geometries) between the input geometry and the grid square geometries.
