@@ -556,6 +556,28 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
   geom_to_bng(geom, resolution, ...)
 }
 
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng.sfc <- function(geom, resolution, ...) {
+  chk_sf_installed()
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
+    stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
+         call. = FALSE)
+  }
+  
+  geom <- geos::as_geos_geometry(geom)
+  # scrub CRS info to avoid geos conflicts
+  attr(geom, "crs") <- NULL
+  
+  geom_to_bng(geom, resolution, ...)
+}
+
 
 #' @param format character indicating the type of geometry object to return.
 #'   Default is "geos" while "sf" returns a geometry object of class \code{sfc}.
@@ -689,6 +711,39 @@ geom_to_bng_intersection.sf <- function(geom,
   geom_to_bng_intersection(geom, resolution, format, ...)
 }
 
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng_intersection.sfc <- function(geom, 
+                                         resolution, 
+                                         format = c("geos", "sf", "wkt"), 
+                                         ...) {
+  
+  chk_sf_installed()
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  # if the user submitted 'sf' then assume 'sf' return
+  if (missing(format)) {
+    format <- "sf"
+  } else {
+    format <- match.arg(format) 
+  }
+  
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
+    stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
+         call. = FALSE)
+  }
+  
+  geom <- geos::as_geos_geometry(geom)
+  # scrub CRS info to avoid geos conflicts
+  attr(geom, "crs") <- NULL
+  
+  geom_to_bng_intersection(geom, resolution, format, ...)
+}
+
 
 #' Spatial data frame for indexed geometries
 #' 
@@ -783,7 +838,30 @@ geom_to_bng_intersection_explode.sf <- function(geom,
   
   gdf
 }
+
+#' @rdname geom_to_bng_intersection_explode
+#' @export
+geom_to_bng_intersection_explode.sfc <- function(geom, 
+                                                 resolution, 
+                                                 reset_index = TRUE, 
+                                                 ...) {
+  bng_idx <- geom_to_bng_intersection(geom, 
+                                      resolution, 
+                                      format = "sf")
   
+  df <- bng_intersection_explode(bng_idx)
+  df$bnginternalrowindex <- NULL  # remove internal column
+  
+  if (reset_index) {
+    rownames(df) <- NULL
+  }
+  
+  # convert to spatial data.frame
+  gdf <- sf::st_sf(df)
+  
+  gdf
+}
+
 
 #' Convert eastings and northings to BNG grid reference
 #' 

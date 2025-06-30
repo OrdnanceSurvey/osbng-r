@@ -5,8 +5,10 @@
 \alias{geom_to_bng_intersection}
 \alias{geom_to_bng.geos_geometry}
 \alias{geom_to_bng.sf}
+\alias{geom_to_bng.sfc}
 \alias{geom_to_bng_intersection.geos_geometry}
 \alias{geom_to_bng_intersection.sf}
+\alias{geom_to_bng_intersection.sfc}
 \title{Spatial index for geometries}
 \usage{
 geom_to_bng(geom, resolution, ...)
@@ -14,6 +16,8 @@ geom_to_bng(geom, resolution, ...)
 \method{geom_to_bng}{geos_geometry}(geom, resolution, ...)
 
 \method{geom_to_bng}{sf}(geom, resolution, ...)
+
+\method{geom_to_bng}{sfc}(geom, resolution, ...)
 
 geom_to_bng_intersection(
   geom,
@@ -30,6 +34,13 @@ geom_to_bng_intersection(
 )
 
 \method{geom_to_bng_intersection}{sf}(
+  geom,
+  resolution,
+  format = c("geos", "sf", "wkt"),
+  ...
+)
+
+\method{geom_to_bng_intersection}{sfc}(
   geom,
   resolution,
   format = c("geos", "sf", "wkt"),

@@ -4,6 +4,7 @@
 \alias{geom_to_bng_intersection_explode}
 \alias{geom_to_bng_intersection_explode.geos_geometry}
 \alias{geom_to_bng_intersection_explode.sf}
+\alias{geom_to_bng_intersection_explode.sfc}
 \title{Spatial data frame for indexed geometries}
 \usage{
 geom_to_bng_intersection_explode(geom, resolution, reset_index = TRUE, ...)
@@ -11,6 +12,8 @@ geom_to_bng_intersection_explode(geom, resolution, reset_index = TRUE, ...)
 \method{geom_to_bng_intersection_explode}{geos_geometry}(geom, resolution, reset_index = TRUE, ...)
 
 \method{geom_to_bng_intersection_explode}{sf}(geom, resolution, reset_index = TRUE, ...)
+
+\method{geom_to_bng_intersection_explode}{sfc}(geom, resolution, reset_index = TRUE, ...)
 }
 \arguments{
 \item{geom}{geometry object of type \code{geos-geometry} or \code{sf}}
