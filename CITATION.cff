@@ -1,43 +1,46 @@
-# --------------------------------------------
-# CITATION file created with {cffr} R package
-# See also: https://docs.ropensci.org/cffr/
-# --------------------------------------------
- 
 cff-version: 1.2.0
-message: 'To cite package "osbng" in publications use:'
+title: 'osbng: Geospatial Grid Indexing and Interaction with the British National Grid'
+message: 'To cite package osbng in publications use:'
 type: software
-license: MIT
-title: 'osbng: Access the British National Grid Index System'
-version: 0.2.0
-abstract: A programmatic interface to Ordnance Survey's British National Grid (BNG)
-  index system, supporting efficient grid-based spatial indexing and analysis. The
-  BNG enables applications such as statistical aggregation, data visualisation, and
-  data interoperability using BNG grid references. Designed for developers working
-  with geospatial data in the context of Great Britain, 'osbng' offers tools to simplify
-  working with the BNG, facilitating both technical integration into geospatial workflows
-  and practical exploration of the index system's structure.
 authors:
-- family-names: Jochem
-  given-names: Chris
-  email: chris.jochem@os.uk
-- family-names: Kingston
-  given-names: Steve
-- family-names: New
-  given-names: Kate
-- family-names: Peterken
-  given-names: Tom
+  - given-names: Chris
+    family-names: Jochem
+    email: chris.jochem@os.uk
+  - given-names: Steve
+    family-names: Kingston
+    email: steve.kingston@os.uk
+  - given-names: Kate
+    family-names: New
+    email: kate.new@os.uk
+  - given-names: Tom
+    family-names: Peterken
+    email: tom.peterken@os.uk
+repository-code: 'https://github.com/OrdnanceSurvey/osbng-r'
+abstract: Offers a streamlined programmatic interface to Ordnance Survey's 
+  British National Grid (BNG) index system, enabling efficient spatial 
+  indexing and analysis based on grid references. It supports a range of 
+  geospatial applications, including statistical aggregation, data 
+  visualisation, and interoperability across datasets. Designed for 
+  developers and analysts working with geospatial data in Great Britain, 
+  'osbng' simplifies integration with geospatial workflows and provides 
+  intuitive tools for exploring the structure and logic of the BNG system.
+keywords:
+  - r
+  - geospatial
+  - gis
+  - spatial
+  - "ordnance survey"
+  - "spatial indexing"
+  - ordnance-survey-grid
+license: MIT
+version: 0.2.0
 preferred-citation:
-  type: manual
-  title: 'osbng: Access the British National Grid Index System'
+  type: software
+  title: 'osbng: Geospatial Grid Indexing and Interaction with the British National Grid'
   authors:
   - name: Ordnance Survey
   institution:
     name: Ordnance Survey Ltd
   year: '2025'
-  notes: R package version 0.2.0
-  url: https://github.com/OrdnanceSurvey/osbng-r
-contact:
-- family-names: Jochem
-  given-names: Chris
-  email: chris.jochem@os.uk
-
+  version: 0.2.0
+  repository-code: https://github.com/OrdnanceSurvey/osbng-r

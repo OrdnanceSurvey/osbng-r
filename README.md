@@ -207,4 +207,4 @@ questions.
 
 ## License
 
-`osbng-r` is licensed under the terms of the MIT License.
+`osbng` is licensed under the terms of the MIT License.
