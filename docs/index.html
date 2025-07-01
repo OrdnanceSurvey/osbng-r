@@ -96,11 +96,14 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Currently, you can install the latest version of <code>osbng</code> from <a href="https://github.com/OrdnanceSurvey/osbng-r" class="external-link">GitHub</a> with:</p>
+<p><code>osbng</code> is available from CRAN.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"osbng"</span><span class="op">)</span></span></code></pre></div>
+<p>Or you can install the latest version of <code>osbng</code> from <a href="https://github.com/OrdnanceSurvey/osbng-r" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"OrdnanceSurvey/osbng-r"</span><span class="op">)</span></span></code></pre></div>
 <p>Once installed, load the package to use it:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ordnancesurvey.github.io/osbng-r/" class="external-link">osbng</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="complimetary-tools">Complimetary tools<a class="anchor" aria-label="anchor" href="#complimetary-tools"></a>
@@ -123,7 +126,7 @@
 <h3 id="bng-reference">BNG Reference<a class="anchor" aria-label="anchor" href="#bng-reference"></a>
 </h3>
 <p><code>osbng</code> implements a custom BNG reference object, <code>BNGReference</code>. The <code>BNGReference</code> object validates the reference and provides access to custom functions to work with the reference.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ordnancesurvey.github.io/osbng-r/" class="external-link">osbng</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bng_ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_bng_reference.html">as_bng_reference</a></span><span class="op">(</span><span class="st">"ST57SE"</span><span class="op">)</span></span>
@@ -150,7 +153,7 @@
 <p><img src="reference/figures/osbng_indexing_geom_to_bng_5km_london.png" alt="BNG Grid Squares at 5km Resolution Intersected by London Region"><!-- --></p>
 <p><img src="reference/figures/osbng_indexing_geom_to_bng_intersection_5km_london.png" alt="Decomposition of the London Region into BNG Grid Squares at 5km Resolution"><!-- --></p>
 <p>The following example demonstrates a round trip of constructing a <code>BNGReference</code> object from easting and northing coordinates, and then decoding back into coordinates, bounding box, and geos geometry:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bng_ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bng_to_xy.html">xy_to_bng</a></span><span class="op">(</span>easting <span class="op">=</span> <span class="fl">356976</span>, northing <span class="op">=</span> <span class="fl">171421</span>, resolution <span class="op">=</span> <span class="st">"5km"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/bng_to_xy.html">bng_to_xy</a></span><span class="op">(</span><span class="va">bng_ref</span>, position <span class="op">=</span> <span class="st">"lower-left"</span><span class="op">)</span></span>
@@ -172,7 +175,7 @@
 <li>Returning parents and children of <code>BNGReference</code> objects at specified resolutions.</li>
 </ul>
 <p>The following example returns a parent of a <code>BNGReference</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bng_ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_bng_reference.html">as_bng_reference</a></span><span class="op">(</span><span class="st">"ST5671SE"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/get_bng_resolution.html">get_bng_resolution</a></span><span class="op">(</span><span class="va">bng_ref</span><span class="op">)</span></span>
@@ -193,7 +196,7 @@
 <li>Retrieving all grid squares within a specified absolute distance.</li>
 </ul>
 <p>The following example creates a hollow ring of grid squares a distance of <em>k</em> grid squares:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/bng_kring.html">bng_kring</a></span><span class="op">(</span><span class="fu"><a href="reference/as_bng_reference.html">as_bng_reference</a></span><span class="op">(</span><span class="st">"SU1234"</span><span class="op">)</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; &lt;BNGReference[16] with Resolution=1km&gt;</span></span>
@@ -210,7 +213,7 @@
 <li>Grid squares can be filtered to specific regions of interest.</li>
 </ul>
 <p>This functionality requires the <code>sf</code> package to be available. The following example constructs an <code>sf</code> data frame:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Linking to GEOS 3.9.1, GDAL 3.3.2, PROJ 7.2.1; sf_use_s2() is TRUE</span></span>
 <span></span>
