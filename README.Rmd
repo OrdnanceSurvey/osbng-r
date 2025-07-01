@@ -40,7 +40,13 @@ identified by an ordinal (NE, SE, SW, NW) BNG reference direction suffix.
 
 ## Installation
 
-Currently, you can install the latest version of `osbng` from
+`osbng` is available from CRAN.
+
+```{r, eval=FALSE}
+install.packages("osbng")
+```
+
+Or you can install the latest version of `osbng` from
 [GitHub](https://github.com/OrdnanceSurvey/osbng-r) with:
 
 ```{r, eval=FALSE}
@@ -49,7 +55,7 @@ remotes::install_github("OrdnanceSurvey/osbng-r")
 
 Once installed, load the package to use it:
 
-```{r, eval=FALSE}
+```{r}
 library(osbng)
 ```
 

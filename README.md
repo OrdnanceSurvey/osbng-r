@@ -30,7 +30,13 @@ resolutions](man/figures/osbng_grids_100km_10km_1km_R.png) <!-- -->
 
 ## Installation
 
-Currently, you can install the latest version of `osbng` from
+`osbng` is available from CRAN.
+
+``` r
+install.packages("osbng")
+```
+
+Or you can install the latest version of `osbng` from
 [GitHub](https://github.com/OrdnanceSurvey/osbng-r) with:
 
 ``` r
