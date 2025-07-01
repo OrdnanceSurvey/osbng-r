@@ -392,8 +392,6 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
 }
 
 #' @param x two column matrix of eastings and northings
-#' @examples
-#' # example code
 #' 
 #' @export
 #' @rdname bng_to_xy
@@ -409,8 +407,6 @@ xy_to_bng.matrix <- function(x, resolution, ...) {
 
 #' @param df data.frame with columns of coordinates to convert
 #' @param cols column names or indices within \code{df} holding coordinates
-#' @examples
-#' # example code
 #' 
 #' @export
 #' @rdname bng_to_xy
@@ -456,7 +452,6 @@ xy_to_bng.data.frame <- function(df,
 #' \code{geom_to_bng_intersection instead}.
 #' 
 #' @returns
-#' 
 #' \code{geom_to_bng}: list of vectors of \code{BNGReference} objects where the
 #' number of items in the list equal \code{length(geom)}.
 #' 

@@ -76,8 +76,4 @@ xy_to_bng(437289, 115541, "5km")
 
 xy_to_bng(437289, 115541, 1)
   
-# example code
-
-# example code
-
 }
