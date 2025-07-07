@@ -32,9 +32,13 @@ bng_prefixes <- c("SV", "SW", "SX", "SY", "SZ", "TV", "TW", "SQ", "SR", "SS",
 # Set of valid BNG suffixes for quadrant positions
 bng_suffixes <- c("SW", "SE", "NW", "NE")
 
+bng_bounds <- c(0, 0, 700000, 1300000)
+names(bng_bounds) <- c("xmin", "ymin", "xmax", "ymax")
+
 
 # Store .rda file for the package.
-usethis::use_data(bng_pattern,
+usethis::use_data(bng_bounds,
+                  bng_pattern,
                   bng_prefixes,
                   bng_suffixes,
                   internal = TRUE, overwrite = TRUE)

@@ -1,0 +1,54 @@
+url: ~
+template:
+  bootstrap: 5
+  bslib:
+    base_font: {google: {family: "Hanken Grotesk", wght: "300"}}
+    heading_font: {google: {family: "Hanken Grotesk", wght: "400"}}
+reference:
+  - title: BNG Reference Objects
+    desc: Functions that create and access `BNGReference` objects.
+    contents:
+    - as_bng_reference
+    - BNGReference
+    - print.BNGReference
+  - title: Indexing
+    desc: >
+      Functions that index and work with coordinates and geometries against the 
+      BNG index system.
+    contents:
+    - bng_to_xy
+    - bng_to_bbox
+    - geom_to_bng
+    - geom_to_bng_intersection_explode
+  - title: Hierarchy
+    desc: >
+      Functions that navigate the hierarchical structure of the BNG index system.
+    contents:
+    - bng_to_children
+  - title: Traversal
+    desc: >
+      Functions for traversing and calculating distances within the BNG index 
+      system.
+    contents:
+    - bng_kring
+    - bng_neighbours
+    - bng_distance
+  - title: Grids
+    desc: Functions to generate BNG grid square data within specified bounds.
+    contents:
+    - bng_grid
+  - title: Utilities
+    contents:
+    - valid
+    - get_bng_resolution
+    - list_bng
+    - Regions
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: "osbng Overview"
+      href: articles/osbng_overview.html
+    - text: "Indexing Polygon Example"
+      href: articles/osbng_indexing_polygon_examples.html

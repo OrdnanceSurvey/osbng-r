@@ -142,7 +142,7 @@ get_children <- function(ref, resolution) {
     # get child refs within the box
     refs <- bbox_to_bng(bb[1], bb[2], bb[3], bb[4], child_res[i])[[1]]
     
-    return(refs)
+    refs
   })
   
   child_list
@@ -193,5 +193,5 @@ get_parent <- function(ref, resolution) {
   coords <- bng_to_xy(ref)
   parents <- xy_to_bng(coords, parent_res)
   
-  return(parents)
+  parents
 }

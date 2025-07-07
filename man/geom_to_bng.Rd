@@ -5,8 +5,10 @@
 \alias{geom_to_bng_intersection}
 \alias{geom_to_bng.geos_geometry}
 \alias{geom_to_bng.sf}
+\alias{geom_to_bng.sfc}
 \alias{geom_to_bng_intersection.geos_geometry}
 \alias{geom_to_bng_intersection.sf}
+\alias{geom_to_bng_intersection.sfc}
 \title{Spatial index for geometries}
 \usage{
 geom_to_bng(geom, resolution, ...)
@@ -14,6 +16,8 @@ geom_to_bng(geom, resolution, ...)
 \method{geom_to_bng}{geos_geometry}(geom, resolution, ...)
 
 \method{geom_to_bng}{sf}(geom, resolution, ...)
+
+\method{geom_to_bng}{sfc}(geom, resolution, ...)
 
 geom_to_bng_intersection(
   geom,
@@ -35,6 +39,13 @@ geom_to_bng_intersection(
   format = c("geos", "sf", "wkt"),
   ...
 )
+
+\method{geom_to_bng_intersection}{sfc}(
+  geom,
+  resolution,
+  format = c("geos", "sf", "wkt"),
+  ...
+)
 }
 \arguments{
 \item{geom}{geometry object of type \code{geos-geometry} or \code{sf}}
@@ -45,7 +56,7 @@ integer values}
 \item{...}{additional parameters. Not currently used.}
 
 \item{format}{character indicating the type of geometry object to return.
-Default is "geos" while "sf" returns an object of class \code{sfc}.}
+Default is "geos" while "sf" returns a geometry object of class \code{sfc}.}
 }
 \value{
 \code{geom_to_bng}: list of vectors of \code{BNGReference} objects where the
@@ -75,7 +86,7 @@ The BNG Reference objects returned represent the grid squares intersected by
 the input geometry. BNG Reference objects are de-duplicated in cases where
 two or more parts of a multi-part geometry intersect the same grid square.
 
-Unlike \code{geom_to_bng} which only returnS BNG Reference objects
+Unlike \code{geom_to_bng} which only returns BNG Reference objects
 representing the grid squares intersected by the input geometry,
 \code{geom_to_bng_intersection} returns list objects that store the
 intersection between the input geometry and the grid square geometries.
@@ -100,4 +111,7 @@ geom_to_bng_intersection(geos::geos_make_polygon(c(375480.64511692,
 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078,
 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
 
+}
+\seealso{
+\code{\link[=geom_to_bng_intersection_explode]{geom_to_bng_intersection_explode()}}
 }

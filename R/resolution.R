@@ -2,10 +2,12 @@
 #' BNG reference resolution
 #' 
 #' Find the spatial resolution (i.e. grid size) of a British National Grid
-#' square.
+#' square, or list valid resolutions.
 #' @param bng_ref Vector of \code{BNGReference} objects to test.
 #' @details
-#' How the resolution of grid reference is determined.
+#' The integer values represent spatial resolutions in metres, while the string
+#' labels provide a human-readable descriptor for each resolution level. For
+#' example, the numeric resolution 1000 is mapped to the label '1km'.
 #' 
 #' @returns A vector of numeric values for \code{get_bng_resolution()} in metres
 #'   or character strings expressing the resolution of the grid references.
@@ -15,6 +17,7 @@
 #' get_bng_resolution_string(as_bng_reference("TQ1234NE"))
 #' 
 #' @export
+#' @aliases bng_resolutions
 get_bng_resolution <- function(bng_ref) {
   validate_bng_ref(bng_ref)
   res <- internal_get_resolution(bng_ref)
@@ -25,6 +28,7 @@ get_bng_resolution <- function(bng_ref) {
 
 #' @export
 #' @rdname get_bng_resolution
+#' @aliases bng_resolutions
 get_bng_resolution_string <- function(bng_ref) {
   validate_bng_ref(bng_ref)
   # get the numeric resolution
@@ -102,16 +106,18 @@ internal_get_scale <- function(res) {
 }
 
 
-#' List valid BNG resolutions
-#' 
-#' Internal helper function to provide vector of resolutions or labels.
-#' @param which character indicating what set of resolutions to return
+#' @param which character indicating what set of resolutions to return.
 #' @param lbl logical. Should resolutions labels be returned? Default is
 #'   \code{FALSE} to return numeric resolutions.
 #' @returns vector of BNG resolutions as either numeric values or character
 #'   labels.
-#' @keywords internal
-#' @noRd
+#'   
+#' @examples
+#' list_bng_resolution(which = "all", lbl = TRUE)
+#' 
+#' @export
+#' @rdname get_bng_resolution
+#' @aliases bng_resolutions
 list_bng_resolution <- function(which = c("all", "whole", "quad"), 
                                 lbl = FALSE) {
   which <- match.arg(which)

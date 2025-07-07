@@ -2,7 +2,7 @@
 title: "Indexing Polygon Example"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{osbng_indexing_polygon_examples}
+  %\VignetteIndexEntry{Indexing Polygon Example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -61,6 +61,12 @@ input geometry into BNG grid squares. Unlike `geom_to_bng`, no deduplication
 occurs. If multiple parts of a multi-part geometry intersect the same grid
 square, the intersection for each part is returned.
 
+### geom_to_bng_intersection_explode
+
+This convenience function applies `geom_to_bng_intersection()` to each geometry
+in an `sf` data.frame, returning a flattened data.frame by exploding the list of
+indexed geometries.
+
 ## Examples
 
 The examples below demonstrate the application of the two indexing functions
@@ -72,10 +78,11 @@ within an `sf` spatial data frame.
 ## Optional sf Dependency
 
 While `osbng` is fully compatible with sf and can seamlessly work with data
-frames in `R`, it does not require sf as a hard dependency. The indexing
-functions operate directly on `geos` Geometry objects. This allows you to use
-these functions with standard data structures (e.g., vectors, data frames)
-containing geos geometries.
+frames in `R`, it does not require sf as a hard dependency. With the exception
+of `geom_to_bng_intersection_explode`, the indexing functions can operate
+directly on `geos` Geometry objects. This allows you to use these functions with
+standard data structures (e.g., vectors, data frames) containing geos
+geometries.
 
 ```{r setup}
 library(osbng)
@@ -203,20 +210,76 @@ text(coords[, 1],
 
 ```
 
-### geom_to_bng_intersection
+### geom_to_bng_intersection_explode
 
-Returns a list of nested lists representing the decomposition of the input
-geometry into BNG grid squares. The three elements of each nested list are:
+Decomposes each geometry in the input `sf` data.frame bounded by their presence
+in BNG grid squares at the specified resolution. Applies the
+`geom_to_bng_intersection` function to the active geometry column of the input
+data frame, which is expected to be set and in the OSGB36 / British National
+Grid coordinate reference system (CRS) (EPSG:27700).
+
+The resulting indexed geometries are exploded into individual rows, with each
+row containing a new column for each part of the nested list: `bng_ref`,
+`is_core`, and `geometry`.
+
+The input geometry column is replaced with the `geometry` column. The input
+geometry column can be retrieved if required by joining the resulting data frame
+with the original data frame on the index (if not reset), or using a feature
+identifier. Dropping the original geometry column reduces memory usage and
+simplifies the resulting object.
+
+All non-geometry columns from the input are retained in the resulting `sf` data
+frame.
+
+The columns added to the exploded data frame:
 
 * `bng_ref`: The `BNGReference` object representing the grid square corresponding to the decomposition.
 * `is_core`: A Boolean flag indicating whether the grid square geometry is entirely contained by the input geometry. This is relevant for Polygon geometries and helps distinguish between "core" (fully inside)and "edge" (partially overlapping) grid squares.
-* `geom`: The geometry (in `geos`, `sf`, or WKT format) representing the intersection between the input geometry and the grid square. This can be one of a number of geometry types depending on the overlap. When `is_core` is True, geom is the same as the grid square geometry.
+* `geometry`: The geometry representing the intersection between the input geometry and the grid square. This can be one of a number of geometry types depending on the overlap. When `is_core` is True, geom is the same as the grid square geometry.
+
+```{r expanding_decompose}
+# Create a new data frame of the London Region
+# Filter the data frame columns
+gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
+
+# Decompose the London Region into a simplified representation
+# bounded by its presence in each BNG grid square at a 5km resolution
+# Uses the gdf_to_bng_geom_intersection_explode; sf required
+gdf_london_exp <- geom_to_bng_intersection_explode(gdf_london, 
+                                                   resolution = "5km")
+
+head(gdf_london_exp)
+```
+
+This spatial data frame contains decomposed London Region's geometry decomposed
+into BNG grid squares. Using this expanded set of records demonstrates the
+`is_core` property when grid squares are fully contained by the original
+geometry.
+
+```{r viz_is_core, fig.height=6.5, fig.width=6.5, warning=FALSE}
+# Plot the indexed and expanded London Region spatial data frame
+plot(gdf_london_exp["is_core"],
+     border = "#fff",
+     col = c("#009ade", "#ff1f5b")[gdf_london_exp$is_core + 1],
+     main = "Decomposition of the London Region into BNG Grid Squares at 5km Resolution",
+     cex.main = .75)
+
+legend(0.8, 0.3,
+       title = "is_core",
+       legend = c("True", "False"),
+       fill = c("#ff1f5b", "#009ade"))
+```
+
+### Alternative: geom_to_bng_intersection
+
+The example below demonstrates how the same data frame `gdf_london_exp` could be
+derived using more verbose logic via the `geom_to_bng_intersection` function.
 
 Starting again with the original London Region, the intersecting BNG grid
 squares are identified and then the decomposed geometry is exploded into
 separate rows.
 
-```{r decompose_london}
+```{r decompose_london_alt}
 # Create a new data frame of the London Region
 # Filter the data frame columns
 gdf_london <- gdf[, c("RGN24CD", "RGN24NM")]
@@ -232,11 +295,13 @@ gdf_london$bng_ref_5km <- geom_to_bng_intersection(gdf_london,
 gdf_london <- st_drop_geometry(gdf_london)
 ```
 
-Given the list column of BNG reference objects, the easiest way to expand this
-into multiple rows is using `tidyr::unnest_wider` followed by `tidyr::unnest`.
-This example shows an alternative approach without the dependency on `tidyr`.
+Given the list column of BNG reference objects, there are several ways to expand
+and flatten this into multiple rows. One option is using `tidyr::unnest_wider`
+followed by `tidyr::unnest`. The example code below shows an alternative
+approach without the dependency on `tidyr`.
 
-```{r expanding_decompose}
+```{r expanding_decompose_alt, eval=FALSE}
+# Alternative syntax - NOT RUN
 # Expand the bng_ref_5km column to separate rows for each object.
 gdf_london <- cbind("RGN24CD" = gdf_london[, c("RGN24CD")], 
                     data.frame(gdf_london$bng_ref_5km))
@@ -248,31 +313,11 @@ gdf_london_exp <- st_sf(gdf_london)
 head(gdf_london_exp)
 ```
 
-```{r expanding_decompose_alt, eval=FALSE}
+```{r expanding_decompose_alt2, eval=FALSE}
 # Alternative approach requiring `tidyr` - NOT RUN
 gdf_london_exp <- gdf_london %>%
   unnest_wider(bng_ref_5km) %>%
   unnest(cols = c(BNGReference, is_core, geom)) %>%
   st_sf()
-```
-
-This spatial data frame contains decomposed London Region's geometry decomposed
-into BNG grid squares. Using this expanded set of records demonstrates the
-`is_core` property when grid squares are fully contained by the original
-geometry.
-
-```{r viz_is_core, fig.height=6.5, fig.width=6.5, warning=FALSE}
-
-# Plot the indexed and expanded London Region spatial data frame
-plot(gdf_london_exp["is_core"],
-     border = "#fff",
-     col = c("#009ade", "#ff1f5b")[gdf_london$is_core + 1],
-     main = "Decomposition of the London Region into BNG Grid Squares at 5km Resolution",
-     cex.main = .75)
-
-legend(0.8, 0.3, 
-       title = "is_core",
-       legend = c("True", "False"),  
-       fill = c("#ff1f5b", "#009ade"))
 ```
 

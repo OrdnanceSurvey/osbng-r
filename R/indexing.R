@@ -4,7 +4,8 @@
 #' Create British National Grid reference from bounding boxes or convert grid
 #' reference objects into bounding boxes.
 #' @param xmin,ymin,xmax,ymax numeric vector of bounding box coordinates
-#' @param x optional input of the bounding box as a matrix of values
+#' @param x optional input of the bounding box as a matrix or data frame of
+#'   values. Either a numeric vector or object must be supplied.
 #' @param resolution the resolution of the BNG reference expressed either as a
 #'   metre-based integer or as a string label
 #' @param ... additional parameters, not currently used
@@ -29,6 +30,13 @@
 #' Bounding boxes are expressed as four coordinates (min x, min y, max x, max
 #' y). Coordinates must be in British National Grid projection (EPSG:27700).
 #' These functions do not support coordinate transformations.
+#' 
+#' For matrix input, the first four columns are used as xmin, ymin, xmax, and
+#' ymax, respectively. For \code{data.frame} input columns must be named "xmin",
+#' "ymin", "xmax", and "ymax" or the first columns will be assumed.
+#' 
+#' To return the BNG grid squares within the bounding box of a geometry, see
+#' \code{geom_to_bng()}.
 #' 
 #' @returns 
 #'   * \code{bng_to_bbox}: numeric vector of bounding easting and northing
@@ -115,9 +123,9 @@ bbox_to_bng.numeric <- function(xmin, ymin, xmax, ymax, resolution, ...) {
       refs <- rep(NA, nrow(coords_min))
       refs <- xy_to_bng(coords_min, c(1, 2), res)
       
-      return(new_bng_reference(na.omit(refs)))
+      new_bng_reference(na.omit(refs))
     } else {
-      return(NA)
+      NA
     }
   })
   
@@ -133,6 +141,31 @@ bbox_to_bng.matrix <- function(x, resolution, ...) {
   ymin <- x[, 2]
   xmax <- x[, 3]
   ymax <- x[, 4]
+  
+  bbox_to_bng(xmin, ymin, xmax, ymax, resolution, ...)
+}
+
+#' @export
+#' @rdname bng_to_bbox
+#' @aliases bbox_to_bng
+bbox_to_bng.data.frame <- function(x, resolution, ...) {
+  # consistency checks
+  if (ncol(x) < 4) {
+    stop("Data frame input must have four columns.", call. = FALSE)
+  }
+  
+  if (all(c("xmin", "ymin", "xmax", "ymax") %in% names(x))) {
+    xmin <- x$xmin
+    ymin <- x$ymin
+    xmax <- x$xmax
+    ymax <- x$ymax
+  } else {
+    # use the first 4 columns
+    xmin <- x[, 1]
+    ymin <- x[, 2]
+    xmax <- x[, 3]
+    ymax <- x[, 4]
+  }
   
   bbox_to_bng(xmin, ymin, xmax, ymax, resolution, ...)
 }
@@ -359,8 +392,6 @@ xy_to_bng.numeric <- function(easting, northing, resolution, ...) {
 }
 
 #' @param x two column matrix of eastings and northings
-#' @examples
-#' # example code
 #' 
 #' @export
 #' @rdname bng_to_xy
@@ -376,8 +407,6 @@ xy_to_bng.matrix <- function(x, resolution, ...) {
 
 #' @param df data.frame with columns of coordinates to convert
 #' @param cols column names or indices within \code{df} holding coordinates
-#' @examples
-#' # example code
 #' 
 #' @export
 #' @rdname bng_to_xy
@@ -413,7 +442,7 @@ xy_to_bng.data.frame <- function(df,
 #' the input geometry. BNG Reference objects are de-duplicated in cases where
 #' two or more parts of a multi-part geometry intersect the same grid square.
 #' 
-#' Unlike \code{geom_to_bng} which only returnS BNG Reference objects
+#' Unlike \code{geom_to_bng} which only returns BNG Reference objects
 #' representing the grid squares intersected by the input geometry,
 #' \code{geom_to_bng_intersection} returns list objects that store the
 #' intersection between the input geometry and the grid square geometries.
@@ -423,7 +452,6 @@ xy_to_bng.data.frame <- function(df,
 #' \code{geom_to_bng_intersection instead}.
 #' 
 #' @returns
-#' 
 #' \code{geom_to_bng}: list of vectors of \code{BNGReference} objects where the
 #' number of items in the list equal \code{length(geom)}.
 #' 
@@ -458,6 +486,7 @@ xy_to_bng.data.frame <- function(df,
 #' 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078,
 #' 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
 #' 
+#' @seealso [geom_to_bng_intersection_explode()]
 #' @import geos
 #' @export
 #' @rdname geom_to_bng
@@ -510,8 +539,29 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
     stop("Please provide a target grid reference resolution.", call. = FALSE)
   }
   
-  if (!is.na(sf::st_crs(geom)) && 
-      (sf::st_crs(geom) != sf::st_crs(27700))) {
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
+    stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
+         call. = FALSE)
+  }
+  
+  geom <- geos::as_geos_geometry(geom)
+  # scrub CRS info to avoid geos conflicts
+  attr(geom, "crs") <- NULL
+  
+  geom_to_bng(geom, resolution, ...)
+}
+
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng.sfc <- function(geom, resolution, ...) {
+  chk_sf_installed()
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
     stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
          call. = FALSE)
   }
@@ -525,7 +575,7 @@ geom_to_bng.sf <- function(geom, resolution, ...) {
 
 
 #' @param format character indicating the type of geometry object to return.
-#'   Default is "geos" while "sf" returns an object of class \code{sfc}.
+#'   Default is "geos" while "sf" returns a geometry object of class \code{sfc}.
 #' 
 #' @import geos
 #' @export
@@ -596,9 +646,7 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
       geometry[!contains] <- geos::geos_write_wkt(chips)
       # using wkt to simplify combining vectors and avoid pointer issues
       
-      return(list("refs" = refs, 
-                  "contains" = contains, 
-                  "geometry" = geometry))
+      list("refs" = refs, "contains" = contains, "geometry" = geometry)
     })
     
     # combine parts
@@ -606,10 +654,11 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
     refs <- unname(do.call(c, allparts[grepl("refs", names(allparts))]))
     contains <- unname(do.call(c, allparts[grepl("contains", names(allparts))]))
     geometry <- unname(do.call(c, allparts[grepl("geometry", names(allparts))]))
+    geometry <- geos::geos_read_wkt(geometry)
 
     # adjust format
-    if (format == "geos") {
-      geometry <- geos::geos_read_wkt(geometry)
+    if (format == "wkt") {
+      geometry <- geos::geos_write_wkt(geometry)
 
     } else if (format == "sf") {
       chk_sf_installed()
@@ -618,9 +667,7 @@ geom_to_bng_intersection.geos_geometry <- function(geom,
       sf::st_crs(geometry) <- sf::st_crs(27700)
     }
     
-    return(list("BNGReference" = refs, 
-                "is_core" = contains, 
-                "geom" = geometry))
+    list("BNGReference" = refs, "is_core" = contains, "geom" = geometry)
   })
   
   results
@@ -647,8 +694,7 @@ geom_to_bng_intersection.sf <- function(geom,
     format <- match.arg(format) 
   }
   
-  if (!is.na(sf::st_crs(geom)) && 
-      (sf::st_crs(geom) != sf::st_crs(27700))) {
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
     stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
          call. = FALSE)
   }
@@ -658,6 +704,157 @@ geom_to_bng_intersection.sf <- function(geom,
   attr(geom, "crs") <- NULL
   
   geom_to_bng_intersection(geom, resolution, format, ...)
+}
+
+#' @export
+#' @rdname geom_to_bng
+#' @aliases geom_to_bng_intersection
+geom_to_bng_intersection.sfc <- function(geom, 
+                                         resolution, 
+                                         format = c("geos", "sf", "wkt"), 
+                                         ...) {
+  
+  chk_sf_installed()
+  
+  if (missing(resolution)) {
+    stop("Please provide a target grid reference resolution.", call. = FALSE)
+  }
+  
+  # if the user submitted 'sf' then assume 'sf' return
+  if (missing(format)) {
+    format <- "sf"
+  } else {
+    format <- match.arg(format) 
+  }
+  
+  if (!is.na(sf::st_crs(geom)) && (sf::st_crs(geom) != sf::st_crs(27700))) {
+    stop("Invalid CRS. Please use British National Grid (EPSG:27700).", 
+         call. = FALSE)
+  }
+  
+  geom <- geos::as_geos_geometry(geom)
+  # scrub CRS info to avoid geos conflicts
+  attr(geom, "crs") <- NULL
+  
+  geom_to_bng_intersection(geom, resolution, format, ...)
+}
+
+
+#' Spatial data frame for indexed geometries
+#' 
+#' Generate a set of BNG Reference objects given a geometry and a specified
+#' resolution and provide results in a spatial data frame format.
+#' @param geom geometry object of type \code{geos-geometry} or \code{sf}
+#' @param resolution spatial resolution of the BNG cell expressed in string or
+#'   integer values
+#' @param reset_index logical. Should the row names be reset in the output?
+#'   Default is \code{TRUE} to renumber the output rows sequentially.
+#' @param ... additional parameters. Not currently used.
+#' @details 
+#' The BNG Reference objects returned represent the grid squares intersected by
+#' the input geometry. This function followings the pattern of
+#' \code{geom_to_bng_intersection()}, but flattens the list structure of results
+#' into a spatial data frame. The original geometry is dropped in this process
+#' and all other columns are retained in the output.
+#' 
+#' The \code{sf} package is required to use this functionality.
+#' 
+#' @returns a spatial data frame of type \code{sf} with the coordinate reference
+#'   system to British National Grid (EPSG:27700). The non-geometry columns of
+#'   the input (if any) are joined with three columns for the
+#'   \code{BNGReference} object, the \code{is_core} property, and the indexed
+#'   \code{geometry}.
+#'   
+#' @examplesIf require("sf")
+#' geom_to_bng_intersection_explode(geos::geos_make_polygon(c(375480.64511692, 
+#' 426949.67604058, 465166.20199588, 453762.88376729, 393510.2158297, 
+#' 375480.64511692), c(144999.23691181, 160255.02751493, 153320.57724078, 
+#' 94454.79935802, 91989.21703833, 144999.23691181)), "50km")
+#'  
+#' @seealso [geom_to_bng_intersection()]
+#' @export
+geom_to_bng_intersection_explode <- function(geom, 
+                                             resolution, 
+                                             reset_index = TRUE, 
+                                             ...) {
+  UseMethod("geom_to_bng_intersection_explode")
+}
+
+#' @rdname geom_to_bng_intersection_explode
+#' @export
+geom_to_bng_intersection_explode.geos_geometry <- function(geom, 
+                                                           resolution, 
+                                                           reset_index = TRUE, 
+                                                           ...) {
+  chk_sf_installed()
+  bng_idx <- geom_to_bng_intersection(geom, 
+                                      resolution, 
+                                      format = "sf")
+  
+  df <- bng_intersection_explode(bng_idx)
+  df$bnginternalrowindex <- NULL  # remove internal column
+  
+  if (reset_index) {
+    rownames(df) <- NULL
+  }
+  
+  # convert to spatial data.frame
+  gdf <- sf::st_sf(df)
+  
+  gdf
+}
+
+#' @rdname geom_to_bng_intersection_explode
+#' @export
+geom_to_bng_intersection_explode.sf <- function(geom, 
+                                                resolution, 
+                                                reset_index = TRUE, 
+                                                ...) {
+  bng_idx <- geom_to_bng_intersection(geom, 
+                                      resolution, 
+                                      format = "sf")
+  
+  df <- bng_intersection_explode(bng_idx)
+  
+  # rejoin to non geometry columns
+  geom <- sf::st_drop_geometry(geom)
+  
+  if (ncol(geom) > 0) {
+    df <- cbind(geom[df$bnginternalrowindex, , drop = FALSE], df)
+  } 
+  df$bnginternalrowindex <- NULL  # remove internal column
+  
+  if (reset_index) {
+    rownames(df) <- NULL
+  }
+  
+  # convert to spatial data.frame
+  gdf <- sf::st_sf(df)
+  
+  gdf
+}
+
+#' @rdname geom_to_bng_intersection_explode
+#' @export
+geom_to_bng_intersection_explode.sfc <- function(geom, 
+                                                 resolution, 
+                                                 reset_index = TRUE, 
+                                                 ...) {
+  bng_idx <- geom_to_bng_intersection(geom, 
+                                      resolution, 
+                                      format = "sf")
+  
+  df <- bng_intersection_explode(bng_idx)
+  df$bnginternalrowindex <- NULL  # remove internal column
+  
+  if (reset_index) {
+    rownames(df) <- NULL
+  }
+  
+  # convert to spatial data.frame
+  gdf <- sf::st_sf(df)
+  
+  gdf
 }
 
 
@@ -828,7 +1025,6 @@ geom_bng_intersects <- function(geom, resolution) {
                               geos::geos_y(g)),
                         resolution = res)
       return(unique(refs))
-      
     } else {
       partrefs <- lapply(seq_along(g), function(j) {
         gpart <- g[j]
@@ -853,4 +1049,28 @@ geom_bng_intersects <- function(geom, resolution) {
   })
 
   allrefs
+}
+
+
+#' Flatten a list of indexed geometries
+#' 
+#' Creates a data frame from the nested list structure of results from
+#' \code{geom_to_bng_intersection()}.
+#' @param bng_idx list with results of an indexed geometry
+#' @details
+#' Helper function used in the processing of
+#' \code{geom_to_bng_intersection_explode()}.
+#' @returns a data frame with the \code{BNGReference}, \code{is_core}, and
+#'   \code{geometry} columns from the indexing. A fourth column \code{rowindex},
+#'   is added to list the row index of the input feature to support joining back
+#'   to the input.
+#' @keywords internal
+#' @noRd
+bng_intersection_explode <- function(bng_idx) {
+  df <- do.call(rbind, 
+                lapply(seq_along(bng_idx), 
+                       function(i) { cbind("bnginternalrowindex" = i, 
+                                           data.frame(bng_idx[[i]])) }))
+  
+  df
 }

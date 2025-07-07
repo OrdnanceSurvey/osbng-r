@@ -16,6 +16,9 @@
     <loc>/articles/osbng_indexing_polygon_examples.html</loc>
   </url>
   <url>
+    <loc>/articles/osbng_overview.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -37,6 +40,9 @@
     <loc>/reference/bng_distance.html</loc>
   </url>
   <url>
+    <loc>/reference/bng_grid.html</loc>
+  </url>
+  <url>
     <loc>/reference/bng_kring.html</loc>
   </url>
   <url>
@@ -55,10 +61,16 @@
     <loc>/reference/geom_to_bng.html</loc>
   </url>
   <url>
+    <loc>/reference/geom_to_bng_intersection_explode.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_bng_resolution.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/list_bng.html</loc>
   </url>
   <url>
     <loc>/reference/osbng-package.html</loc>

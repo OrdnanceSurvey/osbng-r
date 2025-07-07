@@ -5,3 +5,8 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^.lintr$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^CITATION\.cff$
+^cran-comments\.md$

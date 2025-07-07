@@ -4,16 +4,25 @@
 \name{osbng-package}
 \alias{osbng}
 \alias{osbng-package}
-\title{\code{osbng}: Access the British National Grid (BNG) index system}
+\title{\code{osbng}: Geospatial Grid Indexing and Interaction with the British National Grid}
 \description{
-\code{osbng} provides a programmatic interface to Ordnance Survey's British
-National Grid (BNG) index system, supporting efficient grid-based spatial
-indexing and analysis. This enables applications such as statistical
-aggregation, data visualisation, and data interoperability using BNG grid
-references. Designed for developers working with geospatial data in the
-context of Great Britain, the library offers tools to simplify working with
-the BNG, facilitating both technical integration into geospatial workflows
-and practical exploration of the index system's structure.
+Offers a streamlined programmatic interface to Ordnance Survey's British
+National Grid (BNG) index system, enabling efficient spatial indexing and
+analysis based on grid references. It supports a range of geospatial
+applications, including statistical aggregation, data visualisation, and
+interoperability across datasets. Designed for developers and analysts
+working with geospatial data in Great Britain, \code{osbng} simplifies
+integration with geospatial workflows and provides intuitive tools for
+exploring the structure and logic of the BNG system.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://ordnancesurvey.github.io/osbng-r/}
+  \item \url{https://github.com/OrdnanceSurvey/osbng-r}
+  \item Report bugs at \url{https://github.com/OrdnanceSurvey/osbng-r/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Chris Jochem \email{chris.jochem@os.uk}
